@@ -1,0 +1,79 @@
+name: Build APK GrowTrack
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil sumber
+        uses: actions/checkout@v4
+
+      - name: Pasang Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Pasang Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Buat rangka platform Android
+        run: |
+          mkdir -p /tmp/rangka
+          cp pubspec.yaml /tmp/rangka/
+          cp -r lib /tmp/rangka/
+          cd /tmp/rangka
+          flutter create --org id.growtrack --project-name growtrack --platforms=android .
+          cp -r android "$GITHUB_WORKSPACE/"
+          cp .metadata "$GITHUB_WORKSPACE/" 2>/dev/null || true
+
+      - name: Buat ikon aplikasi dari skrip
+        run: |
+          pip install --quiet pillow
+          python3 tools/generate_icons.py
+          for dpi in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            mkdir -p android/app/src/main/res/mipmap-$dpi
+            cp assets/icon/mipmap-$dpi/ic_launcher.png android/app/src/main/res/mipmap-$dpi/ic_launcher.png
+          done
+          rm -rf android/app/src/main/res/mipmap-anydpi-v26
+
+      - name: Pasang label aplikasi
+        run: |
+          python3 - << 'PYEOF'
+          import re
+          p = 'android/app/src/main/AndroidManifest.xml'
+          s = open(p).read()
+          s = re.sub(r'android:label="[^"]*"', 'android:label="GrowTrack"', s)
+          open(p, 'w').write(s)
+          print('manifest terpasang')
+          PYEOF
+
+      - name: Ambil dependensi
+        run: flutter pub get
+
+      - name: Build APK release arm64
+        run: flutter build apk --release --target-platform android-arm64
+
+      - name: Unggah APK sebagai artefak
+        uses: actions/upload-artifact@v4
+        with:
+          name: growtrack-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+          if-no-files-found: error
+
+      - name: Terbitkan APK ke Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: GrowTrack build ${{ github.run_number }}
+          files: build/app/outputs/flutter-apk/app-release.apk

@@ -1,0 +1,7 @@
+# Ikon digambar ulang oleh tools/generate_icons.py saat build
+assets/icon/*.png
+assets/icon/mipmap-*/
+build/
+.dart_tool/
+android/
+.metadata
