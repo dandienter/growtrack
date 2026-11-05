@@ -37,15 +37,20 @@ jobs:
           cp -r android "$GITHUB_WORKSPACE/"
           cp .metadata "$GITHUB_WORKSPACE/" 2>/dev/null || true
 
-      - name: Buat ikon aplikasi dari skrip
+      - name: Pasang ikon logo Posyandu
         run: |
-          pip install --quiet pillow
-          python3 tools/generate_icons.py
           for dpi in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             mkdir -p android/app/src/main/res/mipmap-$dpi
-            cp assets/icon/mipmap-$dpi/ic_launcher.png android/app/src/main/res/mipmap-$dpi/ic_launcher.png
+            cp launcher/mipmap-$dpi/ic_launcher.png android/app/src/main/res/mipmap-$dpi/ic_launcher.png
+            cp launcher/mipmap-$dpi/ic_launcher_foreground.png android/app/src/main/res/mipmap-$dpi/ic_launcher_foreground.png
           done
-          rm -rf android/app/src/main/res/mipmap-anydpi-v26
+          mkdir -p android/app/src/main/res/values
+          cat > android/app/src/main/res/values/ic_launcher_background.xml << 'XEOF'
+          <?xml version="1.0" encoding="utf-8"?>
+          <resources>
+              <color name="ic_launcher_background">#FFFFFF</color>
+          </resources>
+          XEOF
 
       - name: Pasang label aplikasi
         run: |

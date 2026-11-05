@@ -67,7 +67,8 @@ class _InfoScreenState extends State<InfoScreen> {
           Center(
             child: Column(
               children: [
-                Image.asset('assets/icon/logo.png', width: 96, height: 96),
+                Image.asset('assets/icon/posyandu-logo.png',
+                    width: 96, height: 96),
                 const SizedBox(height: 10),
                 const Text(
                   'GrowTrack',

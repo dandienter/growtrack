@@ -171,6 +171,13 @@ class GrowTrackDB {
         ['ORT003', 'Hendra Gunawan', 'Maya Putri', 'Karyawan Swasta', '081234567892', 'Jl. Beringin No. 20 RT 04/02'],
         ['ORT004', 'Dedi Kurniawan', 'Rina Marlina', 'Pedagang', '081234567893', 'Jl. Flamboyan No. 8 RT 04/03'],
         ['ORT005', 'Yusuf Maulana', 'Fitri Handayani', 'Guru', '081234567894', 'Jl. Flamboyan No. 15 RT 05/03'],
+        ['ORT006', 'Eko Purnomo', 'Sri Wahyuni', 'Buruh Pabrik', '081234567895', 'Jl. Beringin No. 27 RT 03/02'],
+        ['ORT007', 'Rahmat Hidayat', 'Nur Aini', 'Ojek Online', '081234567896', 'Jl. Kenanga No. 3 RT 06/03'],
+        ['ORT008', 'Slamet Riyadi', 'Endang Susanti', 'Pensiunan', '081234567897', 'Jl. Beringin No. 31 RT 04/02'],
+        ['ORT009', 'Fajar Ramadhan', 'Intan Permata', 'Karyawan Swasta', '081234567898', 'Jl. Flamboyan No. 22 RT 05/03'],
+        ['ORT010', 'Tono Wibowo', 'Ratna Dewi', 'Wiraswasta', '081234567899', 'Jl. Kenanga No. 17 RT 06/03'],
+        ['ORT011', 'Joko Susilo', 'Wulan Dari', 'Satpam', '081234567900', 'Jl. Beringin No. 8 RT 03/02'],
+        ['ORT012', 'Andi Firmansyah', 'Mega Utami', 'Teknisi', '081234567901', 'Jl. Flamboyan No. 30 RT 05/03'],
       ];
       final batch = db.batch();
       for (final o in ortu) {
@@ -193,6 +200,13 @@ class GrowTrackDB {
         ['BLT003', 'Muhammad Rizki', 'L', '2023-11-10', 3.5, 50.0, 'ORT003', '2023-12-01'],
         ['BLT004', 'Nadia Putri', 'P', '2024-01-25', 2.8, 47.0, 'ORT004', '2024-02-10'],
         ['BLT005', 'Dimas Prasetyo', 'L', '2023-08-05', 3.1, 49.0, 'ORT005', '2023-09-01'],
+        ['BLT006', 'Kirana Maheswari', 'P', '2025-08-12', 3.0, 48.0, 'ORT006', '2025-09-02'],
+        ['BLT007', 'Raka Aditya', 'L', '2026-07-03', 3.3, 50.0, 'ORT007', '2026-07-20'],
+        ['BLT008', 'Azzahra Ramadhani', 'P', '2023-05-19', 2.9, 47.0, 'ORT008', '2023-06-10'],
+        ['BLT009', 'Fatih Alfarizi', 'L', '2026-01-28', 3.4, 51.0, 'ORT009', '2026-02-15'],
+        ['BLT010', 'Galih Permana', 'L', '2023-02-14', 2.7, 46.0, 'ORT010', '2023-03-05'],
+        ['BLT011', 'Nayla Zahira', 'P', '2024-09-30', 3.1, 49.0, 'ORT011', '2024-10-12'],
+        ['BLT012', 'Bagas Nugroho', 'L', '2022-12-08', 3.2, 50.0, 'ORT012', '2023-01-15'],
       ];
       final batch = db.batch();
       for (final b in blt) {
@@ -233,6 +247,100 @@ class GrowTrackDB {
           'z_bbtb': pr[9],
           'status_gizi': pr[10],
           'catatan_bidan': pr[11],
+        });
+      }
+      await batch.commit(noResult: true);
+    }
+
+    // Data contoh tambahan dengan tanggal relatif terhadap hari ini, supaya
+    // dashboard (periksa bulan ini, jadwal mendatang, perhatian khusus)
+    // langsung hidup pada pemasangan baru.
+    String tglRel(int hariLalu) {
+      final d = DateTime.now().subtract(Duration(days: hariLalu));
+      final m = d.month.toString().padLeft(2, '0');
+      final h = d.day.toString().padLeft(2, '0');
+      return '${d.year}-$m-$h';
+    }
+
+    final cekContoh = await db.rawQuery(
+        "SELECT COUNT(*) AS c FROM pemeriksaan WHERE id_periksa = 'PRK101'");
+    if (((cekContoh.first['c'] as num?) ?? 0) == 0) {
+      final tambahan = <List<Object>>[
+        ['PRK101', 'BLT006', tglRel(2), 9.6, 78.5, 46.0, 'Berdiri', -0.2, -0.4, 0.1, 'Normal', 'Tumbuh baik, MPASI lahap'],
+        ['PRK102', 'BLT007', tglRel(2), 6.9, 66.0, 42.5, 'Telentang', 0.1, 0.0, 0.2, 'Normal', 'ASI eksklusif, kenaikan sesuai kurva'],
+        ['PRK103', 'BLT009', tglRel(9), 8.1, 71.5, 44.5, 'Telentang', -0.6, -0.5, -0.3, 'Normal', 'Siap imunisasi campak bulan ini'],
+        ['PRK104', 'BLT010', tglRel(9), 10.9, 86.0, 46.0, 'Berdiri', -2.05, -2.61, -2.24, 'Stunting + Gizi Kurang', 'Dirujuk ke Puskesmas, diberi PMT pemulihan dan jadwal kontrol 2 minggu'],
+        ['PRK105', 'BLT001', tglRel(16), 9.0, 74.5, 45.0, 'Berdiri', -0.4, -0.3, 0.0, 'Normal', 'Berat badan naik 500gr dari bulan lalu'],
+        ['PRK106', 'BLT003', tglRel(16), 13.1, 90.0, 47.5, 'Berdiri', 0.2, 0.1, 0.3, 'Normal', 'Aktif dan ceria, lanjutkan menu keluarga'],
+        ['PRK107', 'BLT011', tglRel(35), 10.4, 84.0, 46.5, 'Berdiri', -2.31, -0.9, -1.8, 'Underweight (BB Kurang)', 'Nafsu makan menurun, disarankan tambah protein hewani dan kontrol bulan depan'],
+        ['PRK108', 'BLT012', tglRel(63), 14.6, 98.5, 48.5, 'Berdiri', 0.3, 0.5, 0.0, 'Normal', 'Perkembangan sesuai usia'],
+        ['PRK109', 'BLT008', tglRel(35), 13.9, 95.0, 47.0, 'Berdiri', 0.0, 0.2, -0.1, 'Normal', 'Sudah bisa berlari, bicara lancar'],
+      ];
+      final batch = db.batch();
+      for (final pr in tambahan) {
+        batch.insert('pemeriksaan', {
+          'id_periksa': pr[0],
+          'id_balita': pr[1],
+          'tanggal': pr[2],
+          'berat_badan': pr[3],
+          'tinggi_badan': pr[4],
+          'lingkar_kepala': pr[5],
+          'posisi_ukur': pr[6],
+          'z_bbu': pr[7],
+          'z_tbu': pr[8],
+          'z_bbtb': pr[9],
+          'status_gizi': pr[10],
+          'catatan_bidan': pr[11],
+        });
+      }
+      await batch.commit(noResult: true);
+    }
+
+    if (await _hitung(db, 'jadwal_imunisasi') == 0) {
+      final jadwal = <List<Object?>>[
+        ['JDW001', 'BLT007', 'IMN001', tglRel(118), '', 'Selesai'],
+        ['JDW002', 'BLT007', 'IMN002', tglRel(88), '', 'Selesai'],
+        ['JDW003', 'BLT007', 'IMN004', '', tglRel(-3), 'Belum'],
+        ['JDW004', 'BLT009', 'IMN010', '', tglRel(-6), 'Belum'],
+        ['JDW005', 'BLT006', 'IMN009', '', tglRel(-12), 'Belum'],
+        ['JDW006', 'BLT002', 'IMN011', '', tglRel(-20), 'Belum'],
+        ['JDW007', 'BLT010', 'IMN012', '', tglRel(5), 'Belum'],
+        ['JDW008', 'BLT001', 'IMN008', tglRel(120), '', 'Selesai'],
+        ['JDW009', 'BLT003', 'IMN011', tglRel(45), '', 'Selesai'],
+      ];
+      final batch = db.batch();
+      for (final j in jadwal) {
+        batch.insert('jadwal_imunisasi', {
+          'id_jadwal': j[0],
+          'id_balita': j[1],
+          'id_imunisasi': j[2],
+          'tgl_diberikan': j[3],
+          'tgl_berikutnya': j[4],
+          'status': j[5],
+        });
+      }
+      await batch.commit(noResult: true);
+    }
+
+    if (await _hitung(db, 'konsumsi') == 0) {
+      final konsumsi = <List<Object>>[
+        ['KNS001', tglRel(2), 'Posyandu Rutin Bulanan', 'Bubur kacang hijau + telur rebus', '03/02', 'Sari Wulandari', 12, 185000, 'PMT rutin untuk seluruh balita hadir'],
+        ['KNS002', tglRel(9), 'Pemberian PMT Balita', 'Susu + biskuit PMT', '04/02', 'Sari Wulandari', 10, 150000, 'PMT penyuluhan gizi'],
+        ['KNS003', tglRel(16), 'Posyandu Rutin Bulanan', 'Nasi tim + ayam suwir', '05/03', 'Dewi Anggraini', 12, 210000, 'Menu PMT bergizi seimbang'],
+        ['KNS004', tglRel(40), 'PMT Pemulihan Gizi', 'Susu formula + telur + pisang', '03/02', 'Sari Wulandari', 3, 275000, 'Paket pemulihan untuk balita gizi kurang'],
+      ];
+      final batch = db.batch();
+      for (final k in konsumsi) {
+        batch.insert('konsumsi', {
+          'id_konsumsi': k[0],
+          'tanggal': k[1],
+          'nama_kegiatan': k[2],
+          'pemberian_mt': k[3],
+          'rt': k[4],
+          'penanggung_jawab': k[5],
+          'jumlah_balita': k[6],
+          'total_biaya': k[7],
+          'keterangan': k[8],
         });
       }
       await batch.commit(noResult: true);

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/database.dart';
 import '../session.dart';
 import '../widgets.dart';
-import 'home.dart';
+import 'utama.dart';
 
 /// Port tampilan/MenuLogin.java.
 class LoginScreen extends StatefulWidget {
@@ -65,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     final nama = SesiUser.namaLengkap ?? username;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const HomeScreen()),
+      MaterialPageRoute(builder: (_) => const UtamaScreen()),
     );
     tampilSnack(context, 'Selamat datang, $nama!');
   }
@@ -82,7 +82,7 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/icon/logo.png', height: 110),
+                  Image.asset('assets/icon/posyandu-logo.png', height: 150),
                   const SizedBox(height: 16),
                   const Text(
                     'GROWTRACK',

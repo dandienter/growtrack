@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
@@ -91,6 +92,13 @@ class LaporanPdf {
           logo = pw.MemoryImage(await f.readAsBytes());
         } catch (_) {}
       }
+    }
+    if (logo == null) {
+      // Cadangan: logo resmi Posyandu dari aset aplikasi.
+      try {
+        final data = await rootBundle.load('assets/icon/posyandu-logo.png');
+        logo = pw.MemoryImage(data.buffer.asUint8List());
+      } catch (_) {}
     }
 
     final ukuranKop =

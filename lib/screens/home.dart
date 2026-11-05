@@ -8,18 +8,12 @@ import '../models.dart';
 import '../session.dart';
 import '../widgets.dart';
 import 'balita.dart';
-import 'info.dart';
 import 'jadwal.dart';
-import 'kelola_database.dart';
-import 'konsumsi.dart';
 import 'laporan.dart';
-import 'login.dart';
-import 'orang_tua.dart';
 import 'pemeriksaan.dart';
-import 'pengaturan.dart';
-import 'vaksin.dart';
 
-/// Beranda + Drawer, port tampilan/MenuDashboard.java.
+/// Isi tab Beranda (cangkang AppBar + navigasi bawah ada di utama.dart),
+/// port tampilan/MenuDashboard.java.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -59,199 +53,163 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
-  Future<void> _buka(Widget halaman) async {
-    Navigator.pop(context); // tutup drawer
+  /// Buka layar dari aksi cepat / tombol lihat semua, lalu segarkan beranda.
+  Future<void> _bukaCepat(Widget halaman) async {
     await Navigator.of(context)
         .push(MaterialPageRoute(builder: (_) => halaman));
     _muat();
   }
 
-  Future<void> _keluar() async {
-    Navigator.pop(context);
-    final yakin = await tampilKonfirmasi(
-      context,
-      judul: 'Konfirmasi Logout',
-      pesan: 'Yakin ingin keluar dari sistem?',
-      teksYa: 'Ya, Keluar',
-      teksTidak: 'Batal',
-    );
-    if (!yakin || !mounted) return;
-    SesiUser.logout();
-    Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-      (r) => false,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    final namaPosyandu = _pengaturan?.namaPosyandu ?? 'Posyandu';
-    return Scaffold(
-      appBar: AppBar(title: Text(namaPosyandu.toUpperCase())),
-      drawer: _drawer(),
-      body: RefreshIndicator(
-        onRefresh: _muat,
-        child: _memuat
-            ? const Center(child: CircularProgressIndicator())
-            : ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  _kepalaBeranda(),
-                  const SizedBox(height: 16),
-                  _gridStatistik(),
-                  const SizedBox(height: 20),
-                  _seksiJadwal(),
-                  const SizedBox(height: 20),
-                  _seksiPerhatian(),
-                  const SizedBox(height: 8),
-                ],
-              ),
-      ),
+    return RefreshIndicator(
+      onRefresh: _muat,
+      child: _memuat
+          ? const Center(child: CircularProgressIndicator())
+          : ListView(
+              padding: const EdgeInsets.all(16),
+              children: [
+                _kepalaBeranda(),
+                const SizedBox(height: 16),
+                _gridStatistik(),
+                const SizedBox(height: 20),
+                _seksiAksiCepat(),
+                const SizedBox(height: 20),
+                _seksiJadwal(),
+                const SizedBox(height: 20),
+                _seksiPerhatian(),
+                const SizedBox(height: 8),
+              ],
+            ),
     );
   }
 
-  Widget _drawer() {
-    Widget item(IconData ikon, String teks, VoidCallback onTap) {
-      return ListTile(
-        leading: Icon(ikon, color: kTeal),
-        title: Text(teks),
-        onTap: onTap,
-      );
-    }
-
-    Widget kategori(String teks) {
-      return Padding(
-        padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
-        child: Text(
-          teks,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.bold,
-            color: Color(0xFF94A3B8),
-            letterSpacing: 1,
-          ),
-        ),
-      );
-    }
-
-    return Drawer(
-      child: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(20),
-              color: kTeal,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Image.asset('assets/icon/logo.png', height: 56),
-                  const SizedBox(height: 10),
-                  const Text(
-                    'GrowTrack',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Halo, ${SesiUser.namaLengkap ?? ''} (${SesiUser.role ?? ''})',
-                    style: const TextStyle(color: Colors.white70),
-                  ),
-                ],
-              ),
-            ),
-            item(Icons.dashboard_outlined, 'Beranda',
-                () => Navigator.pop(context)),
-            kategori('MASTER DATA'),
-            item(Icons.family_restroom_outlined, 'Data Orang Tua',
-                () => _buka(const OrangTuaListScreen())),
-            item(Icons.child_care_outlined, 'Data Balita',
-                () => _buka(const BalitaListScreen())),
-            item(Icons.vaccines_outlined, 'Data Vaksin',
-                () => _buka(const VaksinListScreen())),
-            kategori('TRANSAKSI & PELAYANAN'),
-            item(Icons.event_note_outlined, 'Jadwal Imunisasi',
-                () => _buka(const JadwalListScreen())),
-            item(Icons.monitor_weight_outlined, 'Pemeriksaan',
-                () => _buka(const PemeriksaanListScreen())),
-            item(Icons.restaurant_outlined, 'Konsumsi / PMT',
-                () => _buka(const KonsumsiListScreen())),
-            kategori('LAPORAN'),
-            item(Icons.picture_as_pdf_outlined, 'Laporan',
-                () => _buka(const LaporanScreen())),
-            if (SesiUser.isAdmin) ...[
-              kategori('PENGATURAN'),
-              item(Icons.settings_outlined, 'Pengaturan',
-                  () => _buka(const PengaturanScreen())),
-              item(Icons.storage_outlined, 'Kelola Database',
-                  () => _buka(const KelolaDatabaseScreen())),
-            ],
-            const Divider(),
-            item(Icons.info_outline, 'Info Aplikasi',
-                () => _buka(const InfoScreen())),
-            ListTile(
-              leading: const Icon(Icons.logout, color: Color(0xFFEF4444)),
-              title: const Text('Keluar (Logout)',
-                  style: TextStyle(color: Color(0xFFEF4444))),
-              onTap: _keluar,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
+  /// Kartu sapaan hero: gradasi teal, logo resmi di lingkaran putih,
+  /// teks putih, dekorasi lingkaran transparan di pojok kanan atas.
   Widget _kepalaBeranda() {
     final logoPath = _pengaturan?.logoPath;
     final adaLogo = logoPath != null &&
         logoPath.isNotEmpty &&
         File(logoPath).existsSync();
-    return Card(
-      color: Colors.white,
-      elevation: 1,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            if (adaLogo) ...[
-              ClipRRect(
-                borderRadius: BorderRadius.circular(12),
-                child: Image.file(File(logoPath),
-                    width: 56, height: 56, fit: BoxFit.cover),
-              ),
-              const SizedBox(width: 14),
-            ],
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Halo, ${SesiUser.namaLengkap ?? ''} (${SesiUser.role ?? ''})',
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF1E293B),
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    _pengaturan?.namaPosyandu ?? '',
-                    style: const TextStyle(
-                        fontSize: 14, color: Color(0xFF64748B)),
-                  ),
-                  Text(
-                    tanggalPanjangId(DateTime.now()),
-                    style: const TextStyle(
-                        fontSize: 12, color: Color(0xFF94A3B8)),
-                  ),
-                ],
+    final alamat = _pengaturan?.alamat;
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [kTeal, Color(0xFF0A6E67)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(24),
+        boxShadow: [
+          BoxShadow(
+            color: kTeal.withOpacity(0.30),
+            blurRadius: 16,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned(
+            right: -55,
+            top: -55,
+            child: Container(
+              width: 170,
+              height: 170,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.08),
+                shape: BoxShape.circle,
               ),
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            right: 40,
+            bottom: -70,
+            child: Container(
+              width: 110,
+              height: 110,
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.06),
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  width: 66,
+                  height: 66,
+                  padding: const EdgeInsets.all(6),
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: adaLogo
+                      ? Image.file(
+                          File(logoPath),
+                          width: 54,
+                          height: 54,
+                          fit: BoxFit.contain,
+                        )
+                      : Image.asset(
+                          'assets/icon/posyandu-logo.png',
+                          width: 54,
+                          height: 54,
+                          fit: BoxFit.contain,
+                        ),
+                ),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Halo, ${SesiUser.namaLengkap ?? ''} (${SesiUser.role ?? ''})',
+                        style: const TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        _pengaturan?.namaPosyandu ?? '',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white.withOpacity(0.9),
+                        ),
+                      ),
+                      if (alamat != null && alamat.isNotEmpty) ...[
+                        const SizedBox(height: 2),
+                        Text(
+                          alamat,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withOpacity(0.7),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 2),
+                      Text(
+                        tanggalPanjangId(DateTime.now()),
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.white.withOpacity(0.7),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -265,28 +223,28 @@ class _HomeScreenState extends State<HomeScreen> {
           'biayaPmt': 0,
         };
     final kartu = [
-      KartuStatistik(
+      _KartuStat(
         judul: 'Total Balita',
         nilai: '${st['totalBalita']?.toInt() ?? 0}',
         subJudul: 'Anak Terdaftar',
         warna: const Color(0xFF3B82F6),
         ikon: Icons.child_care,
       ),
-      KartuStatistik(
+      _KartuStat(
         judul: 'Periksa Bulan Ini',
         nilai: '${st['periksaBulanIni']?.toInt() ?? 0}',
         subJudul: 'Total Pelayanan',
         warna: const Color(0xFFF59E0B),
         ikon: Icons.monitor_weight,
       ),
-      KartuStatistik(
+      _KartuStat(
         judul: 'Vaksin Mendatang',
         nilai: '${st['vaksinMendatang']?.toInt() ?? 0}',
         subJudul: 'Belum Selesai',
         warna: const Color(0xFFEF4444),
         ikon: Icons.vaccines,
       ),
-      KartuStatistik(
+      _KartuStat(
         judul: 'Biaya PMT',
         nilai: formatRupiah(st['biayaPmt'] ?? 0),
         subJudul: 'Bulan Ini',
@@ -308,7 +266,73 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _judulSeksi(String teks, IconData ikon, Color warna) {
+  Widget _seksiAksiCepat() {
+    Widget tombol(IconData ikon, String label, Color warna, Widget tujuan) {
+      return Expanded(
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () => _bukaCepat(tujuan),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 6),
+            child: Column(
+              children: [
+                Container(
+                  width: 52,
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: warna.withOpacity(0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(ikon, color: warna, size: 26),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1E293B),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        _judulSeksi('Aksi Cepat', Icons.bolt, kTeal),
+        const SizedBox(height: 8),
+        Card(
+          color: Colors.white,
+          elevation: 1,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+            child: Row(
+              children: [
+                tombol(Icons.monitor_weight, 'Periksa',
+                    const Color(0xFF3B82F6), const PemeriksaanListScreen()),
+                tombol(Icons.child_care, 'Balita', const Color(0xFF22C55E),
+                    const BalitaListScreen()),
+                tombol(Icons.event_note, 'Jadwal', const Color(0xFFF59E0B),
+                    const JadwalListScreen()),
+                tombol(Icons.picture_as_pdf, 'Laporan',
+                    const Color(0xFF8B5CF6), const LaporanScreen()),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _judulSeksi(String teks, IconData ikon, Color warna,
+      {VoidCallback? onLihatSemua}) {
     return Row(
       children: [
         Icon(ikon, color: warna, size: 20),
@@ -323,6 +347,20 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        if (onLihatSemua != null)
+          TextButton(
+            onPressed: onLihatSemua,
+            style: TextButton.styleFrom(
+              foregroundColor: kTeal,
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              minimumSize: const Size(0, 32),
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            ),
+            child: const Text(
+              'Lihat Semua',
+              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+          ),
       ],
     );
   }
@@ -331,7 +369,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _judulSeksi('Jadwal Imunisasi Mendatang', Icons.event, kTeal),
+        _judulSeksi(
+          'Jadwal Imunisasi Mendatang',
+          Icons.event,
+          kTeal,
+          onLihatSemua: () => _bukaCepat(const JadwalListScreen()),
+        ),
         const SizedBox(height: 8),
         if (_jadwalMendatang.isEmpty)
           const Card(
@@ -369,8 +412,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _judulSeksi('Perhatian Khusus (Stunting/Gizi Buruk)',
-            Icons.warning_amber_outlined, const Color(0xFFEF4444)),
+        _judulSeksi(
+          'Perhatian Khusus (Stunting/Gizi Buruk)',
+          Icons.warning_amber_outlined,
+          const Color(0xFFEF4444),
+          onLihatSemua: () => _bukaCepat(const PemeriksaanListScreen()),
+        ),
         const SizedBox(height: 8),
         if (_perhatianKhusus.isEmpty)
           const Card(
@@ -407,6 +454,83 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
       ],
+    );
+  }
+}
+
+/// Kartu statistik Beranda versi terpoles: kartu putih radius 20, ikon di
+/// dalam kotak 38px radius 12 berlatar warna ikon lembut, angka 26px tebal,
+/// judul kapital 11px abu. Sengaja lokal di berkas ini agar widget
+/// KartuStatistik bersama di widgets.dart tidak berubah.
+class _KartuStat extends StatelessWidget {
+  final String judul;
+  final String nilai;
+  final String subJudul;
+  final Color warna;
+  final IconData ikon;
+
+  const _KartuStat({
+    required this.judul,
+    required this.nilai,
+    required this.subJudul,
+    required this.warna,
+    required this.ikon,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.white,
+      elevation: 1,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    judul.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF64748B),
+                      letterSpacing: 0.4,
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    color: warna.withOpacity(0.12),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(ikon, color: warna, size: 20),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+            Text(
+              nilai,
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.bold,
+                color: warna,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+            Text(
+              subJudul,
+              style: const TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
