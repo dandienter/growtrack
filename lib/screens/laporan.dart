@@ -180,15 +180,13 @@ class _LaporanScreenState extends State<LaporanScreen> {
             const Text('PILIH BALITA (LAPORAN PERKEMBANGAN)',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
             const SizedBox(height: 8),
-            DropdownButtonFormField<Balita>(
-              initialValue: _balitaDipilih,
-              isExpanded: true,
-              decoration: dekorasiInput(''),
-              items: [
-                for (final b in _daftarBalita)
-                  DropdownMenuItem(value: b, child: Text(b.namaBalita)),
-              ],
-              onChanged: (v) => setState(() => _balitaDipilih = v),
+            KolomPilihCari<Balita>(
+              label: 'Balita',
+              petunjuk: '-- Pilih Balita --',
+              nilai: _balitaDipilih,
+              daftar: _daftarBalita,
+              labelItem: (b) => b.namaBalita,
+              onBerubah: (v) => setState(() => _balitaDipilih = v),
             ),
           ],
           const SizedBox(height: 28),

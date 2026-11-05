@@ -289,20 +289,14 @@ class _BalitaFormScreenState extends State<BalitaFormScreen> {
             ],
           ),
           const SizedBox(height: 14),
-          DropdownButtonFormField<OrangTua>(
-            value: _ortuDipilih,
-            decoration: dekorasiInput('Orang Tua'),
-            hint: const Text('-- Pilih Orang Tua --'),
-            items: _daftarOrtu
-                .map((o) => DropdownMenuItem(
-                      value: o,
-                      child: Text(
-                        '${o.idOrtu} - Ibu: ${o.namaIbu} | Ayah: ${o.namaAyah}',
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ))
-                .toList(),
-            onChanged: (v) => setState(() => _ortuDipilih = v),
+          KolomPilihCari<OrangTua>(
+            label: 'Orang Tua',
+            petunjuk: '-- Pilih Orang Tua --',
+            nilai: _ortuDipilih,
+            daftar: _daftarOrtu,
+            labelItem: (o) =>
+                '${o.idOrtu} - Ibu: ${o.namaIbu} | Ayah: ${o.namaAyah}',
+            onBerubah: (v) => setState(() => _ortuDipilih = v),
           ),
           const SizedBox(height: 14),
           if (_modeUbah)

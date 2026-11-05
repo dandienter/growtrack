@@ -258,3 +258,141 @@ class KotakCari extends StatelessWidget {
     );
   }
 }
+
+class _HasilCari<T> {
+  const _HasilCari(this.nilai);
+  final T? nilai;
+}
+
+/// Kolom pemilih entitas yang bisa dicari dengan mengetik nama.
+///
+/// Pengganti dropdown untuk daftar panjang seperti balita, orang tua, dan
+/// vaksin: ketuk kolomnya, lalu ketik nama pada kotak pencarian di dialog.
+class KolomPilihCari<T> extends StatelessWidget {
+  final String label;
+  final String petunjuk;
+  final T? nilai;
+  final List<T> daftar;
+  final String Function(T item) labelItem;
+  final ValueChanged<T?> onBerubah;
+  final bool bolehKosong;
+  final String labelKosong;
+
+  const KolomPilihCari({
+    super.key,
+    required this.label,
+    required this.petunjuk,
+    required this.nilai,
+    required this.daftar,
+    required this.labelItem,
+    required this.onBerubah,
+    this.bolehKosong = false,
+    this.labelKosong = '- Tidak Ada -',
+  });
+
+  Future<void> _buka(BuildContext context) async {
+    final hasil = await showDialog<_HasilCari<T>>(
+      context: context,
+      builder: (ctx) {
+        var kata = '';
+        return StatefulBuilder(
+          builder: (ctx, atur) {
+            final saring = daftar
+                .where((e) =>
+                    kata.isEmpty ||
+                    labelItem(e).toLowerCase().contains(kata.toLowerCase()))
+                .toList();
+            return AlertDialog(
+              title: Text('Pilih $label',
+                  maxLines: 1, overflow: TextOverflow.ellipsis),
+              contentPadding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              content: SizedBox(
+                width: double.maxFinite,
+                height: 430,
+                child: Column(
+                  children: [
+                    TextField(
+                      autofocus: true,
+                      decoration: dekorasiInput('',
+                              ikon: Icons.search,
+                              hint: 'Ketik nama untuk mencari...')
+                          .copyWith(
+                              labelText: null,
+                              contentPadding: const EdgeInsets.all(12)),
+                      onChanged: (v) => atur(() => kata = v.trim()),
+                    ),
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: ListView(
+                        children: [
+                          if (bolehKosong)
+                            ListTile(
+                              leading: const Icon(Icons.block_outlined),
+                              title: Text(labelKosong),
+                              onTap: () =>
+                                  Navigator.pop(ctx, _HasilCari<T>(null)),
+                            ),
+                          if (saring.isEmpty)
+                            Padding(
+                              padding: const EdgeInsets.all(20),
+                              child: Text(
+                                kata.isEmpty
+                                    ? 'Daftar masih kosong.'
+                                    : 'Tidak ada hasil untuk "$kata".',
+                                textAlign: TextAlign.center,
+                                style:
+                                    const TextStyle(color: Color(0xFF64748B)),
+                              ),
+                            ),
+                          for (final item in saring)
+                            ListTile(
+                              title: Text(labelItem(item),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis),
+                              trailing: nilai == item
+                                  ? const Icon(Icons.check_circle,
+                                      color: kTeal)
+                                  : null,
+                              onTap: () =>
+                                  Navigator.pop(ctx, _HasilCari<T>(item)),
+                            ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(ctx),
+                  child: const Text('Batal'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+    if (hasil != null) onBerubah(hasil.nilai);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(12),
+      onTap: () => _buka(context),
+      child: InputDecorator(
+        decoration: dekorasiInput(label)
+            .copyWith(suffixIcon: const Icon(Icons.search)),
+        child: Text(
+          nilai == null ? petunjuk : labelItem(nilai as T),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: nilai == null
+              ? const TextStyle(color: Color(0xFF94A3B8))
+              : null,
+        ),
+      ),
+    );
+  }
+}

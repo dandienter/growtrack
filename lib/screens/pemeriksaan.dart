@@ -395,18 +395,13 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
                 'ID Periksa (Auto): ${widget.pemeriksaan?.idPeriksa ?? _idBaru ?? '...'}'),
           ),
           const SizedBox(height: 14),
-          DropdownButtonFormField<Balita>(
-            value: _balita,
-            decoration: dekorasiInput('Pilih Pasien Balita'),
-            hint: const Text('-- Pilih Pasien Balita --'),
-            items: _daftarBalita
-                .map((b) => DropdownMenuItem(
-                      value: b,
-                      child: Text('${b.idBalita} - ${b.namaBalita}',
-                          overflow: TextOverflow.ellipsis),
-                    ))
-                .toList(),
-            onChanged: (v) => setState(() {
+          KolomPilihCari<Balita>(
+            label: 'Pilih Pasien Balita',
+            petunjuk: '-- Pilih Pasien Balita --',
+            nilai: _balita,
+            daftar: _daftarBalita,
+            labelItem: (b) => '${b.idBalita} - ${b.namaBalita}',
+            onBerubah: (v) => setState(() {
               _balita = v;
               _hitungUlang();
             }),
@@ -532,22 +527,15 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
               ),
               const SizedBox(width: 12),
               Expanded(
-                child: DropdownButtonFormField<ImunisasiVaksin?>(
-                  value: _vaksinDipilih,
-                  decoration: dekorasiInput('Imunisasi Diberikan'),
-                  items: [
-                    const DropdownMenuItem<ImunisasiVaksin?>(
-                      value: null,
-                      child: Text('- Tidak Ada -'),
-                    ),
-                    for (final v in _daftarVaksin)
-                      DropdownMenuItem<ImunisasiVaksin?>(
-                        value: v,
-                        child: Text(v.namaImunisasi,
-                            overflow: TextOverflow.ellipsis),
-                      ),
-                  ],
-                  onChanged: (v) => setState(() {
+                child: KolomPilihCari<ImunisasiVaksin>(
+                  label: 'Imunisasi Diberikan',
+                  petunjuk: '- Tidak Ada -',
+                  nilai: _vaksinDipilih,
+                  daftar: _daftarVaksin,
+                  labelItem: (v) => v.namaImunisasi,
+                  bolehKosong: true,
+                  labelKosong: '- Tidak Ada -',
+                  onBerubah: (v) => setState(() {
                     _vaksinDipilih = v;
                     _hitungUlang();
                   }),

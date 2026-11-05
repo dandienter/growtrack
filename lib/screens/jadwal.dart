@@ -263,32 +263,22 @@ class _JadwalFormScreenState extends State<JadwalFormScreen> {
                 'ID Jadwal (Auto): ${widget.jadwal?.idJadwal ?? _idBaru ?? '...'}'),
           ),
           const SizedBox(height: 14),
-          DropdownButtonFormField<Balita>(
-            value: _balita,
-            decoration: dekorasiInput('Balita'),
-            hint: const Text('-- Pilih Balita --'),
-            items: _daftarBalita
-                .map((b) => DropdownMenuItem(
-                      value: b,
-                      child: Text('${b.idBalita} - ${b.namaBalita}',
-                          overflow: TextOverflow.ellipsis),
-                    ))
-                .toList(),
-            onChanged: (v) => setState(() => _balita = v),
+          KolomPilihCari<Balita>(
+            label: 'Balita',
+            petunjuk: '-- Pilih Balita --',
+            nilai: _balita,
+            daftar: _daftarBalita,
+            labelItem: (b) => '${b.idBalita} - ${b.namaBalita}',
+            onBerubah: (v) => setState(() => _balita = v),
           ),
           const SizedBox(height: 14),
-          DropdownButtonFormField<ImunisasiVaksin>(
-            value: _vaksin,
-            decoration: dekorasiInput('Vaksin'),
-            hint: const Text('-- Pilih Vaksin --'),
-            items: _daftarVaksin
-                .map((v) => DropdownMenuItem(
-                      value: v,
-                      child: Text('${v.idImunisasi} - ${v.namaImunisasi}',
-                          overflow: TextOverflow.ellipsis),
-                    ))
-                .toList(),
-            onChanged: (v) => setState(() => _vaksin = v),
+          KolomPilihCari<ImunisasiVaksin>(
+            label: 'Vaksin',
+            petunjuk: '-- Pilih Vaksin --',
+            nilai: _vaksin,
+            daftar: _daftarVaksin,
+            labelItem: (v) => '${v.idImunisasi} - ${v.namaImunisasi}',
+            onBerubah: (v) => setState(() => _vaksin = v),
           ),
           const SizedBox(height: 14),
           KolomTanggal(
