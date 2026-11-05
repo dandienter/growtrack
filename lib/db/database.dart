@@ -93,6 +93,9 @@ class GrowTrackDB {
         'id INTEGER PRIMARY KEY DEFAULT 1,'
         'nama_posyandu TEXT, logo_path TEXT, alamat TEXT,'
         'no_telepon TEXT, nama_ketua TEXT, kota TEXT DEFAULT \'Jakarta\')');
+    batch.execute('CREATE TABLE IF NOT EXISTS sesi ('
+        'id INTEGER PRIMARY KEY CHECK (id = 1),'
+        'username TEXT, nama_lengkap TEXT, role TEXT)');
     await batch.commit(noResult: true);
 
     // Migrasi: kolom kota (diabaikan bila sudah ada, seperti desktop)
@@ -405,7 +408,51 @@ class GrowTrackDB {
         whereArgs: [user.idUser],
       );
     }
+    await simpanSesiLogin();
     return null;
+  }
+
+  /// Simpan sesi login saat ini ke tabel sesi agar tetap masuk
+  /// walaupun aplikasi ditutup dan dibuka lagi.
+  static Future<void> simpanSesiLogin() async {
+    final db = await database;
+    await db.rawInsert(
+      'INSERT OR REPLACE INTO sesi (id, username, nama_lengkap, role) '
+      'VALUES (1, ?, ?, ?)',
+      [SesiUser.username, SesiUser.namaLengkap, SesiUser.role],
+    );
+  }
+
+  /// Pulihkan sesi tersimpan saat aplikasi dibuka. Mengembalikan true bila
+  /// ada sesi dan akunnya masih terdaftar; SesiUser diisi dari data akun
+  /// terbaru. Sesi yang akunnya sudah dihapus dibersihkan.
+  static Future<bool> pulihkanSesi() async {
+    final db = await database;
+    final rows =
+        await db.query('sesi', where: 'id = ?', whereArgs: [1], limit: 1);
+    if (rows.isEmpty) return false;
+    final uname = rows.first['username']?.toString() ?? '';
+    if (uname.isEmpty) return false;
+    final u = await db.query('users',
+        where: 'username = ?', whereArgs: [uname], limit: 1);
+    if (u.isEmpty) {
+      await hapusSesiLogin();
+      return false;
+    }
+    final user = UserAkun.fromMap(u.first);
+    SesiUser.isi(
+      id: user.idUser,
+      user: user.username,
+      nama: user.namaLengkap,
+      peran: user.role,
+    );
+    return true;
+  }
+
+  /// Hapus sesi tersimpan (saat logout atau sesudah restore database).
+  static Future<void> hapusSesiLogin() async {
+    final db = await database;
+    await db.delete('sesi');
   }
 
   // -------------------------------------------------------------------------

@@ -70,7 +70,12 @@ class _UtamaScreenState extends State<UtamaScreen> {
             ),
           ),
         ),
-        title: Text(_namaPosyandu.toUpperCase()),
+        title: Text(
+          _namaPosyandu.toUpperCase(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: const TextStyle(fontSize: 19),
+        ),
       ),
       body: IndexedStack(
         index: _tab,
@@ -185,6 +190,8 @@ class _UbinMenu extends StatelessWidget {
           ),
           title: Text(
             judul,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Color(0xFF1E293B),
@@ -192,6 +199,8 @@ class _UbinMenu extends StatelessWidget {
           ),
           subtitle: Text(
             subJudul,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(color: Color(0xFF64748B)),
           ),
           trailing:
@@ -284,6 +293,7 @@ class PengaturanHub extends StatelessWidget {
       teksTidak: 'Batal',
     );
     if (!yakin || !context.mounted) return;
+    await GrowTrackDB.hapusSesiLogin();
     SesiUser.logout();
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (_) => const LoginScreen()),

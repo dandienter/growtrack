@@ -151,6 +151,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
     setState(() => _proses = true);
     try {
       await GrowTrackDB.restoreDariBerkas(hasil.first.path!);
+      await GrowTrackDB.hapusSesiLogin();
       SesiUser.logout();
       if (!mounted) return;
       tampilSnack(context, 'Database berhasil di-restore! Silakan login ulang.');

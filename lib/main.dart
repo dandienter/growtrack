@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'db/database.dart';
 import 'screens/login.dart';
+import 'screens/utama.dart';
 import 'widgets.dart';
 
 /// Gaya bilah sistem global: status bar teal dengan ikon terang,
@@ -20,11 +22,17 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(kGayaBilahSistem);
   await initializeDateFormatting('id_ID', null);
-  runApp(const GrowTrackApp());
+  var sudahLogin = false;
+  try {
+    sudahLogin = await GrowTrackDB.pulihkanSesi();
+  } catch (_) {}
+  runApp(GrowTrackApp(sudahLogin: sudahLogin));
 }
 
 class GrowTrackApp extends StatelessWidget {
-  const GrowTrackApp({super.key});
+  final bool sudahLogin;
+
+  const GrowTrackApp({super.key, this.sudahLogin = false});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +58,7 @@ class GrowTrackApp extends StatelessWidget {
           indicatorColor: const Color(0xFFE0F2F1),
           labelTextStyle: WidgetStateProperty.resolveWith(
             (s) => TextStyle(
-              fontSize: 12,
+              fontSize: 11,
               fontWeight:
                   s.contains(WidgetState.selected) ? FontWeight.bold : FontWeight.normal,
               color: const Color(0xFF1E293B),
@@ -71,7 +79,7 @@ class GrowTrackApp extends StatelessWidget {
           ),
         ),
       ),
-      home: const LoginScreen(),
+      home: sudahLogin ? const UtamaScreen() : const LoginScreen(),
     );
   }
 }
