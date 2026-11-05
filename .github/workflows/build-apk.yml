@@ -33,7 +33,7 @@ jobs:
           cp pubspec.yaml /tmp/rangka/
           cp -r lib /tmp/rangka/
           cd /tmp/rangka
-          flutter create --org id.growtrack --project-name growtrack --platforms=android .
+          flutter create --org id.kkp --project-name growtrack --platforms=android .
           cp -r android "$GITHUB_WORKSPACE/"
           cp .metadata "$GITHUB_WORKSPACE/" 2>/dev/null || true
 
