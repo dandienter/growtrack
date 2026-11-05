@@ -73,9 +73,9 @@ class _PengaturanScreenState extends State<PengaturanScreen>
   }
 
   Future<void> _pilihLogo() async {
-    final hasil = await FilePicker.platform.pickFiles(type: FileType.image);
-    if (hasil == null || hasil.files.single.path == null) return;
-    final sumber = File(hasil.files.single.path!);
+    final hasil = await FilePicker.pickFiles(type: FileType.image);
+    if (hasil.isEmpty || hasil.first.path == null) return;
+    final sumber = File(hasil.first.path!);
     final dirDb = p.dirname(await GrowTrackDB.jalurDb());
     final ekstensi = p.extension(sumber.path);
     final tujuan = File(p.join(
