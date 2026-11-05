@@ -147,10 +147,10 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
       type: FileType.custom,
       allowedExtensions: ['db'],
     );
-    if (hasil == null || hasil.files.single.path == null) return;
+    if (hasil.isEmpty || hasil.first.path == null) return;
     setState(() => _proses = true);
     try {
-      await GrowTrackDB.restoreDariBerkas(hasil.files.single.path!);
+      await GrowTrackDB.restoreDariBerkas(hasil.first.path!);
       SesiUser.logout();
       if (!mounted) return;
       tampilSnack(context, 'Database berhasil di-restore! Silakan login ulang.');
