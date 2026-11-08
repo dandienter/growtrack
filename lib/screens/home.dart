@@ -69,15 +69,15 @@ class _HomeScreenState extends State<HomeScreen> {
           : ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                _kepalaBeranda(),
+                AnimasiMasuk(indeks: 0, child: _kepalaBeranda()),
                 const SizedBox(height: 16),
                 _gridStatistik(),
                 const SizedBox(height: 20),
-                _seksiAksiCepat(),
+                AnimasiMasuk(indeks: 2, child: _seksiAksiCepat()),
                 const SizedBox(height: 20),
-                _seksiJadwal(),
+                AnimasiMasuk(indeks: 3, child: _seksiJadwal()),
                 const SizedBox(height: 20),
-                _seksiPerhatian(),
+                AnimasiMasuk(indeks: 4, child: _seksiPerhatian()),
                 const SizedBox(height: 8),
               ],
             ),
@@ -266,7 +266,7 @@ class _HomeScreenState extends State<HomeScreen> {
         childAspectRatio: 1.12,
       ),
       itemCount: kartu.length,
-      itemBuilder: (_, i) => kartu[i],
+      itemBuilder: (_, i) => AnimasiMasuk(indeks: i, child: kartu[i]),
     );
   }
 
@@ -274,7 +274,7 @@ class _HomeScreenState extends State<HomeScreen> {
     Widget tombol(IconData ikon, String label, Color warna, Widget tujuan) {
       return Expanded(
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           onTap: () => _bukaCepat(tujuan),
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -464,6 +464,37 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
+/// Angka statistik yang bergerak naik (count-up) saat Beranda tampil:
+/// nilai murni dianimasikan apa adanya, nilai Rupiah dianimasikan lalu
+/// diformat ulang tiap bingkai.
+class _AngkaNaik extends StatelessWidget {
+  final String teks;
+  final TextStyle gaya;
+
+  const _AngkaNaik({required this.teks, required this.gaya});
+
+  @override
+  Widget build(BuildContext context) {
+    final angka = num.tryParse(teks.replaceAll(RegExp(r'[^0-9]'), ''));
+    if (angka == null) {
+      return Text(teks,
+          style: gaya, maxLines: 1, overflow: TextOverflow.ellipsis);
+    }
+    final rupiah = teks.contains('Rp');
+    return TweenAnimationBuilder<double>(
+      tween: Tween<double>(begin: 0, end: angka.toDouble()),
+      duration: const Duration(milliseconds: 900),
+      curve: Curves.easeOutCubic,
+      builder: (_, v, __) => Text(
+        rupiah ? formatRupiah(v.round()) : '${v.round()}',
+        style: gaya,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+      ),
+    );
+  }
+}
+
 /// Kartu statistik Beranda versi terpoles: kartu putih radius 20, ikon di
 /// dalam kotak 38px radius 12 berlatar warna ikon lembut, angka 26px tebal,
 /// judul kapital 11px abu. Sengaja lokal di berkas ini agar widget
@@ -520,15 +551,13 @@ class _KartuStat extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 2),
-            Text(
-              nilai,
-              style: TextStyle(
+            _AngkaNaik(
+              teks: nilai,
+              gaya: TextStyle(
                 fontSize: 26,
                 fontWeight: FontWeight.bold,
                 color: warna,
               ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
             ),
             Text(
               subJudul,

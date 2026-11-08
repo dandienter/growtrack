@@ -82,7 +82,9 @@ class _LoginScreenState extends State<LoginScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Image.asset('assets/icon/posyandu-logo.png', height: 150),
+                  AnimasiMasuk(
+                    child: Image.asset('assets/icon/posyandu-logo.png', height: 150),
+                  ),
                   const SizedBox(height: 16),
                   const Text(
                     'GROWTRACK',

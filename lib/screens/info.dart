@@ -37,7 +37,7 @@ class _InfoScreenState extends State<InfoScreen> {
   Widget _seksi(String judul, Widget isi) {
     return Card(
       color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -91,7 +91,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     border: Border.all(color: const Color(0xFFF59E0B)),
                   ),
                   child: const Text(
-                    'Versi 1.0.0 (Flutter)',
+                    'Versi 1.2.0 (Flutter)',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF92400E),
