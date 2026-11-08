@@ -116,10 +116,10 @@ class _VaksinListScreenState extends State<VaksinListScreen> {
                         itemCount: _daftar.length,
                         itemBuilder: (_, i) {
                           final v = _daftar[i];
-                          return Card(
+                          return AnimasiMasuk(indeks: i, child: Card(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               leading: const CircleAvatar(
                                 backgroundColor: Color(0xFFE0F2F1),
@@ -153,7 +153,7 @@ class _VaksinListScreenState extends State<VaksinListScreen> {
                                 ],
                               ),
                             ),
-                          );
+                          ));
                         },
                       ),
           ),

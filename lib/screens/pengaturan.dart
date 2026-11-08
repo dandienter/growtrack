@@ -269,7 +269,7 @@ class _PengaturanScreenState extends State<PengaturanScreen>
         Card(
           color: const Color(0xFFF1F5F9),
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -339,7 +339,7 @@ class _PengaturanScreenState extends State<PengaturanScreen>
                         return Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16)),
+                              borderRadius: BorderRadius.circular(20)),
                           child: ListTile(
                             leading: CircleAvatar(
                               backgroundColor: admin

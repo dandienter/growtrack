@@ -90,10 +90,10 @@ class _KonsumsiListScreenState extends State<KonsumsiListScreen> {
                         itemCount: _daftar.length,
                         itemBuilder: (_, i) {
                           final k = _daftar[i];
-                          return Card(
+                          return AnimasiMasuk(indeks: i, child: Card(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               leading: const CircleAvatar(
                                 backgroundColor: Color(0xFFDCFCE7),
@@ -133,7 +133,7 @@ class _KonsumsiListScreenState extends State<KonsumsiListScreen> {
                                 ],
                               ),
                             ),
-                          );
+                          ));
                         },
                       ),
           ),

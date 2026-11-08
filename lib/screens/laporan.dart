@@ -118,7 +118,7 @@ class _LaporanScreenState extends State<LaporanScreen> {
           Card(
             color: Colors.white,
             shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
             child: Column(
               children: [
                 SwitchListTile(
