@@ -37,6 +37,21 @@ jobs:
           cp -r android "$GITHUB_WORKSPACE/"
           cp .metadata "$GITHUB_WORKSPACE/" 2>/dev/null || true
 
+      - name: Alihkan unduhan Gradle ke mirror Tencent
+        run: |
+          python3 - << 'PYEOF'
+          import re
+          p = 'android/gradle/wrapper/gradle-wrapper.properties'
+          s = open(p).read()
+          m = re.search(r'gradle-([0-9.]+)-all\.zip', s)
+          ver = m.group(1) if m else '9.3.1'
+          s = re.sub(r'distributionUrl=.*',
+                     'distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
+                     s)
+          open(p, 'w').write(s)
+          print('distributionUrl dialihkan ke mirror Tencent, Gradle', ver)
+          PYEOF
+
       - name: Pasang ikon logo Posyandu
         run: |
           for dpi in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
