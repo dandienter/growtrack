@@ -77,10 +77,10 @@ class _PemeriksaanListScreenState extends State<PemeriksaanListScreen> {
                         itemCount: _daftar.length,
                         itemBuilder: (_, i) {
                           final pr = _daftar[i];
-                          return Card(
+                          return AnimasiMasuk(indeks: i, child: Card(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () => _ubah(pr),
                               leading: const CircleAvatar(
@@ -98,7 +98,7 @@ class _PemeriksaanListScreenState extends State<PemeriksaanListScreen> {
                                 warna: warnaStatusGizi(pr.statusGizi),
                               ),
                             ),
-                          );
+                          ));
                         },
                       ),
           ),
@@ -598,7 +598,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
   Widget _kartuStatus(HasilGizi? hasil) {
     return Card(
       color: Colors.white,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(

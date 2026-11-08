@@ -80,10 +80,10 @@ class _BalitaListScreenState extends State<BalitaListScreen> {
                           final umur = lahir == null
                               ? null
                               : hitungUmurBulan(lahir, DateTime.now());
-                          return Card(
+                          return AnimasiMasuk(indeks: i, child: Card(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(16)),
+                                borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () => _bukaDetail(b),
                               leading: CircleAvatar(
@@ -110,7 +110,7 @@ class _BalitaListScreenState extends State<BalitaListScreen> {
                               isThreeLine: true,
                               trailing: const Icon(Icons.chevron_right),
                             ),
-                          );
+                          ));
                         },
                       ),
           ),
@@ -433,7 +433,7 @@ class _BalitaDetailScreenState extends State<BalitaDetailScreen> {
                 Card(
                   color: Colors.white,
                   shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16)),
+                      borderRadius: BorderRadius.circular(20)),
                   child: Padding(
                     padding: const EdgeInsets.all(16),
                     child: Column(

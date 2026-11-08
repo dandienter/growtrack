@@ -100,10 +100,10 @@ class _JadwalListScreenState extends State<JadwalListScreen> {
                         itemBuilder: (_, i) {
                           final j = _daftar[i];
                           final telat = _telat(j);
-                          return Card(
+                          return AnimasiMasuk(indeks: i, child: Card(
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(16),
+                              borderRadius: BorderRadius.circular(20),
                               side: telat
                                   ? const BorderSide(
                                       color: Color(0xFFEF4444), width: 1.2)
@@ -155,7 +155,7 @@ class _JadwalListScreenState extends State<JadwalListScreen> {
                                 ],
                               ),
                             ),
-                          );
+                          ));
                         },
                       ),
           ),
