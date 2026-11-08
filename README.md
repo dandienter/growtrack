@@ -25,3 +25,7 @@ Akun awal sama dengan desktop: admin / admin123 dan bidan / admin123 (data conto
 ## Build
 
 APK dibangun oleh GitHub Actions (.github/workflows/build-apk.yml): rangka platform Android dibuat dari Flutter, ikon digambar dari skrip, lalu flutter build apk --release untuk arm64. Hasil tersedia sebagai artefak dan Release build-N.
+
+## Riwayat Versi
+
+- **1.2.0** - Poles tampilan: transisi halaman global memudar + geser halus dengan efek kedalaman, animasi pindah tab searah geser, animasi masuk berjenjang pada kartu Beranda, ubin hub, dan baris daftar, angka statistik Beranda bergerak naik (count-up), sudut kartu lebih membulat (20), snackbar melayang, kolom isian lebih membulat, ikon peluncur baru berlatar gradasi teal dengan logo Posyandu di lingkaran putih.
