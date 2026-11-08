@@ -6,6 +6,103 @@ import 'format.dart';
 const Color kTeal = Color(0xFF0F9D94);
 const Color kLatar = Color(0xFFF8FAFC);
 
+/// Transisi halaman global: halaman baru masuk memudar sambil naik
+/// pelan, halaman lama sedikit mengecil dan meredup (rasa kedalaman),
+/// supaya perpindahan layar tidak kaku.
+class PembuatTransisiHalus extends PageTransitionsBuilder {
+  const PembuatTransisiHalus();
+
+  @override
+  Widget buildTransitions<T>(
+    PageRoute<T> route,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
+  ) {
+    final masuk = CurvedAnimation(
+      parent: animation,
+      curve: Curves.easeOutCubic,
+      reverseCurve: Curves.easeInCubic,
+    );
+    final keluar = CurvedAnimation(
+      parent: secondaryAnimation,
+      curve: Curves.easeOutCubic,
+    );
+    return SlideTransition(
+      position: Tween<Offset>(
+        begin: const Offset(0, 0.045),
+        end: Offset.zero,
+      ).animate(masuk),
+      child: FadeTransition(
+        opacity: Tween<double>(begin: 0, end: 1).animate(masuk),
+        child: FadeTransition(
+          opacity: Tween<double>(begin: 1, end: 0.86).animate(keluar),
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 1, end: 0.985).animate(keluar),
+            child: child,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Animasi masuk sekali jalan: konten memudar sambil naik pelan, dengan
+/// jeda berjenjang mengikuti [indeks] agar daftar dan kartu terasa hidup.
+class AnimasiMasuk extends StatefulWidget {
+  final Widget child;
+  final int indeks;
+
+  const AnimasiMasuk({super.key, required this.child, this.indeks = 0});
+
+  @override
+  State<AnimasiMasuk> createState() => _AnimasiMasukState();
+}
+
+class _AnimasiMasukState extends State<AnimasiMasuk>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _kontrol;
+
+  @override
+  void initState() {
+    super.initState();
+    _kontrol = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 420),
+    );
+    final jeda = widget.indeks.clamp(0, 8) * 55;
+    if (jeda == 0) {
+      _kontrol.forward();
+    } else {
+      Future.delayed(Duration(milliseconds: jeda), () {
+        if (mounted) _kontrol.forward();
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    _kontrol.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final kurva = CurvedAnimation(parent: _kontrol, curve: Curves.easeOutCubic);
+    return FadeTransition(
+      opacity: kurva,
+      child: SlideTransition(
+        position: Tween<Offset>(
+          begin: const Offset(0, 0.06),
+          end: Offset.zero,
+        ).animate(kurva),
+        child: widget.child,
+      ),
+    );
+  }
+}
+
 /// Warna status gizi mengikuti FormPemeriksaan desktop:
 /// merah untuk Stunting/Buruk, kuning untuk Kurang/Lebih/Obesitas, hijau lainnya.
 Color warnaStatusGizi(String? status) {
@@ -23,8 +120,13 @@ Color warnaStatusGizi(String? status) {
 }
 
 void tampilSnack(BuildContext context, String pesan) {
-  ScaffoldMessenger.of(context)
-      .showSnackBar(SnackBar(content: Text(pesan)));
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(pesan),
+      behavior: SnackBarBehavior.floating,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    ),
+  );
 }
 
 Future<bool> tampilKonfirmasi(
@@ -62,9 +164,9 @@ InputDecoration dekorasiInput(String label, {IconData? ikon, String? hint}) {
     prefixIcon: ikon == null ? null : Icon(ikon),
     filled: true,
     fillColor: Colors.white,
-    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16)),
     enabledBorder: OutlineInputBorder(
-      borderRadius: BorderRadius.circular(12),
+      borderRadius: BorderRadius.circular(16),
       borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
     ),
   );
@@ -225,7 +327,16 @@ class TampilanKosong extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.inbox_outlined, size: 56, color: Color(0xFF94A3B8)),
+            Container(
+              width: 88,
+              height: 88,
+              decoration: const BoxDecoration(
+                color: Color(0xFFF1F5F9),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.inbox_outlined,
+                  size: 40, color: Color(0xFF94A3B8)),
+            ),
             const SizedBox(height: 12),
             Text(
               pesan,

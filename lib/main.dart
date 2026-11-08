@@ -65,6 +65,24 @@ class GrowTrackApp extends StatelessWidget {
             ),
           ),
         ),
+        pageTransitionsTheme: const PageTransitionsTheme(
+          builders: {TargetPlatform.android: PembuatTransisiHalus()},
+        ),
+        cardTheme: CardThemeData(
+          color: Colors.white,
+          elevation: 1,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        ),
+        dialogTheme: DialogThemeData(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+        ),
+        bottomSheetTheme: const BottomSheetThemeData(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+        ),
         floatingActionButtonTheme: const FloatingActionButtonThemeData(
           backgroundColor: kTeal,
           foregroundColor: Colors.white,
