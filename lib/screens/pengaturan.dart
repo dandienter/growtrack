@@ -335,25 +335,12 @@ class _PengaturanScreenState extends State<PengaturanScreen>
                       itemCount: _pengguna.length,
                       itemBuilder: (_, i) {
                         final u = _pengguna[i];
-                        final admin = u.role == 'Admin';
                         return Card(
                           color: Colors.white,
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           child: ListTile(
-                            leading: CircleAvatar(
-                              backgroundColor: admin
-                                  ? const Color(0xFFFEE2E2)
-                                  : const Color(0xFFCCFBF1),
-                              child: Icon(
-                                admin
-                                    ? Icons.admin_panel_settings_outlined
-                                    : Icons.badge_outlined,
-                                color: admin
-                                    ? const Color(0xFFEF4444)
-                                    : kTeal,
-                              ),
-                            ),
+                            leading: AvatarKarakter.kader(nama: u.namaLengkap),
                             title: Text(u.namaLengkap,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),

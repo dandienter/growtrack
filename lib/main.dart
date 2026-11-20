@@ -7,13 +7,13 @@ import 'screens/login.dart';
 import 'screens/utama.dart';
 import 'widgets.dart';
 
-/// Gaya bilah sistem global: status bar teal dengan ikon terang,
+/// Gaya bilah sistem global: status bar warna kertas dengan ikon gelap,
 /// bilah navigasi sistem putih dengan ikon gelap. Disamakan dengan
 /// AppBarTheme agar warna status bar tidak nabrak di semua layar.
 const SystemUiOverlayStyle kGayaBilahSistem = SystemUiOverlayStyle(
-  statusBarColor: kTeal,
-  statusBarIconBrightness: Brightness.light,
-  statusBarBrightness: Brightness.dark,
+  statusBarColor: kLatar,
+  statusBarIconBrightness: Brightness.dark,
+  statusBarBrightness: Brightness.light,
   systemNavigationBarColor: Colors.white,
   systemNavigationBarIconBrightness: Brightness.dark,
 );
@@ -45,17 +45,18 @@ class GrowTrackApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
+        fontFamily: 'PlusJakartaSans',
         colorScheme: skema,
         scaffoldBackgroundColor: kLatar,
         appBarTheme: const AppBarTheme(
-          backgroundColor: kTeal,
-          foregroundColor: Colors.white,
+          backgroundColor: kLatar,
+          foregroundColor: kTinta,
           elevation: 0,
           systemOverlayStyle: kGayaBilahSistem,
         ),
         navigationBarTheme: NavigationBarThemeData(
           backgroundColor: Colors.white,
-          indicatorColor: const Color(0xFFE0F2F1),
+          indicatorColor: const Color(0xFFDFF2E4),
           labelTextStyle: WidgetStateProperty.resolveWith(
             (s) => TextStyle(
               fontSize: 11,

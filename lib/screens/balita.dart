@@ -86,18 +86,10 @@ class _BalitaListScreenState extends State<BalitaListScreen> {
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () => _bukaDetail(b),
-                              leading: CircleAvatar(
-                                backgroundColor: b.jenisKelamin == 'L'
-                                    ? const Color(0xFFDBEAFE)
-                                    : const Color(0xFFFCE7F3),
-                                child: Icon(
-                                  b.jenisKelamin == 'L'
-                                      ? Icons.boy_outlined
-                                      : Icons.girl_outlined,
-                                  color: b.jenisKelamin == 'L'
-                                      ? const Color(0xFF2563EB)
-                                      : const Color(0xFFDB2777),
-                                ),
+                              leading: AvatarKarakter.anak(
+                                nama: b.namaBalita,
+                                jenisKelamin: b.jenisKelamin,
+                                tglLahir: lahir,
                               ),
                               title: Text(b.namaBalita,
                                   style: const TextStyle(
@@ -441,20 +433,11 @@ class _BalitaDetailScreenState extends State<BalitaDetailScreen> {
                       children: [
                         Row(
                           children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor: b.jenisKelamin == 'L'
-                                  ? const Color(0xFFDBEAFE)
-                                  : const Color(0xFFFCE7F3),
-                              child: Icon(
-                                b.jenisKelamin == 'L'
-                                    ? Icons.boy_outlined
-                                    : Icons.girl_outlined,
-                                color: b.jenisKelamin == 'L'
-                                    ? const Color(0xFF2563EB)
-                                    : const Color(0xFFDB2777),
-                                size: 30,
-                              ),
+                            AvatarKarakter.anak(
+                              nama: b.namaBalita,
+                              jenisKelamin: b.jenisKelamin,
+                              tglLahir: lahir,
+                              ukuran: 54,
                             ),
                             const SizedBox(width: 12),
                             Expanded(

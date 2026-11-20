@@ -83,9 +83,10 @@ class _PemeriksaanListScreenState extends State<PemeriksaanListScreen> {
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
                               onTap: () => _ubah(pr),
-                              leading: const CircleAvatar(
-                                backgroundColor: Color(0xFFE0F2F1),
-                                child: Icon(Icons.monitor_weight, color: kTeal),
+                              leading: AvatarKarakter.anak(
+                                nama: pr.namaBalita ?? '',
+                                jenisKelamin: pr.jenisKelamin,
+                                tglLahir: parseTanggalDb(pr.tglLahir),
                               ),
                               title: Text(pr.namaBalita ?? pr.idBalita,
                                   style: const TextStyle(

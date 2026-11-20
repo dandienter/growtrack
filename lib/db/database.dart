@@ -758,7 +758,7 @@ class GrowTrackDB {
       args.add('%$cari%');
     }
     final rows = await db.rawQuery(
-      'SELECT p.*, b.nama_balita AS nama_balita FROM pemeriksaan p '
+      'SELECT p.*, b.nama_balita AS nama_balita, b.jenis_kelamin AS jenis_kelamin, b.tgl_lahir AS tgl_lahir FROM pemeriksaan p '
       'JOIN balita b ON p.id_balita = b.id_balita '
       '${where.isEmpty ? '' : 'WHERE ${where.join(' AND ')} '}'
       'ORDER BY p.tanggal DESC, p.id_periksa DESC',
@@ -858,7 +858,8 @@ class GrowTrackDB {
   static Future<List<Map<String, Object?>>> jadwalMendatang() async {
     final db = await database;
     return db.rawQuery(
-      "SELECT b.nama_balita AS nama_balita, i.nama_imunisasi AS nama_imunisasi, "
+      "SELECT b.nama_balita AS nama_balita, b.jenis_kelamin AS jenis_kelamin, "
+      "b.tgl_lahir AS tgl_lahir, i.nama_imunisasi AS nama_imunisasi, "
       "j.tgl_berikutnya AS tgl_berikutnya "
       "FROM jadwal_imunisasi j "
       "JOIN balita b ON j.id_balita = b.id_balita "
@@ -871,7 +872,8 @@ class GrowTrackDB {
   static Future<List<Map<String, Object?>>> perhatianKhusus() async {
     final db = await database;
     return db.rawQuery(
-      "SELECT b.nama_balita AS nama_balita, p.status_gizi AS status_gizi, "
+      "SELECT b.nama_balita AS nama_balita, b.jenis_kelamin AS jenis_kelamin, "
+      "b.tgl_lahir AS tgl_lahir, p.status_gizi AS status_gizi, "
       "p.tanggal AS tanggal "
       "FROM pemeriksaan p JOIN balita b ON p.id_balita = b.id_balita "
       "WHERE p.status_gizi LIKE '%Kurang%' OR p.status_gizi LIKE '%Buruk%' "

@@ -396,9 +396,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 for (final j in _jadwalMendatang)
                   ListTile(
-                    leading: const CircleAvatar(
-                      backgroundColor: Color(0xFFE0F2F1),
-                      child: Icon(Icons.vaccines, color: kTeal, size: 20),
+                    leading: AvatarKarakter.anak(
+                      nama: j['nama_balita']?.toString() ?? '',
+                      jenisKelamin: j['jenis_kelamin']?.toString(),
+                      tglLahir: parseTanggalDb(j['tgl_lahir']?.toString()),
                     ),
                     title: Text(j['nama_balita']?.toString() ?? ''),
                     subtitle: Text(j['nama_imunisasi']?.toString() ?? ''),
@@ -439,14 +440,10 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 for (final pk in _perhatianKhusus)
                   ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor:
-                          warnaStatusGizi(pk['status_gizi']?.toString())
-                              .withOpacity(0.12),
-                      child: Icon(Icons.child_care,
-                          color:
-                              warnaStatusGizi(pk['status_gizi']?.toString()),
-                          size: 20),
+                    leading: AvatarKarakter.anak(
+                      nama: pk['nama_balita']?.toString() ?? '',
+                      jenisKelamin: pk['jenis_kelamin']?.toString(),
+                      tglLahir: parseTanggalDb(pk['tgl_lahir']?.toString()),
                     ),
                     title: Text(pk['nama_balita']?.toString() ?? ''),
                     subtitle:

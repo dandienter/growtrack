@@ -111,10 +111,7 @@ class _OrangTuaListScreenState extends State<OrangTuaListScreen> {
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
                             child: ListTile(
-                              leading: const CircleAvatar(
-                                backgroundColor: Color(0xFFE0F2F1),
-                                child: Icon(Icons.family_restroom, color: kTeal),
-                              ),
+                              leading: AvatarKarakter.ibu(nama: o.namaIbu),
                               title: Text('Ibu: ${o.namaIbu}',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold)),

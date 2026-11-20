@@ -121,6 +121,8 @@ class Pemeriksaan {
   String? statusGizi;
   String? catatanBidan;
   String? namaBalita; // hasil join (tampilan)
+  String? jenisKelamin; // hasil join (tampilan avatar)
+  String? tglLahir; // hasil join (tampilan avatar)
 
   Pemeriksaan({
     required this.idPeriksa,
@@ -136,6 +138,8 @@ class Pemeriksaan {
     this.statusGizi,
     this.catatanBidan,
     this.namaBalita,
+    this.jenisKelamin,
+    this.tglLahir,
   });
 
   factory Pemeriksaan.fromMap(Map<String, Object?> m) => Pemeriksaan(
@@ -152,6 +156,8 @@ class Pemeriksaan {
         statusGizi: m['status_gizi']?.toString(),
         catatanBidan: m['catatan_bidan']?.toString(),
         namaBalita: m['nama_balita']?.toString(),
+        jenisKelamin: m['jenis_kelamin']?.toString(),
+        tglLahir: m['tgl_lahir']?.toString(),
       );
 
   Map<String, Object?> toMap() => {
