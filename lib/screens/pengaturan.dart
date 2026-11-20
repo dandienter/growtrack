@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import '../db/database.dart';
 import '../models.dart';
 import '../session.dart';
+import '../sync/update_service.dart';
 import '../widgets.dart';
 
 /// Port tampilan/FormPengaturan.java: identitas posyandu + manajemen akun.
@@ -345,6 +346,19 @@ class _PengaturanScreenState extends State<PengaturanScreen>
           icon: const Icon(Icons.save_outlined),
           label: const Text('Simpan Identitas'),
           style: FilledButton.styleFrom(padding: const EdgeInsets.all(14)),
+        ),
+        const SizedBox(height: 12),
+        OutlinedButton.icon(
+          onPressed: () => LayananUpdate.cekManual(context),
+          icon: const Icon(Icons.system_update_outlined),
+          label: const Text('Cek Pembaruan Aplikasi'),
+          style: OutlinedButton.styleFrom(padding: const EdgeInsets.all(14)),
+        ),
+        const SizedBox(height: 8),
+        const Text(
+          'Versi saat ini: GrowTrack $kNamaVersiIni',
+          textAlign: TextAlign.center,
+          style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
         ),
       ],
     );

@@ -6,6 +6,7 @@ import '../format.dart';
 import '../models.dart';
 import '../session.dart';
 import '../sync/sync_service.dart';
+import '../sync/update_service.dart';
 import '../widgets.dart';
 import 'login.dart';
 
@@ -47,6 +48,9 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   void initState() {
     super.initState();
     LayananSinkron.sinkronkan();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) LayananUpdate.cekOtomatis(context);
+    });
     _muat();
   }
 
