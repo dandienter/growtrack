@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../db/database.dart';
 import '../session.dart';
+import '../sync/sync_service.dart';
 import '../widgets.dart';
 import 'balita.dart';
 import 'home.dart';
@@ -43,6 +44,9 @@ class _UtamaScreenState extends State<UtamaScreen>
     _siapkanAnimasiTab(1);
     _animTab.value = 1;
     _muatNama();
+    // Sinkronisasi latar saat aplikasi dibuka; kegagalan (offline)
+    // diabaikan diam-diam, data lokal tetap yang utama.
+    LayananSinkron.sinkronkan();
   }
 
   void _siapkanAnimasiTab(int arah) {

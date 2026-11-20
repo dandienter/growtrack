@@ -6,6 +6,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../db/database.dart';
 import '../session.dart';
+import '../sync/sync_service.dart';
 import '../widgets.dart';
 import 'login.dart';
 
@@ -26,6 +27,8 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
   String? _kolomPk;
   bool _memuat = true;
   bool _proses = false;
+  String _statusSinkron = 'Memuat status sinkronisasi...';
+  bool _menyinkron = false;
 
   @override
   void initState() {
@@ -38,6 +41,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
     final jalur = await GrowTrackDB.jalurDb();
     final info = await GrowTrackDB.infoTabel(_tabelDipilih);
     final isi = await GrowTrackDB.ambilIsiTabel(_tabelDipilih);
+    final terakhir = await LayananSinkron.waktuSinkronTerakhir();
     if (!mounted) return;
     setState(() {
       _jalurDb = jalur;
@@ -45,7 +49,26 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
       _kolomPk = info.pk;
       _baris = isi;
       _memuat = false;
+      _statusSinkron = terakhir == null
+          ? 'Belum pernah sinkron. Data aman tersimpan lokal.'
+          : 'Terakhir sinkron: ${_formatWaktu(terakhir)}';
     });
+  }
+
+  String _formatWaktu(String iso) {
+    final t = DateTime.tryParse(iso)?.toLocal();
+    if (t == null) return iso;
+    String dua(int n) => n.toString().padLeft(2, '0');
+    return '${dua(t.day)}/${dua(t.month)}/${t.year} ${dua(t.hour)}:${dua(t.minute)}';
+  }
+
+  Future<void> _sinkron() async {
+    setState(() => _menyinkron = true);
+    final hasil = await LayananSinkron.sinkronkan();
+    if (!mounted) return;
+    setState(() => _menyinkron = false);
+    tampilSnack(context, hasil.pesan);
+    _muat();
   }
 
   String _teksSel(Object? v) => v?.toString() ?? 'NULL';
@@ -179,6 +202,58 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Card(
+                  color: const Color(0xFFDFF2E4),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(14),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Row(
+                          children: [
+                            Icon(Icons.cloud_sync_outlined,
+                                color: kTeal, size: 20),
+                            SizedBox(width: 8),
+                            Text(
+                              'Sinkronisasi Cloud',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: kTinta),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Data tersimpan lokal dulu dan tetap bisa dipakai '
+                          'offline. Saat online, data tersinkron otomatis '
+                          'dengan perangkat lain. $_statusSinkron',
+                          style: const TextStyle(
+                              fontSize: 12, color: Color(0xFF40513F)),
+                        ),
+                        const SizedBox(height: 10),
+                        FilledButton.icon(
+                          onPressed: _menyinkron ? null : _sinkron,
+                          icon: _menyinkron
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white),
+                                )
+                              : const Icon(Icons.sync, size: 18),
+                          label: Text(_menyinkron
+                              ? 'Menyinkronkan...'
+                              : 'Sinkronkan Sekarang'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12),
                 Text(
                   'File: $_jalurDb',
                   style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),

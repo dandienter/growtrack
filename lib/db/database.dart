@@ -105,6 +105,77 @@ class GrowTrackDB {
     } catch (_) {}
 
     await _seed(db);
+    await _pasangInfrastrukturSinkron(db);
+  }
+
+  /// Tabel yang ikut sinkronisasi cloud, memetakan nama tabel ke kolom
+  /// primary key-nya. Tabel users dan sesi sengaja TIDAK ikut: kredensial
+  /// dan sesi tetap lokal per perangkat.
+  static const Map<String, String> tabelSinkron = {
+    'orang_tua': 'id_ortu',
+    'balita': 'id_balita',
+    'pemeriksaan': 'id_periksa',
+    'imunisasi': 'id_imunisasi',
+    'jadwal_imunisasi': 'id_jadwal',
+    'konsumsi': 'id_konsumsi',
+    'pengaturan': 'id',
+  };
+
+  /// Infrastruktur sinkronisasi offline-first: tabel outbox (penanda baris
+  /// kotor), tombstone (penanda hapus), dan sinkron_meta (watermark tarik
+  /// + saklar tangkap). Trigger AFTER INSERT/UPDATE/DELETE pada tiap tabel
+  /// sinkron mencatat perubahan tanpa mengubah kode CRUD yang sudah ada.
+  /// Saklar 'tangkap' dimatikan sesaat saat hasil tarikan server diterapkan
+  /// ke lokal agar tidak memantul kembali sebagai perubahan baru.
+  static Future<void> _pasangInfrastrukturSinkron(Database db) async {
+    await db.execute('CREATE TABLE IF NOT EXISTS outbox ('
+        'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+        'tabel TEXT NOT NULL, id_baris TEXT NOT NULL, waktu TEXT NOT NULL)');
+    await db.execute('CREATE TABLE IF NOT EXISTS tombstone ('
+        'id INTEGER PRIMARY KEY AUTOINCREMENT,'
+        'tabel TEXT NOT NULL, id_baris TEXT NOT NULL, waktu TEXT NOT NULL)');
+    await db.execute('CREATE TABLE IF NOT EXISTS sinkron_meta ('
+        'kunci TEXT PRIMARY KEY, nilai TEXT)');
+    await db.execute(
+        "INSERT OR IGNORE INTO sinkron_meta (kunci, nilai) VALUES ('tangkap', 'on')");
+
+    const syarat = "WHERE COALESCE((SELECT nilai FROM sinkron_meta "
+        "WHERE kunci = 'tangkap'), 'on') = 'on'";
+    for (final e in tabelSinkron.entries) {
+      final t = e.key;
+      final pk = e.value;
+      await db.execute('CREATE TRIGGER IF NOT EXISTS trg_sk_${t}_ins '
+          'AFTER INSERT ON $t BEGIN '
+          'INSERT INTO outbox (tabel, id_baris, waktu) '
+          "SELECT '$t', CAST(NEW.$pk AS TEXT), datetime('now') $syarat; "
+          'END');
+      await db.execute('CREATE TRIGGER IF NOT EXISTS trg_sk_${t}_upd '
+          'AFTER UPDATE ON $t BEGIN '
+          'INSERT INTO outbox (tabel, id_baris, waktu) '
+          "SELECT '$t', CAST(NEW.$pk AS TEXT), datetime('now') $syarat; "
+          'END');
+      await db.execute('CREATE TRIGGER IF NOT EXISTS trg_sk_${t}_del '
+          'AFTER DELETE ON $t BEGIN '
+          'INSERT INTO tombstone (tabel, id_baris, waktu) '
+          "SELECT '$t', CAST(OLD.$pk AS TEXT), datetime('now') $syarat; "
+          'DELETE FROM outbox '
+          "WHERE tabel = '$t' AND id_baris = CAST(OLD.$pk AS TEXT); "
+          'END');
+    }
+
+    // Sekali saja saat infrastruktur pertama terpasang: antrekan semua
+    // baris lama agar ikut terkirim pada sinkronisasi pertama.
+    final sudah = await db.query('sinkron_meta',
+        where: 'kunci = ?', whereArgs: ['infra_v1']);
+    if (sudah.isEmpty) {
+      for (final e in tabelSinkron.entries) {
+        await db.execute('INSERT INTO outbox (tabel, id_baris, waktu) '
+            "SELECT '${e.key}', CAST(${e.value} AS TEXT), datetime('now') "
+            'FROM ${e.key}');
+      }
+      await db.execute('INSERT INTO sinkron_meta (kunci, nilai) '
+          "VALUES ('infra_v1', 'ya')");
+    }
   }
 
   static Future<int> _hitung(Database db, String tabel) async {
