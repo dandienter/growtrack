@@ -10,6 +10,7 @@ import '../sync/sync_service.dart';
 import '../sync/update_service.dart';
 import '../widgets.dart';
 import 'edukasi.dart';
+import 'info.dart';
 import 'login.dart';
 
 /// Teks umur ringkas dari tanggal lahir db (yyyy-MM-dd):
@@ -143,6 +144,13 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
         ),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.info_outline),
+            tooltip: 'Info Aplikasi',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(builder: (_) => const InfoScreen()),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.logout, color: Color(0xFFEF4444)),
             tooltip: 'Keluar',

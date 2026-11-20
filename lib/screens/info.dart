@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../db/database.dart';
+import '../sync/update_service.dart';
 import '../widgets.dart';
 
 /// Port tampilan/DialogInfoAplikasi.java: tentang aplikasi GrowTrack.
@@ -91,7 +92,7 @@ class _InfoScreenState extends State<InfoScreen> {
                     border: Border.all(color: const Color(0xFFF59E0B)),
                   ),
                   child: const Text(
-                    'Versi 1.2.0 (Flutter)',
+                    'Versi $kNamaVersiIni',
                     style: TextStyle(
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF92400E),
@@ -99,10 +100,17 @@ class _InfoScreenState extends State<InfoScreen> {
                   ),
                 ),
                 const SizedBox(height: 6),
-                const Text(
-                  'Konversi aplikasi Android dari GrowTrack desktop (Versi 2.4)',
-                  style: TextStyle(fontSize: 12, color: Color(0xFF94A3B8)),
+                Text(
+                  'Kode versi $kKodeVersiIni • Aplikasi Android GrowTrack',
+                  style: const TextStyle(
+                      fontSize: 12, color: Color(0xFF94A3B8)),
                   textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                FilledButton.tonalIcon(
+                  onPressed: () => LayananUpdate.cekManual(context),
+                  icon: const Icon(Icons.system_update, size: 18),
+                  label: const Text('Cek Pembaruan'),
                 ),
               ],
             ),
@@ -111,9 +119,11 @@ class _InfoScreenState extends State<InfoScreen> {
           _seksi(
             'Fungsi Aplikasi',
             const Text(
-              'GrowTrack adalah aplikasi desktop untuk membantu kader Posyandu '
-              'dalam pencatatan dan pemantauan tumbuh kembang balita secara '
-              'digital, menggantikan pencatatan manual berbasis kertas.',
+              'GrowTrack membantu kader Posyandu dalam pencatatan dan '
+              'pemantauan tumbuh kembang balita secara digital, dan membantu '
+              'orang tua memantau pertumbuhan anaknya dari rumah. Data '
+              'tersimpan di perangkat dan tersinkron otomatis ke cloud saat '
+              'ada internet.',
               style: TextStyle(height: 1.5),
             ),
           ),
@@ -130,6 +140,12 @@ class _InfoScreenState extends State<InfoScreen> {
                 Text('•  Penilaian status gizi otomatis berstandar WHO 2006'),
                 SizedBox(height: 4),
                 Text('•  Jadwal imunisasi dan data konsumsi'),
+                SizedBox(height: 4),
+                Text('•  Kurva pertumbuhan WHO dan penilaian Z-Score'),
+                SizedBox(height: 4),
+                Text('•  Akun orang tua: pantau anak dan edukasi offline'),
+                SizedBox(height: 4),
+                Text('•  Sinkronisasi cloud antarperangkat'),
                 SizedBox(height: 4),
                 Text('•  Laporan PDF siap cetak'),
                 SizedBox(height: 4),
