@@ -8,9 +8,9 @@ import '../db/database.dart';
 import '../widgets.dart';
 
 /// Kode versi aplikasi ini. WAJIB disamakan dengan angka sesudah tanda +
-/// pada version di pubspec.yaml setiap rilis (1.5.0+8 -> 8).
-const int kKodeVersiIni = 8;
-const String kNamaVersiIni = '1.5.0';
+/// pada version di pubspec.yaml setiap rilis (1.6.0+9 -> 9).
+const int kKodeVersiIni = 9;
+const String kNamaVersiIni = '1.6.0';
 
 const String _urlVersi =
     'https://demo.43-130-228-96.sslip.io/growtrack-version.json';

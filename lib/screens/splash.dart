@@ -59,8 +59,9 @@ class _SplashScreenState extends State<SplashScreen> {
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 32),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Spacer(flex: 3),
               AnimasiMasuk(
                 indeks: 0,
                 child: Container(
@@ -110,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              const Spacer(flex: 2),
+              const SizedBox(height: 30),
               const SizedBox(
                 width: 22,
                 height: 22,
@@ -119,11 +120,12 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: kTeal,
                 ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 14),
               Text(
                 _namaPosyandu.toUpperCase(),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -131,7 +133,6 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Color(0xFF94A3B8),
                 ),
               ),
-              const SizedBox(height: 24),
             ],
           ),
         ),
