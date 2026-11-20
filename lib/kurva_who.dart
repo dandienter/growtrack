@@ -29,7 +29,7 @@ List<List<double>> _parseLms(String mentah) {
 double _nilaiZ(List<double> lms, double z) {
   final l = lms[0], m = lms[1], s = lms[2];
   if (l == 0) return m * math.exp(s * z);
-  return m * math.pow(1 + l * s * z, 1 / l);
+  return m * math.pow(1 + l * s * z, 1 / l).toDouble();
 }
 
 /// Tiga garis acuan (median, +2SD, -2SD) pada umur bulan pecahan,
