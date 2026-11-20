@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/database.dart';
 import '../session.dart';
 import '../widgets.dart';
+import 'beranda_orang_tua.dart';
 import 'utama.dart';
 
 /// Port tampilan/MenuLogin.java.
@@ -16,7 +17,6 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final _txtUsername = TextEditingController();
   final _txtPassword = TextEditingController();
-  String _rolePilihan = 'Admin';
   String _namaPosyandu = '';
   String? _pesanSalah;
   bool _proses = false;
@@ -55,8 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _proses = true;
       _pesanSalah = null;
     });
-    final salah =
-        await GrowTrackDB.validasiLogin(username, password, _rolePilihan);
+    final salah = await GrowTrackDB.validasiLogin(username, password);
     if (!mounted) return;
     setState(() => _proses = false);
     if (salah != null) {
@@ -65,7 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
     final nama = SesiUser.namaLengkap ?? username;
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (_) => const UtamaScreen()),
+      MaterialPageRoute(
+          builder: (_) => SesiUser.isOrangTua
+              ? const BerandaOrangTuaScreen()
+              : const UtamaScreen()),
     );
     tampilSnack(context, 'Selamat datang, $nama!');
   }
@@ -135,18 +137,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                     ),
                     onSubmitted: (_) => _masuk(),
-                  ),
-                  const SizedBox(height: 16),
-                  DropdownButtonFormField<String>(
-                    value: _rolePilihan,
-                    decoration:
-                        dekorasiInput('MASUK SEBAGAI', ikon: Icons.badge_outlined),
-                    items: const ['Admin', 'Petugas']
-                        .map((r) =>
-                            DropdownMenuItem(value: r, child: Text(r)))
-                        .toList(),
-                    onChanged: (v) =>
-                        setState(() => _rolePilihan = v ?? 'Admin'),
                   ),
                   if (_pesanSalah != null) ...[
                     const SizedBox(height: 16),

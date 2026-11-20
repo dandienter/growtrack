@@ -110,7 +110,7 @@ class _UtamaScreenState extends State<UtamaScreen>
           _namaPosyandu.toUpperCase(),
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 19),
+          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
         ),
       ),
       body: FadeTransition(

@@ -104,6 +104,11 @@ class GrowTrackDB {
           "ALTER TABLE pengaturan ADD COLUMN kota TEXT DEFAULT 'Jakarta'");
     } catch (_) {}
 
+    // Migrasi: tautan akun orang tua ke data orang_tua
+    try {
+      await db.execute('ALTER TABLE users ADD COLUMN id_ortu TEXT');
+    } catch (_) {}
+
     await _seed(db);
     await _pasangInfrastrukturSinkron(db);
   }
@@ -192,6 +197,16 @@ class GrowTrackDB {
           'INSERT INTO users (username, password_hash, salt, nama_lengkap, role) VALUES '
           "('admin', '$hash', '', 'Administrator', 'Admin'),"
           "('bidan', '$hash', '', 'Bidan Sari', 'Petugas')");
+    }
+
+    // Akun demo orang tua (tertaut ke ORT001) agar peran Orang Tua
+    // langsung bisa dicoba; password sama dengan akun bawaan lain.
+    final adaOrtu = await db.rawQuery(
+        "SELECT COUNT(*) AS c FROM users WHERE role = 'Orang Tua'");
+    if (((adaOrtu.first['c'] as num?)?.toInt() ?? 0) == 0) {
+      await db.rawInsert(
+          'INSERT INTO users (username, password_hash, salt, nama_lengkap, role, id_ortu) VALUES '
+          "('ortu', '$hash', '', 'Dewi Lestari', 'Orang Tua', 'ORT001')");
     }
 
     if (await _hitung(db, 'pengaturan') == 0) {
@@ -443,9 +458,9 @@ class GrowTrackDB {
   // -------------------------------------------------------------------------
 
   /// Mengembalikan pesan kesalahan, atau null bila login berhasil.
-  /// [rolePilihan] adalah peran yang dipilih pada form ("Masuk Sebagai").
+  /// Peran tidak dipilih di form; peran mengikuti akun yang terdaftar.
   static Future<String?> validasiLogin(
-      String username, String passwordInput, String rolePilihan) async {
+      String username, String passwordInput) async {
     final db = await database;
     final rows = await db.query('users',
         where: 'username = ?', whereArgs: [username], limit: 1);
@@ -455,15 +470,13 @@ class GrowTrackDB {
     if (!KeamananPassword.verify(passwordInput, user.salt, user.passwordHash)) {
       return 'Login Gagal! Username atau Password salah.';
     }
-    if (user.role.toLowerCase() != rolePilihan.toLowerCase()) {
-      return 'Akses Ditolak! Akun Anda bukan $rolePilihan';
-    }
 
     SesiUser.isi(
       id: user.idUser,
       user: user.username,
       nama: user.namaLengkap,
       peran: user.role,
+      idOrtu: user.idOrtu,
     );
 
     // Upgrade otomatis: akun lama tanpa salt -> buatkan salt baru
@@ -516,6 +529,7 @@ class GrowTrackDB {
       user: user.username,
       nama: user.namaLengkap,
       peran: user.role,
+      idOrtu: user.idOrtu,
     );
     return true;
   }
@@ -621,6 +635,18 @@ class GrowTrackDB {
     );
     if (rows.isEmpty) return null;
     return Balita.fromMap(rows.first);
+  }
+
+  /// Daftar anak milik satu data orang tua (untuk beranda Orang Tua).
+  static Future<List<Balita>> ambilBalitaByOrtu(String idOrtu) async {
+    final db = await database;
+    final rows = await db.rawQuery(
+      'SELECT b.*, o.nama_ibu AS nama_ibu, o.nama_ayah AS nama_ayah '
+      'FROM balita b LEFT JOIN orang_tua o ON b.id_ortu = o.id_ortu '
+      'WHERE b.id_ortu = ? ORDER BY b.nama_balita ASC',
+      [idOrtu],
+    );
+    return rows.map(Balita.fromMap).toList();
   }
 
   static Future<void> simpanBalita(Balita b, {required bool baru}) async {
@@ -974,6 +1000,7 @@ class GrowTrackDB {
     required String password,
     required String namaLengkap,
     required String role,
+    String? idOrtu,
   }) async {
     final db = await database;
     final salt = KeamananPassword.generateSalt();
@@ -983,6 +1010,7 @@ class GrowTrackDB {
       'salt': salt,
       'nama_lengkap': namaLengkap,
       'role': role,
+      'id_ortu': idOrtu,
     });
   }
 
@@ -992,12 +1020,14 @@ class GrowTrackDB {
     required String namaLengkap,
     required String role,
     String? passwordBaru,
+    String? idOrtu,
   }) async {
     final db = await database;
     final nilai = <String, Object?>{
       'username': username,
       'nama_lengkap': namaLengkap,
       'role': role,
+      'id_ortu': idOrtu,
     };
     if (passwordBaru != null && passwordBaru.isNotEmpty) {
       final salt = KeamananPassword.generateSalt();

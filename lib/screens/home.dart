@@ -70,13 +70,13 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.all(16),
               children: [
                 AnimasiMasuk(indeks: 0, child: _kepalaBeranda()),
-                const SizedBox(height: 16),
+                const SizedBox(height: 14),
                 _gridStatistik(),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 AnimasiMasuk(indeks: 2, child: _seksiAksiCepat()),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 AnimasiMasuk(indeks: 3, child: _seksiJadwal()),
-                const SizedBox(height: 20),
+                const SizedBox(height: 16),
                 AnimasiMasuk(indeks: 4, child: _seksiPerhatian()),
                 const SizedBox(height: 8),
               ],
@@ -136,13 +136,13 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.all(16),
             child: Row(
               children: [
                 Container(
-                  width: 66,
-                  height: 66,
-                  padding: const EdgeInsets.all(6),
+                  width: 54,
+                  height: 54,
+                  padding: const EdgeInsets.all(5),
                   decoration: const BoxDecoration(
                     color: Colors.white,
                     shape: BoxShape.circle,
@@ -150,18 +150,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: adaLogo
                       ? Image.file(
                           File(logoPath),
-                          width: 54,
-                          height: 54,
+                          width: 44,
+                          height: 44,
                           fit: BoxFit.contain,
                         )
                       : Image.asset(
                           'assets/icon/posyandu-logo.png',
-                          width: 54,
-                          height: 54,
+                          width: 44,
+                          height: 44,
                           fit: BoxFit.contain,
                         ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
-                          fontSize: 17,
+                          fontSize: 15.5,
                           fontWeight: FontWeight.bold,
                           color: Colors.white,
                         ),
@@ -263,7 +263,7 @@ class _HomeScreenState extends State<HomeScreen> {
         crossAxisCount: 2,
         crossAxisSpacing: 12,
         mainAxisSpacing: 12,
-        childAspectRatio: 1.12,
+        childAspectRatio: 1.32,
       ),
       itemCount: kartu.length,
       itemBuilder: (_, i) => AnimasiMasuk(indeks: i, child: kartu[i]),
@@ -281,13 +281,13 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 Container(
-                  width: 52,
-                  height: 52,
+                  width: 48,
+                  height: 48,
                   decoration: BoxDecoration(
                     color: warna.withOpacity(0.12),
                     shape: BoxShape.circle,
                   ),
-                  child: Icon(ikon, color: warna, size: 26),
+                  child: Icon(ikon, color: warna, size: 24),
                 ),
                 const SizedBox(height: 6),
                 Text(
@@ -474,19 +474,25 @@ class _AngkaNaik extends StatelessWidget {
   Widget build(BuildContext context) {
     final angka = num.tryParse(teks.replaceAll(RegExp(r'[^0-9]'), ''));
     if (angka == null) {
-      return Text(teks,
-          style: gaya, maxLines: 1, overflow: TextOverflow.ellipsis);
+      return FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(teks, style: gaya, maxLines: 1),
+      );
     }
     final rupiah = teks.contains('Rp');
     return TweenAnimationBuilder<double>(
       tween: Tween<double>(begin: 0, end: angka.toDouble()),
       duration: const Duration(milliseconds: 900),
       curve: Curves.easeOutCubic,
-      builder: (_, v, __) => Text(
-        rupiah ? formatRupiah(v.round()) : '${v.round()}',
-        style: gaya,
-        maxLines: 1,
-        overflow: TextOverflow.ellipsis,
+      builder: (_, v, __) => FittedBox(
+        fit: BoxFit.scaleDown,
+        alignment: Alignment.centerLeft,
+        child: Text(
+          rupiah ? formatRupiah(v.round()) : '${v.round()}',
+          style: gaya,
+          maxLines: 1,
+        ),
       ),
     );
   }
@@ -518,21 +524,21 @@ class _KartuStat extends StatelessWidget {
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
-        padding: const EdgeInsets.all(14),
+        padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min,
           children: [
             Container(
-              width: 38,
-              height: 38,
+              width: 34,
+              height: 34,
               decoration: BoxDecoration(
                 color: warna.withOpacity(0.12),
-                borderRadius: BorderRadius.circular(12),
+                borderRadius: BorderRadius.circular(11),
               ),
-              child: Icon(ikon, color: warna, size: 20),
+              child: Icon(ikon, color: warna, size: 18),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
@@ -551,7 +557,7 @@ class _KartuStat extends StatelessWidget {
             _AngkaNaik(
               teks: nilai,
               gaya: TextStyle(
-                fontSize: 26,
+                fontSize: 23,
                 fontWeight: FontWeight.bold,
                 color: warna,
               ),

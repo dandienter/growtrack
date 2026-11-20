@@ -114,42 +114,70 @@ class _PengaturanScreenState extends State<PengaturanScreen>
     final txtPass = TextEditingController();
     final txtNama = TextEditingController(text: u?.namaLengkap ?? '');
     var role = u?.role ?? 'Petugas';
+    var idOrtuPilihan = u?.idOrtu;
+    final daftarOrtu = await GrowTrackDB.ambilOrangTua();
+    if (!mounted) return;
     final simpan = await showDialog<bool>(
       context: context,
       builder: (ctx) => AlertDialog(
         title: Text(u == null ? 'Tambah Pengguna' : 'Ubah Pengguna'),
         content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: txtNama,
-                decoration: dekorasiInput('Nama Lengkap'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: txtUser,
-                decoration: dekorasiInput('Username'),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: txtPass,
-                obscureText: true,
-                decoration: dekorasiInput(u == null
-                    ? 'Password'
-                    : 'Password Baru (kosongkan bila tidak diubah)'),
-              ),
-              const SizedBox(height: 12),
-              DropdownButtonFormField<String>(
-                initialValue: role,
-                decoration: dekorasiInput('Hak Akses (Role)'),
-                items: const [
-                  DropdownMenuItem(value: 'Admin', child: Text('Admin')),
-                  DropdownMenuItem(value: 'Petugas', child: Text('Petugas')),
+          child: StatefulBuilder(
+            builder: (ctx, setDialog) => Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: txtNama,
+                  decoration: dekorasiInput('Nama Lengkap'),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: txtUser,
+                  decoration: dekorasiInput('Username'),
+                ),
+                const SizedBox(height: 12),
+                TextField(
+                  controller: txtPass,
+                  obscureText: true,
+                  decoration: dekorasiInput(u == null
+                      ? 'Password'
+                      : 'Password Baru (kosongkan bila tidak diubah)'),
+                ),
+                const SizedBox(height: 12),
+                DropdownButtonFormField<String>(
+                  initialValue: role,
+                  decoration: dekorasiInput('Hak Akses (Role)'),
+                  items: const [
+                    DropdownMenuItem(value: 'Admin', child: Text('Admin')),
+                    DropdownMenuItem(
+                        value: 'Petugas', child: Text('Petugas')),
+                    DropdownMenuItem(
+                        value: 'Orang Tua', child: Text('Orang Tua')),
+                  ],
+                  onChanged: (v) => setDialog(() => role = v!),
+                ),
+                if (role == 'Orang Tua') ...[
+                  const SizedBox(height: 12),
+                  DropdownButtonFormField<String>(
+                    initialValue: idOrtuPilihan,
+                    decoration:
+                        dekorasiInput('Tautkan ke Data Orang Tua'),
+                    items: [
+                      for (final o in daftarOrtu)
+                        DropdownMenuItem(
+                          value: o.idOrtu,
+                          child: Text(
+                            'Ibu ${o.namaIbu} / Ayah ${o.namaAyah}',
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                    ],
+                    onChanged: (v) =>
+                        setDialog(() => idOrtuPilihan = v),
+                  ),
                 ],
-                onChanged: (v) => role = v!,
-              ),
-            ],
+              ],
+            ),
           ),
         ),
         actions: [
@@ -171,6 +199,11 @@ class _PengaturanScreenState extends State<PengaturanScreen>
       tampilSnack(context, 'Nama, Username, dan Password wajib diisi!');
       return;
     }
+    if (role == 'Orang Tua' && idOrtuPilihan == null) {
+      tampilSnack(context, 'Akun Orang Tua wajib ditautkan ke data orang tua!');
+      return;
+    }
+    final idOrtuSimpan = role == 'Orang Tua' ? idOrtuPilihan : null;
     try {
       if (u == null) {
         await GrowTrackDB.tambahUser(
@@ -178,6 +211,7 @@ class _PengaturanScreenState extends State<PengaturanScreen>
           password: txtPass.text,
           namaLengkap: txtNama.text.trim(),
           role: role,
+          idOrtu: idOrtuSimpan,
         );
         if (!mounted) return;
         tampilSnack(context, 'Pengguna baru berhasil ditambahkan!');
@@ -188,6 +222,7 @@ class _PengaturanScreenState extends State<PengaturanScreen>
           namaLengkap: txtNama.text.trim(),
           role: role,
           passwordBaru: txtPass.text.isEmpty ? null : txtPass.text,
+          idOrtu: idOrtuSimpan,
         );
         if (!mounted) return;
         tampilSnack(context, 'Data pengguna berhasil diubah!');
@@ -340,7 +375,9 @@ class _PengaturanScreenState extends State<PengaturanScreen>
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(20)),
                           child: ListTile(
-                            leading: AvatarKarakter.kader(nama: u.namaLengkap),
+                            leading: u.role == 'Orang Tua'
+                                ? AvatarKarakter.ibu(nama: u.namaLengkap)
+                                : AvatarKarakter.kader(nama: u.namaLengkap),
                             title: Text(u.namaLengkap,
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),

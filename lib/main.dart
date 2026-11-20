@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'db/database.dart';
-import 'screens/login.dart';
-import 'screens/utama.dart';
+import 'screens/splash.dart';
 import 'widgets.dart';
 
 /// Gaya bilah sistem global: status bar warna kertas dengan ikon gelap,
@@ -22,17 +20,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setSystemUIOverlayStyle(kGayaBilahSistem);
   await initializeDateFormatting('id_ID', null);
-  var sudahLogin = false;
-  try {
-    sudahLogin = await GrowTrackDB.pulihkanSesi();
-  } catch (_) {}
-  runApp(GrowTrackApp(sudahLogin: sudahLogin));
+  runApp(const GrowTrackApp());
 }
 
 class GrowTrackApp extends StatelessWidget {
-  final bool sudahLogin;
-
-  const GrowTrackApp({super.key, this.sudahLogin = false});
+  const GrowTrackApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +90,7 @@ class GrowTrackApp extends StatelessWidget {
           ),
         ),
       ),
-      home: sudahLogin ? const UtamaScreen() : const LoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

@@ -308,7 +308,8 @@ class UserAkun {
   String passwordHash;
   String salt;
   String namaLengkap;
-  String role; // 'Admin' / 'Petugas'
+  String role; // 'Admin' / 'Petugas' / 'Orang Tua'
+  String? idOrtu; // tautan ke data orang_tua, khusus akun Orang Tua
 
   UserAkun({
     required this.idUser,
@@ -317,6 +318,7 @@ class UserAkun {
     this.salt = '',
     required this.namaLengkap,
     required this.role,
+    this.idOrtu,
   });
 
   factory UserAkun.fromMap(Map<String, Object?> m) => UserAkun(
@@ -326,6 +328,7 @@ class UserAkun {
         salt: m['salt']?.toString() ?? '',
         namaLengkap: m['nama_lengkap']?.toString() ?? '',
         role: m['role']?.toString() ?? '',
+        idOrtu: m['id_ortu']?.toString(),
       );
 }
 
