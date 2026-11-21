@@ -164,3 +164,4 @@ jobs:
           tag_name: build-${{ github.run_number }}
           name: GrowTrack build ${{ github.run_number }}
           files: GrowTrack.apk
+          fail_on_unmatched_files: true
