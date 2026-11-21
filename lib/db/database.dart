@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart' as p;
 import 'package:sqflite/sqflite.dart';
 
+import '../logic/gizi.dart';
 import '../logic/keamanan.dart';
 import '../models.dart';
 import '../session.dart';
@@ -885,6 +886,64 @@ class GrowTrackDB {
     final db = await database;
     await db.delete('pemeriksaan',
         where: 'id_periksa = ?', whereArgs: [idPeriksa]);
+  }
+
+  /// Hitung ulang Z-Score dan status gizi SEMUA pemeriksaan dari
+  /// berat, tinggi, umur, dan jenis kelamin memakai rumus WHO yang
+  /// sama persis dengan form pemeriksaan. Data warisan desktop atau
+  /// contoh lama bisa menyimpan Z-Score dan status yang berbeda dari
+  /// hitungan aplikasi ini, sehingga daftar dan form tidak cocok.
+  /// Baris yang berubah diperbarui (pemicu outbox menandainya untuk
+  /// sinkronisasi). Mengembalikan jumlah baris yang diperbaiki.
+  static Future<int> hitungUlangSemuaStatus() async {
+    final db = await database;
+    final rows = await db.rawQuery(
+        'SELECT p.id_periksa, p.tanggal, p.berat_badan, p.tinggi_badan, '
+        'p.posisi_ukur, p.z_bbu, p.z_tbu, p.z_bbtb, p.status_gizi, '
+        'b.tgl_lahir, b.jenis_kelamin '
+        'FROM pemeriksaan p '
+        'JOIN balita b ON b.id_balita = p.id_balita');
+    var diperbaiki = 0;
+    for (final r in rows) {
+      final tglLahir = DateTime.tryParse(r['tgl_lahir']?.toString() ?? '');
+      final tglPeriksa = DateTime.tryParse(r['tanggal']?.toString() ?? '');
+      final bb = (r['berat_badan'] as num?)?.toDouble();
+      final tb = (r['tinggi_badan'] as num?)?.toDouble();
+      if (tglLahir == null || tglPeriksa == null || bb == null || tb == null) {
+        continue;
+      }
+      final umur = hitungUmurBulan(tglLahir, tglPeriksa);
+      final koreksi = koreksiTinggi(
+          tb, umur, r['posisi_ukur']?.toString() ?? 'Berdiri');
+      final hasil = hitungStatusGiziDetail(
+          bb, koreksi.tinggiKoreksi, umur, r['jenis_kelamin']?.toString());
+      double? zDb(double z) => z.isNaN ? null : z;
+      final zB = zDb(hasil.zBBU);
+      final zT = zDb(hasil.zTBU);
+      final zBT = zDb(hasil.zBBTB);
+      bool beda(double? a, double? b) =>
+          (a == null) != (b == null) ||
+          (a != null && b != null && (a - b).abs() > 0.005);
+      final berubah = beda((r['z_bbu'] as num?)?.toDouble(), zB) ||
+          beda((r['z_tbu'] as num?)?.toDouble(), zT) ||
+          beda((r['z_bbtb'] as num?)?.toDouble(), zBT) ||
+          r['status_gizi']?.toString() != hasil.statusUtama;
+      if (berubah) {
+        await db.update(
+          'pemeriksaan',
+          {
+            'z_bbu': zB,
+            'z_tbu': zT,
+            'z_bbtb': zBT,
+            'status_gizi': hasil.statusUtama,
+          },
+          where: 'id_periksa = ?',
+          whereArgs: [r['id_periksa']],
+        );
+        diperbaiki++;
+      }
+    }
+    return diperbaiki;
   }
 
   // -------------------------------------------------------------------------

@@ -158,6 +158,15 @@ class LayananSinkron {
     try {
       final db = await GrowTrackDB.database;
 
+      // Samakan dulu Z-Score dan status tersimpan dengan hitungan WHO
+      // aplikasi ini, supaya daftar, form, laporan, dan pantauan risiko
+      // konsisten; hasil perbaikan ikut terkirim pada putaran ini.
+      try {
+        await GrowTrackDB.hitungUlangSemuaStatus();
+      } catch (_) {
+        // Gagal hitung ulang tidak boleh menggagalkan sinkronisasi.
+      }
+
       // --- Tarik perubahan dari server ---
       for (final t in urutanTabel) {
        try {
