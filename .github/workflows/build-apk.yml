@@ -188,7 +188,7 @@ jobs:
           p = 'android/app/build.gradle.kts'
           s = open(p).read()
           blok = '    signingConfigs {\n        create("rilis") {\n            val kp = java.util.Properties()\n            val kf = rootProject.file("key.properties")\n            if (kf.exists()) {\n                kp.load(java.io.FileInputStream(kf))\n                storeFile = file(kp.getProperty("storeFile"))\n                storePassword = kp.getProperty("storePassword")\n                keyAlias = kp.getProperty("keyAlias")\n                keyPassword = kp.getProperty("keyPassword")\n            }\n        }\n    }\n'
-          if 'signingConfigs' not in s:
+          if 'create("rilis")' not in s:
               s = s.replace('buildTypes {', blok + '    buildTypes {', 1)
           s = s.replace('signingConfigs.getByName("debug")', 'signingConfigs.getByName("rilis")')
           open(p, 'w').write(s)
