@@ -110,6 +110,97 @@ class _PengaturanScreenState extends State<PengaturanScreen>
     });
   }
 
+  String? _namaOrtuTerpilih(List<OrangTua> daftar, String? id) {
+    if (id == null) return null;
+    for (final o in daftar) {
+      if (o.idOrtu == id) return 'Ibu ${o.namaIbu} / Ayah ${o.namaAyah}';
+    }
+    return null;
+  }
+
+  /// Dialog pemilih data orang tua dengan kolom pencarian: saring
+  /// berdasarkan nama ibu, nama ayah, alamat, nomor HP, atau kode,
+  /// supaya menautkan akun tidak susah saat data orang tua banyak.
+  Future<String?> _dialogPilihOrtu(
+      BuildContext context, List<OrangTua> daftar, String? terpilih) {
+    var kata = '';
+    return showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Pilih Data Orang Tua'),
+        content: SizedBox(
+          width: double.maxFinite,
+          child: StatefulBuilder(
+            builder: (ctx, setCari) {
+              final k = kata.trim().toLowerCase();
+              final hasil = k.isEmpty
+                  ? daftar
+                  : daftar
+                      .where((o) =>
+                          o.namaIbu.toLowerCase().contains(k) ||
+                          o.namaAyah.toLowerCase().contains(k) ||
+                          o.idOrtu.toLowerCase().contains(k) ||
+                          (o.alamat ?? '').toLowerCase().contains(k) ||
+                          (o.noHp ?? '').toLowerCase().contains(k))
+                      .toList();
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    autofocus: true,
+                    decoration: dekorasiInput(
+                        'Cari nama ibu, ayah, atau alamat',
+                        ikon: Icons.search),
+                    onChanged: (v) => setCari(() => kata = v),
+                  ),
+                  const SizedBox(height: 8),
+                  Flexible(
+                    child: hasil.isEmpty
+                        ? const Padding(
+                            padding: EdgeInsets.all(16),
+                            child:
+                                Text('Tidak ada data orang tua yang cocok.'),
+                          )
+                        : ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: hasil.length,
+                            itemBuilder: (_, i) {
+                              final o = hasil[i];
+                              return ListTile(
+                                dense: true,
+                                title: Text(
+                                    'Ibu ${o.namaIbu} / Ayah ${o.namaAyah}'),
+                                subtitle: Text(
+                                  (o.alamat != null && o.alamat!.isNotEmpty)
+                                      ? o.alamat!
+                                      : o.idOrtu,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: o.idOrtu == terpilih
+                                    ? const Icon(Icons.check_circle,
+                                        color: kTeal)
+                                    : null,
+                                onTap: () => Navigator.pop(ctx, o.idOrtu),
+                              );
+                            },
+                          ),
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Batal'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _formPengguna([UserAkun? u]) async {
     final txtUser = TextEditingController(text: u?.username ?? '');
     final txtPass = TextEditingController();
@@ -159,22 +250,37 @@ class _PengaturanScreenState extends State<PengaturanScreen>
                 ),
                 if (role == 'Orang Tua') ...[
                   const SizedBox(height: 12),
-                  DropdownButtonFormField<String>(
-                    initialValue: idOrtuPilihan,
-                    decoration:
-                        dekorasiInput('Tautkan ke Data Orang Tua'),
-                    items: [
-                      for (final o in daftarOrtu)
-                        DropdownMenuItem(
-                          value: o.idOrtu,
-                          child: Text(
-                            'Ibu ${o.namaIbu} / Ayah ${o.namaAyah}',
-                            overflow: TextOverflow.ellipsis,
+                  InkWell(
+                    onTap: () async {
+                      final pilih = await _dialogPilihOrtu(
+                          ctx, daftarOrtu, idOrtuPilihan);
+                      if (pilih != null) {
+                        setDialog(() => idOrtuPilihan = pilih);
+                      }
+                    },
+                    child: InputDecorator(
+                      decoration: dekorasiInput(
+                          'Tautkan ke Data Orang Tua',
+                          ikon: Icons.search),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              _namaOrtuTerpilih(daftarOrtu, idOrtuPilihan) ??
+                                  'Ketuk untuk mencari dan memilih',
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                color: idOrtuPilihan == null
+                                    ? const Color(0xFF94A3B8)
+                                    : null,
+                              ),
+                            ),
                           ),
-                        ),
-                    ],
-                    onChanged: (v) =>
-                        setDialog(() => idOrtuPilihan = v),
+                          const Icon(Icons.arrow_drop_down,
+                              color: Color(0xFF64748B)),
+                        ],
+                      ),
+                    ),
                   ),
                 ],
               ],

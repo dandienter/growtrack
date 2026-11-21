@@ -11,8 +11,8 @@ import '../widgets.dart';
 
 /// Kode versi aplikasi ini. WAJIB disamakan dengan angka sesudah tanda +
 /// pada version di pubspec.yaml setiap rilis (1.6.1+10 -> 10).
-const int kKodeVersiIni = 19;
-const String kNamaVersiIni = '1.9.5';
+const int kKodeVersiIni = 20;
+const String kNamaVersiIni = '1.9.6';
 
 const String _urlVersi =
     'https://api.github.com/repos/dandienter/growtrack/releases/latest';
