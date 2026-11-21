@@ -114,7 +114,7 @@ jobs:
           s = open(p).read()
           if 'android.permission.INTERNET' not in s:
               s = s.replace('<application',
-                            '<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <application',
+                            '<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <application',
                             1)
               open(p, 'w').write(s)
           print('izin internet terpasang')
