@@ -162,9 +162,11 @@ Future<bool> tampilKonfirmasi(
 }
 
 /// Dekorasi kolom isian standar (sudut membulat, latar putih).
-InputDecoration dekorasiInput(String label, {IconData? ikon, String? hint}) {
+InputDecoration dekorasiInput(String label,
+    {IconData? ikon, String? hint, TextStyle? gayaLabel}) {
   return InputDecoration(
     labelText: label,
+    labelStyle: gayaLabel,
     hintText: hint,
     prefixIcon: ikon == null ? null : Icon(ikon),
     filled: true,
@@ -197,11 +199,19 @@ class KolomTanggal extends StatelessWidget {
     return InkWell(
       borderRadius: BorderRadius.circular(12),
       onTap: () async {
+        final kini = DateTime.now();
+        final awal = DateTime(2019);
+        final akhir = DateTime(kini.year + 3, 12, 31);
+        var mula = nilai ?? kini;
+        if (mula.isBefore(awal)) mula = awal;
+        if (mula.isAfter(akhir)) mula = akhir;
         final dipilih = await showDatePicker(
           context: context,
-          initialDate: nilai ?? DateTime.now(),
-          firstDate: DateTime(2000),
-          lastDate: DateTime(2100),
+          initialDate: mula,
+          firstDate: awal,
+          lastDate: akhir,
+          locale: const Locale('id', 'ID'),
+          helpText: label,
         );
         if (dipilih != null) onBerubah(dipilih);
       },

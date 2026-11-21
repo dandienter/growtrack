@@ -451,7 +451,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
                   controller: _txtBb,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  decoration: dekorasiInput('Berat Badan (Kg)'),
+                  decoration: dekorasiInput('Berat Badan (Kg)', gayaLabel: const TextStyle(fontSize: 13)),
                   onChanged: (_) => setState(_hitungUlang),
                 ),
               ),
@@ -461,7 +461,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
                   controller: _txtLk,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  decoration: dekorasiInput('Lingkar Kepala (Cm)'),
+                  decoration: dekorasiInput('Lingkar Kepala (Cm)', gayaLabel: const TextStyle(fontSize: 13)),
                   onChanged: (_) => setState(_hitungUlang),
                 ),
               ),
@@ -476,7 +476,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
                   controller: _txtTb,
                   keyboardType:
                       const TextInputType.numberWithOptions(decimal: true),
-                  decoration: dekorasiInput('Tinggi/Panjang (Cm)'),
+                  decoration: dekorasiInput('Tinggi/Panjang (Cm)', gayaLabel: const TextStyle(fontSize: 13)),
                   onChanged: (_) => setState(_hitungUlang),
                 ),
               ),
@@ -484,7 +484,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   value: _posisi,
-                  decoration: dekorasiInput('Posisi Ukur'),
+                  decoration: dekorasiInput('Posisi Ukur', gayaLabel: const TextStyle(fontSize: 13)),
                   items: const ['Berdiri', 'Telentang']
                       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                       .toList(),
@@ -503,7 +503,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   value: _asi,
-                  decoration: dekorasiInput('ASI Eksklusif'),
+                  decoration: dekorasiInput('ASI Eksklusif', gayaLabel: const TextStyle(fontSize: 13)),
                   items: const ['- Pilih -', 'Ya', 'Tidak']
                       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                       .toList(),
@@ -519,7 +519,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   value: _vitA,
-                  decoration: dekorasiInput('Kapsul Vit A'),
+                  decoration: dekorasiInput('Kapsul Vit A', gayaLabel: const TextStyle(fontSize: 13)),
                   items: _opsiVitA
                       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                       .toList(),
@@ -540,7 +540,7 @@ class _PemeriksaanFormScreenState extends State<PemeriksaanFormScreen> {
               Expanded(
                 child: DropdownButtonFormField<String>(
                   value: _cacing,
-                  decoration: dekorasiInput('Obat Cacing'),
+                  decoration: dekorasiInput('Obat Cacing', gayaLabel: const TextStyle(fontSize: 13)),
                   items: const ['- Pilih -', 'Ya', 'Tidak']
                       .map((s) => DropdownMenuItem(value: s, child: Text(s)))
                       .toList(),
