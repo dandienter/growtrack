@@ -1,5 +1,4 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 
@@ -29,12 +28,14 @@ class LayananNotifikasi {
   static Future<void> _siapkan() async {
     if (_siap) return;
     tzdata.initializeTimeZones();
-    try {
-      final namaZona = await FlutterTimezone.getLocalTimezone();
-      tz.setLocalLocation(tz.getLocation(namaZona));
-    } catch (_) {
-      tz.setLocalLocation(tz.getLocation('Asia/Jakarta'));
-    }
+    // Zona waktu dipilih dari offset perangkat (Indonesia: WIB/WITA/WIT).
+    final offset = DateTime.now().timeZoneOffset.inHours;
+    final namaZona = offset >= 9
+        ? 'Asia/Jayapura'
+        : offset == 8
+            ? 'Asia/Makassar'
+            : 'Asia/Jakarta';
+    tz.setLocalLocation(tz.getLocation(namaZona));
     await _plugin.initialize(
       const InitializationSettings(
         android: AndroidInitializationSettings('@mipmap/ic_launcher'),
