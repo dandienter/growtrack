@@ -187,12 +187,28 @@ jobs:
           python3 - <<'PY'
           p = 'android/app/build.gradle.kts'
           s = open(p).read()
-          blok = '    signingConfigs {\n        create("rilis") {\n            val kp = java.util.Properties()\n            val kf = rootProject.file("key.properties")\n            if (kf.exists()) {\n                kp.load(java.io.FileInputStream(kf))\n                storeFile = file(kp.getProperty("storeFile"))\n                storePassword = kp.getProperty("storePassword")\n                keyAlias = kp.getProperty("keyAlias")\n                keyPassword = kp.getProperty("keyPassword")\n            }\n        }\n    }\n'
+          if 'keystoreProperties' not in s:
+              muat = ('import java.util.Properties\n'
+                      'import java.io.FileInputStream\n\n'
+                      'val keystoreProperties = Properties()\n'
+                      'val keystorePropertiesFile = rootProject.file("key.properties")\n'
+                      'if (keystorePropertiesFile.exists()) {\n'
+                      '    keystoreProperties.load(FileInputStream(keystorePropertiesFile))\n'
+                      '}\n\n')
+              s = muat + s
           if 'create("rilis")' not in s:
+              blok = ('    signingConfigs {\n'
+                      '        create("rilis") {\n'
+                      '            keyAlias = keystoreProperties["keyAlias"] as String\n'
+                      '            keyPassword = keystoreProperties["keyPassword"] as String\n'
+                      '            storeFile = keystoreProperties["storeFile"]?.let { file(it) }\n'
+                      '            storePassword = keystoreProperties["storePassword"] as String\n'
+                      '        }\n'
+                      '    }\n')
               s = s.replace('buildTypes {', blok + '    buildTypes {', 1)
           s = s.replace('signingConfigs.getByName("debug")', 'signingConfigs.getByName("rilis")')
           open(p, 'w').write(s)
-          print('signing rilis terpasang:', 'rilis' in s)
+          print('signing rilis terpasang:', 'create("rilis")' in s and 'keystoreProperties' in s)
           PY
 
       - name: Poloskan splash bawaan Android (krem polos, tanpa ikon burik)
