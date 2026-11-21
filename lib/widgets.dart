@@ -770,3 +770,21 @@ class _PelukisKarakter extends CustomPainter {
   bool shouldRepaint(covariant _PelukisKarakter oldDelegate) =>
       oldDelegate.gaya != gaya || oldDelegate.nama != nama;
 }
+
+/// Batasi lebar konten pada layar lebar (desktop) agar tidak melebar
+/// penuh dan tetap lega di tengah; pada layar HP tidak berpengaruh.
+class KontenLebar extends StatelessWidget {
+  final Widget child;
+
+  const KontenLebar({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 1120),
+        child: child,
+      ),
+    );
+  }
+}

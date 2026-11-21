@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 import 'screens/splash.dart';
 import 'widgets.dart';
@@ -19,6 +23,12 @@ const SystemUiOverlayStyle kGayaBilahSistem = SystemUiOverlayStyle(
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Di desktop (Windows/Linux/macOS) SQLite berjalan lewat FFI karena
+  // plugin sqflite bawaan hanya menyediakan implementasi Android/iOS.
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
+  }
   SystemChrome.setSystemUIOverlayStyle(kGayaBilahSistem);
   await initializeDateFormatting('id_ID', null);
   runApp(const GrowTrackApp());

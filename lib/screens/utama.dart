@@ -93,54 +93,164 @@ class _UtamaScreenState extends State<UtamaScreen>
     } catch (_) {}
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leadingWidth: 58,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 12, right: 4),
-          child: Center(
-            child: Container(
-              width: 42,
-              height: 42,
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                shape: BoxShape.circle,
-              ),
-              padding: const EdgeInsets.all(4),
-              child: Image.asset(
-                'assets/icon/posyandu-logo.png',
-                height: 34,
-                fit: BoxFit.contain,
-              ),
+  /// Bilah sisi untuk layar lebar (desktop): logo dan nama posyandu
+  /// di kepala, lima menu utama, versi aplikasi di kaki.
+  Widget _sidebar() {
+    final item = <(IconData, IconData, String)>[
+      (Icons.home_outlined, Icons.home_rounded, 'Beranda'),
+      (Icons.dataset_outlined, Icons.dataset, 'Data Utama'),
+      (Icons.medical_services_outlined, Icons.medical_services, 'Pelayanan'),
+      (Icons.picture_as_pdf_outlined, Icons.picture_as_pdf, 'Laporan'),
+      (Icons.settings_outlined, Icons.settings_rounded, 'Pengaturan'),
+    ];
+    return Container(
+      width: 248,
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 22, 20, 18),
+            child: Row(
+              children: [
+                Container(
+                  width: 44,
+                  height: 44,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Image.asset(
+                    'assets/icon/posyandu-logo.png',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    _namaPosyandu,
+                    style: const TextStyle(
+                      fontSize: 14.5,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
-        ),
-        title: Text(
-          _namaPosyandu.toUpperCase(),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-        ),
-      ),
-      body: FadeTransition(
-        opacity: _pudarTab,
-        child: SlideTransition(
-          position: _geserTab,
-          child: IndexedStack(
-            index: _tab,
-            children: const [
-              HomeScreen(),
-              MasterDataHub(),
-              PelayananHub(),
-              LaporanScreen(),
-              PengaturanHub(),
-            ],
+          const Divider(height: 1),
+          const SizedBox(height: 12),
+          for (var i = 0; i < item.length; i++)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              child: ListTile(
+                dense: true,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                tileColor: _tab == i ? const Color(0xFFDFF2E4) : null,
+                leading: Icon(
+                  _tab == i ? item[i].$2 : item[i].$1,
+                  color: _tab == i ? kTeal : const Color(0xFF64748B),
+                  size: 21,
+                ),
+                title: Text(
+                  item[i].$3,
+                  style: TextStyle(
+                    fontWeight:
+                        _tab == i ? FontWeight.bold : FontWeight.w500,
+                    color: const Color(0xFF1E293B),
+                    fontSize: 14,
+                  ),
+                ),
+                onTap: () => _pindahTab(i),
+              ),
+            ),
+          const Spacer(),
+          const Padding(
+            padding: EdgeInsets.all(16),
+            child: Text(
+              'GrowTrack v$kNamaVersiIni',
+              style: TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isi = FadeTransition(
+      opacity: _pudarTab,
+      child: SlideTransition(
+        position: _geserTab,
+        child: IndexedStack(
+          index: _tab,
+          children: const [
+            HomeScreen(),
+            MasterDataHub(),
+            PelayananHub(),
+            LaporanScreen(),
+            PengaturanHub(),
+          ],
         ),
       ),
-      bottomNavigationBar: NavigationBar(
+    );
+    return LayoutBuilder(
+      builder: (ctx, batas) {
+        // Layar lebar (desktop): bilah sisi + konten dibatasi lebarnya
+        // agar tetap lega dan tidak melebar penuh.
+        if (batas.maxWidth >= 900) {
+          return Scaffold(
+            body: Row(
+              children: [
+                _sidebar(),
+                const VerticalDivider(width: 1),
+                Expanded(
+                  child: Center(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxWidth: 1120),
+                      child: isi,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+        return Scaffold(
+          appBar: AppBar(
+            leadingWidth: 58,
+            leading: Padding(
+              padding: const EdgeInsets.only(left: 12, right: 4),
+              child: Center(
+                child: Container(
+                  width: 42,
+                  height: 42,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  padding: const EdgeInsets.all(4),
+                  child: Image.asset(
+                    'assets/icon/posyandu-logo.png',
+                    height: 34,
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            ),
+            title: Text(
+              _namaPosyandu.toUpperCase(),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+            ),
+          ),
+          body: isi,
+          bottomNavigationBar: NavigationBar(
         backgroundColor: Colors.white,
         indicatorColor: const Color(0xFFE0F2F1),
         labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
@@ -174,7 +284,9 @@ class _UtamaScreenState extends State<UtamaScreen>
             label: 'Pengaturan',
           ),
         ],
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -171,7 +171,8 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
       ),
       body: _memuat
           ? const Center(child: CircularProgressIndicator())
-          : RefreshIndicator(
+          : KontenLebar(
+              child: RefreshIndicator(
               onRefresh: _muat,
               child: ListView(
                 padding: const EdgeInsets.all(16),
@@ -274,6 +275,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
                   ),
                   const SizedBox(height: 8),
                 ],
+              ),
               ),
             ),
     );
@@ -617,7 +619,8 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
       ),
       body: _memuat
           ? const Center(child: CircularProgressIndicator())
-          : ListView(
+          : KontenLebar(
+              child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
                 _kartuProfil(b),
@@ -828,6 +831,7 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
                 ),
                 const SizedBox(height: 12),
               ],
+              ),
             ),
     );
   }

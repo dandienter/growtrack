@@ -11,8 +11,8 @@ import '../widgets.dart';
 
 /// Kode versi aplikasi ini. WAJIB disamakan dengan angka sesudah tanda +
 /// pada version di pubspec.yaml setiap rilis (1.6.1+10 -> 10).
-const int kKodeVersiIni = 20;
-const String kNamaVersiIni = '1.9.6';
+const int kKodeVersiIni = 21;
+const String kNamaVersiIni = '1.9.7';
 
 const String _urlVersi =
     'https://api.github.com/repos/dandienter/growtrack/releases/latest';
@@ -51,11 +51,16 @@ class LayananUpdate {
       final tag = (j['tag_name']?.toString() ?? '').replaceFirst('v', '');
       final bagian = tag.split('+');
       final kode = bagian.length > 1 ? int.tryParse(bagian[1]) ?? 0 : 0;
+      // Nama aset mengikuti platform: APK untuk Android, paket ZIP
+      // untuk desktop Windows.
+      final namaAset = Platform.isWindows
+          ? 'GrowTrack-Desktop-Windows.zip'
+          : 'GrowTrack.apk';
       var urlApk = '';
       final aset = j['assets'];
       if (aset is List) {
         for (final a in aset) {
-          if (a is Map && a['name']?.toString() == 'GrowTrack.apk') {
+          if (a is Map && a['name']?.toString() == namaAset) {
             urlApk = a['browser_download_url']?.toString() ?? '';
             break;
           }
@@ -137,8 +142,7 @@ class LayananUpdate {
         content: Text(
           'GrowTrack ${info.nama} sudah tersedia.'
           '${info.catatan.isEmpty ? '' : '\n\n${info.catatan}'}'
-          '\n\nKetuk Perbarui untuk mengunduh langsung di dalam aplikasi, '
-          'lalu pasang menimpa versi ini (data tidak hilang).',
+          '${Platform.isWindows ? '\n\nKetuk Perbarui untuk mengunduh paket desktop (ZIP) lewat peramban, lalu ekstrak menimpa folder aplikasi ini (data tidak hilang).' : '\n\nKetuk Perbarui untuk mengunduh langsung di dalam aplikasi, lalu pasang menimpa versi ini (data tidak hilang).'}',
         ),
         actions: [
           TextButton(
@@ -161,6 +165,13 @@ class LayananUpdate {
   /// lalu buka pemasang sistem. Bila unduhan gagal, jatuhkan ke peramban.
   static Future<void> _unduhDanPasang(
       BuildContext context, InfoUpdate info) async {
+    // Di desktop Windows pembaruan berupa paket ZIP: serahkan unduhannya
+    // ke peramban, pengguna mengekstrak menimpa folder aplikasi.
+    if (Platform.isWindows) {
+      await launchUrl(Uri.parse(info.urlApk),
+          mode: LaunchMode.externalApplication);
+      return;
+    }
     final progres = ValueNotifier<double?>(null);
     showDialog<void>(
       context: context,
