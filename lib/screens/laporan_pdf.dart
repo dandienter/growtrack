@@ -17,6 +17,7 @@ const List<String> kJenisLaporan = [
   'Laporan Jadwal & Pelaksanaan Imunisasi',
   'Laporan Konsumsi PMT Warga',
   'Laporan Perkembangan per Balita',
+  'Laporan Bulanan Puskesmas',
 ];
 
 /// Parameter cetak laporan (padanan DialogLaporan).
@@ -529,6 +530,123 @@ class LaporanPdf {
           2: pw.FlexColumnWidth(3.8),
           3: pw.FlexColumnWidth(2.5),
           4: pw.FlexColumnWidth(2.5),
+        },
+      ));
+    } else if (par.jenis == kJenisLaporan[5]) {
+      // Laporan bulanan ringkas untuk Puskesmas: indikator utama,
+      // distribusi status gizi, dan daftar anak yang perlu perhatian.
+      final kini = DateTime.now();
+      final awal = dariDb ??
+          '${kini.year}-${kini.month.toString().padLeft(2, '0')}-01';
+      final hariAkhir = DateTime(kini.year, kini.month + 1, 0).day;
+      final akhir = sampaiDb ??
+          '${kini.year}-${kini.month.toString().padLeft(2, '0')}-'
+              '${hariAkhir.toString().padLeft(2, '0')}';
+      tambahJudul('LAPORAN BULANAN POSYANDU UNTUK PUSKESMAS',
+          subTambahan:
+              'Periode: ${formatTanggalID(awal)} s/d ${formatTanggalID(akhir)}');
+
+      Future<int> hitungSatu(String sql, List<Object?> args) async {
+        final r = await db.rawQuery(sql, args);
+        return (r.first.values.first as num?)?.toInt() ?? 0;
+      }
+
+      final totalBalita =
+          await hitungSatu('SELECT COUNT(*) FROM balita', const []);
+      final periksaBulan = await hitungSatu(
+          'SELECT COUNT(*) FROM pemeriksaan WHERE tanggal BETWEEN ? AND ?',
+          [awal, akhir]);
+      final imunisasiBulan = await hitungSatu(
+          "SELECT COUNT(*) FROM jadwal_imunisasi WHERE status = 'Selesai' "
+          'AND tgl_diberikan BETWEEN ? AND ?',
+          [awal, akhir]);
+      final anakBerisiko = await hitungSatu(
+          'SELECT COUNT(DISTINCT id_balita) FROM pemeriksaan '
+          'WHERE tanggal BETWEEN ? AND ? AND (status_gizi LIKE ? '
+          'OR status_gizi LIKE ? OR status_gizi LIKE ?)',
+          [awal, akhir, '%Buruk%', '%Stunting%', '%Kurang%']);
+      final cakupan = await GrowTrackDB.ambilCakupanImunisasi();
+      final rataCakupan = cakupan.isEmpty
+          ? 0.0
+          : cakupan.fold<double>(0, (a, c) => a + c.persen) / cakupan.length;
+
+      widgets.add(tabelDari(
+        [_selHeader('Indikator'), _selHeader('Jumlah')],
+        [
+          [_selIsi('Balita terdaftar'), _selIsi('$totalBalita anak', kanan: true)],
+          [
+            _selIsi('Pemeriksaan bulan ini'),
+            _selIsi('$periksaBulan kali', kanan: true)
+          ],
+          [
+            _selIsi('Imunisasi diberikan bulan ini'),
+            _selIsi('$imunisasiBulan kali', kanan: true)
+          ],
+          [
+            _selIsi('Anak berisiko (gizi buruk, kurang, stunting)'),
+            _selIsi('$anakBerisiko anak', kanan: true)
+          ],
+          [
+            _selIsi('Rata-rata cakupan imunisasi'),
+            _selIsi('${rataCakupan.toStringAsFixed(1)}%', kanan: true)
+          ],
+        ],
+        const {0: pw.FlexColumnWidth(3.4), 1: pw.FlexColumnWidth(1.4)},
+      ));
+      widgets.add(pw.SizedBox(height: 16));
+      widgets.add(pw.Text('Distribusi Status Gizi Bulan Ini',
+          style: _gaya(12, tebal: true)));
+      widgets.add(pw.SizedBox(height: 8));
+      final distribusi = await db.rawQuery(
+          'SELECT status_gizi, COUNT(*) AS c FROM pemeriksaan '
+          'WHERE tanggal BETWEEN ? AND ? GROUP BY status_gizi '
+          'ORDER BY c DESC',
+          [awal, akhir]);
+      widgets.add(tabelDari(
+        [_selHeader('Status Gizi'), _selHeader('Jumlah Pemeriksaan')],
+        [
+          for (final r in distribusi)
+            [
+              _selIsi(r['status_gizi']?.toString()),
+              _selIsi('${r['c']}', kanan: true),
+            ],
+          if (distribusi.isEmpty)
+            [_selIsi('Belum ada pemeriksaan pada periode ini'), _selIsi('0')],
+        ],
+        const {0: pw.FlexColumnWidth(3.4), 1: pw.FlexColumnWidth(1.4)},
+      ));
+      widgets.add(pw.SizedBox(height: 16));
+      widgets.add(pw.Text('Anak yang Perlu Perhatian',
+          style: _gaya(12, tebal: true)));
+      widgets.add(pw.SizedBox(height: 8));
+      final risiko = await db.rawQuery(
+          'SELECT b.nama_balita AS nama, p.tanggal AS tgl, '
+          'p.status_gizi AS status FROM pemeriksaan p '
+          'JOIN balita b ON b.id_balita = p.id_balita '
+          'WHERE p.tanggal BETWEEN ? AND ? AND (p.status_gizi LIKE ? '
+          'OR p.status_gizi LIKE ? OR p.status_gizi LIKE ?) '
+          'ORDER BY p.tanggal DESC LIMIT 60',
+          [awal, akhir, '%Buruk%', '%Stunting%', '%Kurang%']);
+      widgets.add(tabelDari(
+        [_selHeader('Nama Anak'), _selHeader('Tanggal'), _selHeader('Status Gizi')],
+        [
+          for (final r in risiko)
+            [
+              _selIsi(r['nama']?.toString()),
+              _selIsi(formatTanggalID(r['tgl']?.toString())),
+              _selIsi(r['status']?.toString()),
+            ],
+          if (risiko.isEmpty)
+            [
+              _selIsi('Tidak ada anak berisiko pada periode ini'),
+              _selIsi('-'),
+              _selIsi('-'),
+            ],
+        ],
+        const {
+          0: pw.FlexColumnWidth(1.8),
+          1: pw.FlexColumnWidth(1.1),
+          2: pw.FlexColumnWidth(2.2),
         },
       ));
     }

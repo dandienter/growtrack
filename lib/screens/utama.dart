@@ -6,6 +6,7 @@ import '../sync/sync_service.dart';
 import '../sync/update_service.dart';
 import '../widgets.dart';
 import 'balita.dart';
+import '../notifikasi.dart';
 import 'cakupan_imunisasi.dart';
 import 'home.dart';
 import 'info.dart';
@@ -48,6 +49,7 @@ class _UtamaScreenState extends State<UtamaScreen>
     );
     _siapkanAnimasiTab(1);
     _animTab.value = 1;
+    LayananNotifikasi.jadwalkanUlang();
     _muatNama();
     // Sinkronisasi latar saat aplikasi dibuka; kegagalan (offline)
     // diabaikan diam-diam, data lokal tetap yang utama.

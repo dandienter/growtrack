@@ -3,6 +3,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../db/database.dart';
 import '../format.dart';
+import '../notifikasi.dart';
 import '../kurva_who.dart';
 import '../models.dart';
 import '../session.dart';
@@ -14,6 +15,7 @@ import 'info.dart';
 import 'laporan.dart';
 import 'laporan_pdf.dart';
 import 'login.dart';
+import 'rujukan_pdf.dart';
 
 /// Teks umur ringkas dari tanggal lahir db (yyyy-MM-dd):
 /// "2 th 8 bln", "8 bln", "12 hari".
@@ -72,6 +74,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   void initState() {
     super.initState();
     LayananSinkron.sinkronkan();
+    LayananNotifikasi.jadwalkanUlang();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) LayananUpdate.cekOtomatis(context);
     });
@@ -502,6 +505,7 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
         _jadwal = j;
         _memuat = false;
       });
+      LayananNotifikasi.jadwalkanUlang();
     } catch (_) {
       if (mounted) setState(() => _memuat = false);
     }
@@ -540,6 +544,59 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
       );
     } catch (e) {
       if (mounted) tampilSnack(context, 'Gagal membuat PDF: $e');
+    }
+  }
+
+  Future<void> _buatRujukan() async {
+    try {
+      final terakhir = _periksa.isEmpty ? null : _periksa.first;
+      OrangTua? ortu;
+      final idOrtu = widget.balita.idOrtu;
+      if (idOrtu != null) {
+        final semua = await GrowTrackDB.ambilOrangTua();
+        for (final o in semua) {
+          if (o.idOrtu == idOrtu) {
+            ortu = o;
+            break;
+          }
+        }
+      }
+      final status = (terakhir?.statusGizi ?? '').toLowerCase();
+      final String alasan;
+      if (status.contains('buruk')) {
+        alasan = 'Anak terindikasi gizi buruk berdasarkan pemeriksaan '
+            'terakhir dan memerlukan penanganan medis serta pemantauan '
+            'lanjutan di Puskesmas.';
+      } else if (status.contains('stunting') || status.contains('pendek')) {
+        alasan = 'Anak terindikasi stunting (perawakan pendek menurut '
+            'umur) berdasarkan standar WHO dan memerlukan evaluasi serta '
+            'intervensi gizi lebih lanjut.';
+      } else if (status.contains('kurang')) {
+        alasan = 'Anak terindikasi gizi kurang dan memerlukan evaluasi '
+            'serta intervensi gizi lebih lanjut.';
+      } else {
+        alasan = 'Anak memerlukan evaluasi tumbuh kembang lebih lanjut '
+            'berdasarkan hasil pemantauan posyandu.';
+      }
+      final bytes = await RujukanPdf.buat(
+        balita: widget.balita,
+        terakhir: terakhir,
+        alasan: alasan,
+        ortu: ortu,
+      );
+      if (!mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PratinjauLaporanScreen(
+            judul: 'Surat Rujukan ${widget.balita.namaBalita}',
+            namaBerkas:
+                'Rujukan_${widget.balita.namaBalita.replaceAll(' ', '_')}.pdf',
+            bytes: bytes,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) tampilSnack(context, 'Gagal membuat surat rujukan: $e');
     }
   }
 
@@ -752,6 +809,12 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
                   'imunisasi anak. Bisa disimpan atau dibagikan.',
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
+                ),
+                const SizedBox(height: 10),
+                OutlinedButton.icon(
+                  onPressed: _buatRujukan,
+                  icon: const Icon(Icons.medical_services_outlined, size: 18),
+                  label: const Text('Surat Rujukan ke Puskesmas (PDF)'),
                 ),
                 const SizedBox(height: 12),
               ],
