@@ -568,7 +568,12 @@ class LaporanPdf {
       final cakupan = await GrowTrackDB.ambilCakupanImunisasi();
       final rataCakupan = cakupan.isEmpty
           ? 0.0
-          : cakupan.fold<double>(0, (a, c) => a + c.persen) / cakupan.length;
+          : cakupan.fold<double>(0, (a, c) {
+                final selesai = (c['selesai'] as num?)?.toDouble() ?? 0;
+                final total = (c['total_balita'] as num?)?.toDouble() ?? 0;
+                return a + (total == 0 ? 0.0 : selesai / total * 100);
+              }) /
+              cakupan.length;
 
       widgets.add(tabelDari(
         [_selHeader('Indikator'), _selHeader('Jumlah')],
