@@ -132,28 +132,28 @@ KoreksiTinggi koreksiTinggi(double tinggi, int umurBulan, String posisi) {
 
 String tentukanBBU(double z) {
   if (z.isNaN) return '-';
-  if (z < -3.0) return 'Sangat Kurang (Severely Underweight)';
-  if (z < -2.0) return 'Kurang (Underweight)';
+  if (z < -3.0) return 'Sangat Kurang';
+  if (z < -2.0) return 'Kurang';
   if (z <= 1.0) return 'Berat Badan Normal';
   return 'Risiko Berat Badan Lebih';
 }
 
 String tentukanTBU(double z) {
   if (z.isNaN) return '-';
-  if (z < -3.0) return 'Sangat Pendek (Severely Stunted)';
-  if (z < -2.0) return 'Pendek (Stunted)';
+  if (z < -3.0) return 'Sangat Pendek';
+  if (z < -2.0) return 'Pendek';
   if (z <= 3.0) return 'Tinggi Normal';
   return 'Tinggi';
 }
 
 String tentukanBBTB(double z) {
   if (z.isNaN) return '-';
-  if (z < -3.0) return 'Gizi Buruk (Severely Wasted)';
-  if (z < -2.0) return 'Gizi Kurang (Wasted)';
-  if (z <= 1.0) return 'Gizi Baik (Normal)';
+  if (z < -3.0) return 'Gizi Buruk';
+  if (z < -2.0) return 'Gizi Kurang';
+  if (z <= 1.0) return 'Gizi Baik';
   if (z <= 2.0) return 'Berisiko Gizi Lebih';
-  if (z <= 3.0) return 'Gizi Lebih (Overweight)';
-  return 'Obesitas (Obese)';
+  if (z <= 3.0) return 'Gizi Lebih';
+  return 'Obesitas';
 }
 
 String _fmt(double z) => z.isNaN ? '-' : z.toStringAsFixed(2);
@@ -222,7 +222,7 @@ HasilGizi hitungStatusGiziDetail(
     } else if (statusBBTB.contains('Lebih')) {
       statusUtama = 'Berisiko Gizi Lebih';
     } else if (statusBBU.contains('Kurang')) {
-      statusUtama = 'Underweight (BB Kurang)';
+      statusUtama = 'BB Kurang';
     } else {
       statusUtama = 'Normal / Gizi Baik';
     }

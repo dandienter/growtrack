@@ -61,6 +61,8 @@ class BerandaOrangTuaScreen extends StatefulWidget {
 class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   Pengaturan? _pengaturan;
   List<Balita> _anak = [];
+  List<Konten> _pengumuman = [];
+  List<Konten> _edukasiKader = [];
   Map<String, _InfoAnak> _info = {};
   bool _memuat = true;
 
@@ -77,6 +79,8 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   Future<void> _muat() async {
     try {
       final pg = await GrowTrackDB.ambilPengaturan();
+      final pengumuman = await GrowTrackDB.ambilKonten(jenis: 'pengumuman');
+      final edukasiKader = await GrowTrackDB.ambilKonten(jenis: 'edukasi');
       final idOrtu = SesiUser.idOrtu;
       final anak = idOrtu == null || idOrtu.isEmpty
           ? <Balita>[]
@@ -101,6 +105,8 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
         _pengaturan = pg;
         _anak = anak;
         _info = info;
+        _pengumuman = pengumuman;
+        _edukasiKader = edukasiKader;
         _memuat = false;
       });
     } catch (_) {
@@ -166,6 +172,54 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
                 padding: const EdgeInsets.all(16),
                 children: [
                   _kepalaSapaan(),
+                  if (_pengumuman.isNotEmpty) ...[
+                    const SizedBox(height: 18),
+                    const Text(
+                      'Pengumuman Posyandu',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold,
+                        color: Color(0xFF1E293B),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    for (final k in _pengumuman)
+                      Card(
+                        color: const Color(0xFFFFFBEB),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20)),
+                        child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 6),
+                          leading: Container(
+                            width: 44,
+                            height: 44,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF59E0B).withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: const Icon(Icons.campaign_outlined,
+                                color: Color(0xFFB45309), size: 22),
+                          ),
+                          title: Text(
+                            k.judul,
+                            style: const TextStyle(
+                                fontWeight: FontWeight.w600, fontSize: 14),
+                          ),
+                          subtitle: Text(
+                            k.ringkasan ?? 'Ketuk untuk membaca',
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(fontSize: 12),
+                          ),
+                          trailing: const Icon(Icons.chevron_right),
+                          onTap: () => Navigator.of(context).push(
+                            MaterialPageRoute(
+                                builder: (_) => BacaKontenScreen(konten: k)),
+                          ),
+                        ),
+                      ),
+                  ],
                   const SizedBox(height: 18),
                   const Text(
                     'Anak Saya',
@@ -189,7 +243,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
                     for (final b in _anak)
                       _kartuAnak(b, _info[b.idBalita] ?? const _InfoAnak()),
                   const SizedBox(height: 18),
-                  const SeksiEdukasi(),
+                  SeksiEdukasi(dinamis: _edukasiKader),
                   const SizedBox(height: 18),
                   Card(
                     color: Colors.white,
@@ -208,7 +262,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
                       ),
                       title: const Text('Hubungi Posyandu',
                           style: TextStyle(fontWeight: FontWeight.w600)),
-                      subtitle: const Text('Chat WhatsApp ke kader/posyandu'),
+                      subtitle: const Text('Chat WhatsApp dengan kader'),
                       trailing: const Icon(Icons.chevron_right),
                       onTap: _hubungiPosyandu,
                     ),

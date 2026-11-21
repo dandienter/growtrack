@@ -11,6 +11,7 @@ import 'info.dart';
 import 'jadwal.dart';
 import 'kelola_database.dart';
 import 'konsumsi.dart';
+import 'konten.dart';
 import 'laporan.dart';
 import 'login.dart';
 import 'orang_tua.dart';
@@ -150,7 +151,7 @@ class _UtamaScreenState extends State<UtamaScreen>
           NavigationDestination(
             icon: Icon(Icons.dataset_outlined),
             selectedIcon: Icon(Icons.dataset, color: kTeal),
-            label: 'Master Data',
+            label: 'Data Utama',
           ),
           NavigationDestination(
             icon: Icon(Icons.medical_services_outlined),
@@ -283,7 +284,7 @@ class MasterDataHub extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.all(16),
       children: const [
-        _JudulHub('MASTER DATA'),
+        _JudulHub('DATA UTAMA'),
         _UbinMenu(
           ikon: Icons.family_restroom,
           judul: 'Data Orang Tua',
@@ -385,9 +386,16 @@ class PengaturanHub extends StatelessWidget {
           const _UbinMenu(
             ikon: Icons.storage,
             judul: 'Kelola Database',
-            subJudul: 'Lihat data, backup dan restore',
+            subJudul: 'Lihat data, cadangan, dan pemulihan',
             tujuan: KelolaDatabaseScreen(),
             indeks: 1,
+          ),
+          const _UbinMenu(
+            ikon: Icons.campaign_outlined,
+            judul: 'Konten & Pengumuman',
+            subJudul: 'Materi edukasi dan pengumuman untuk orang tua',
+            tujuan: KelolaKontenScreen(),
+            indeks: 2,
           ),
         ],
         const _UbinMenu(
@@ -395,10 +403,10 @@ class PengaturanHub extends StatelessWidget {
           judul: 'Info Aplikasi',
           subJudul: 'Versi dan tentang aplikasi',
           tujuan: InfoScreen(),
-          indeks: 2,
+          indeks: 3,
         ),
         AnimasiMasuk(
-          indeks: 3,
+          indeks: 4,
           child: Card(
           color: Colors.white,
           elevation: 1,

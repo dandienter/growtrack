@@ -81,22 +81,48 @@ class _PemeriksaanListScreenState extends State<PemeriksaanListScreen> {
                             color: Colors.white,
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(20)),
-                            child: ListTile(
+                            child: InkWell(
                               onTap: () => _ubah(pr),
-                              leading: AvatarKarakter.anak(
-                                nama: pr.namaBalita ?? '',
-                                jenisKelamin: pr.jenisKelamin,
-                                tglLahir: parseTanggalDb(pr.tglLahir),
-                              ),
-                              title: Text(pr.namaBalita ?? pr.idBalita,
-                                  style: const TextStyle(
-                                      fontWeight: FontWeight.bold)),
-                              subtitle: Text(
-                                '${formatTanggalID(pr.tanggal)} • BB ${pr.beratBadan} Kg • TB ${pr.tinggiBadan} Cm',
-                              ),
-                              trailing: ChipStatus(
-                                teks: pr.statusGizi ?? '-',
-                                warna: warnaStatusGizi(pr.statusGizi),
+                              borderRadius: BorderRadius.circular(20),
+                              child: Padding(
+                                padding: const EdgeInsets.all(14),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        AvatarKarakter.anak(
+                                          nama: pr.namaBalita ?? '',
+                                          jenisKelamin: pr.jenisKelamin,
+                                          tglLahir: parseTanggalDb(pr.tglLahir),
+                                        ),
+                                        const SizedBox(width: 12),
+                                        Expanded(
+                                          child: Text(
+                                            pr.namaBalita ?? pr.idBalita,
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 15),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        ChipStatus(
+                                          teks: pr.statusGizi ?? '-',
+                                          warna: warnaStatusGizi(pr.statusGizi),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Text(
+                                      '${formatTanggalID(pr.tanggal)} • BB ${pr.beratBadan} Kg • TB ${pr.tinggiBadan} Cm',
+                                      style: const TextStyle(
+                                          color: Color(0xFF64748B),
+                                          fontSize: 12.5),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ));

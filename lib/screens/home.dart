@@ -401,8 +401,16 @@ class _HomeScreenState extends State<HomeScreen> {
                       jenisKelamin: j['jenis_kelamin']?.toString(),
                       tglLahir: parseTanggalDb(j['tgl_lahir']?.toString()),
                     ),
-                    title: Text(j['nama_balita']?.toString() ?? ''),
-                    subtitle: Text(j['nama_imunisasi']?.toString() ?? ''),
+                    title: Text(
+                      j['nama_balita']?.toString() ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    subtitle: Text(
+                      j['nama_imunisasi']?.toString() ?? '',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     trailing: Text(
                       formatTanggalID(j['tgl_berikutnya']?.toString()),
                       style: const TextStyle(fontWeight: FontWeight.w600),
@@ -420,7 +428,7 @@ class _HomeScreenState extends State<HomeScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _judulSeksi(
-          'Perhatian Khusus (Stunting/Gizi Buruk)',
+          'Perhatian Khusus',
           Icons.warning_amber_outlined,
           const Color(0xFFEF4444),
           onLihatSemua: () => _bukaCepat(const PemeriksaanListScreen()),
@@ -439,18 +447,45 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               children: [
                 for (final pk in _perhatianKhusus)
-                  ListTile(
-                    leading: AvatarKarakter.anak(
-                      nama: pk['nama_balita']?.toString() ?? '',
-                      jenisKelamin: pk['jenis_kelamin']?.toString(),
-                      tglLahir: parseTanggalDb(pk['tgl_lahir']?.toString()),
-                    ),
-                    title: Text(pk['nama_balita']?.toString() ?? ''),
-                    subtitle:
-                        Text(formatTanggalID(pk['tanggal']?.toString())),
-                    trailing: ChipStatus(
-                      teks: pk['status_gizi']?.toString() ?? '',
-                      warna: warnaStatusGizi(pk['status_gizi']?.toString()),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            AvatarKarakter.anak(
+                              nama: pk['nama_balita']?.toString() ?? '',
+                              jenisKelamin: pk['jenis_kelamin']?.toString(),
+                              tglLahir:
+                                  parseTanggalDb(pk['tgl_lahir']?.toString()),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                pk['nama_balita']?.toString() ?? '',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.w600, fontSize: 14.5),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            ChipStatus(
+                              teks: pk['status_gizi']?.toString() ?? '',
+                              warna:
+                                  warnaStatusGizi(pk['status_gizi']?.toString()),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          'Periksa terakhir ${formatTanggalID(pk['tanggal']?.toString())}',
+                          style: const TextStyle(
+                              color: Color(0xFF64748B), fontSize: 12.5),
+                        ),
+                      ],
                     ),
                   ),
               ],

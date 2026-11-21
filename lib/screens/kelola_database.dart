@@ -145,13 +145,13 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
       final berkas = await GrowTrackDB.siapkanBerkasBackup();
       await Share.shareXFiles(
         [XFile(berkas.path)],
-        text: 'Backup Database GrowTrack',
+        text: 'Cadangan Database GrowTrack',
       );
       if (!mounted) return;
       tampilSnack(context,
-          'Backup dibuat: ${berkas.path.split(Platform.pathSeparator).last}');
+          'Cadangan dibuat: ${berkas.path.split(Platform.pathSeparator).last}');
     } catch (e) {
-      if (mounted) tampilSnack(context, 'Backup Gagal: $e');
+      if (mounted) tampilSnack(context, 'Pencadangan Gagal: $e');
     } finally {
       if (mounted) setState(() => _proses = false);
     }
@@ -160,9 +160,9 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
   Future<void> _restore() async {
     final yakin = await tampilKonfirmasi(
       context,
-      judul: 'Peringatan Restore',
+      judul: 'Peringatan Pemulihan',
       pesan:
-          'Restore akan MENGGANTI seluruh database saat ini!\nPastikan sudah backup dulu.\nLanjutkan?',
+          'Pemulihan akan MENGGANTI seluruh database saat ini!\nPastikan sudah membuat cadangan dulu.\nLanjutkan?',
       teksYa: 'Ya, Lanjutkan',
     );
     if (!yakin) return;
@@ -185,7 +185,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
     } catch (e) {
       if (mounted) {
         setState(() => _proses = false);
-        tampilSnack(context, 'Restore Gagal: $e');
+        tampilSnack(context, 'Pemulihan Gagal: $e');
       }
     }
   }
@@ -218,7 +218,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                                 color: kTeal, size: 20),
                             SizedBox(width: 8),
                             Text(
-                              'Sinkronisasi Cloud',
+                              'Sinkronisasi Awan',
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   color: kTinta),
@@ -286,7 +286,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                       child: FilledButton.icon(
                         onPressed: _proses ? null : _backup,
                         icon: const Icon(Icons.backup_outlined),
-                        label: const Text('Backup Database'),
+                        label: const Text('Cadangkan Database'),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -294,7 +294,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _proses ? null : _restore,
                         icon: const Icon(Icons.restore_outlined),
-                        label: const Text('Restore Database'),
+                        label: const Text('Pulihkan Database'),
                       ),
                     ),
                   ],

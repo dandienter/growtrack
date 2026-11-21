@@ -358,3 +358,47 @@ class Pengaturan {
         kota: m['kota']?.toString(),
       );
 }
+
+/// Konten buatan kader yang tersinkron ke semua perangkat: materi
+/// edukasi untuk orang tua dan pengumuman posyandu.
+class Konten {
+  String idKonten;
+  String jenis; // 'edukasi' | 'pengumuman'
+  String judul;
+  String? ringkasan;
+  String isi;
+  String? penulis;
+  String? tanggal; // yyyy-MM-dd HH:mm:ss
+
+  Konten({
+    required this.idKonten,
+    required this.jenis,
+    required this.judul,
+    this.ringkasan,
+    required this.isi,
+    this.penulis,
+    this.tanggal,
+  });
+
+  bool get isPengumuman => jenis == 'pengumuman';
+
+  factory Konten.fromMap(Map<String, Object?> m) => Konten(
+        idKonten: m['id_konten']?.toString() ?? '',
+        jenis: m['jenis']?.toString() ?? 'edukasi',
+        judul: m['judul']?.toString() ?? '',
+        ringkasan: m['ringkasan']?.toString(),
+        isi: m['isi']?.toString() ?? '',
+        penulis: m['penulis']?.toString(),
+        tanggal: m['tanggal']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_konten': idKonten,
+        'jenis': jenis,
+        'judul': judul,
+        'ringkasan': ringkasan,
+        'isi': isi,
+        'penulis': penulis,
+        'tanggal': tanggal,
+      };
+}

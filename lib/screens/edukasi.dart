@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../format.dart';
+import '../models.dart';
 import '../widgets.dart';
 
 /// Artikel edukasi offline untuk orang tua. Isi ringkas dan umum,
@@ -86,7 +88,11 @@ const daftarArtikelEdukasi = <ArtikelEdukasi>[
 /// Seksi edukasi pada beranda orang tua: daftar artikel yang bisa
 /// dibaca kapan pun tanpa internet.
 class SeksiEdukasi extends StatelessWidget {
-  const SeksiEdukasi({super.key});
+  /// Materi edukasi buatan kader (dari database, tersinkron). Kosong
+  /// berarti hanya artikel bawaan yang tampil.
+  final List<Konten> dinamis;
+
+  const SeksiEdukasi({super.key, this.dinamis = const []});
 
   @override
   Widget build(BuildContext context) {
@@ -102,6 +108,36 @@ class SeksiEdukasi extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
+        for (final k in dinamis)
+          Card(
+            color: Colors.white,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            child: ListTile(
+              contentPadding:
+                  const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              leading: Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: kTeal.withOpacity(0.12),
+                  borderRadius: BorderRadius.circular(13),
+                ),
+                child: const Icon(Icons.menu_book_outlined,
+                    color: kTeal, size: 22),
+              ),
+              title: Text(
+                k.judul,
+                style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+              ),
+              subtitle: Text(k.ringkasan ?? 'Materi dari kader posyandu',
+                  style: const TextStyle(fontSize: 12)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => BacaKontenScreen(konten: k)),
+              ),
+            ),
+          ),
         for (final a in daftarArtikelEdukasi)
           Card(
             color: Colors.white,
@@ -194,6 +230,91 @@ class BacaArtikelScreen extends StatelessWidget {
             'Materi edukasi umum, bukan pengganti nasihat dokter atau bidan.',
             style: TextStyle(fontSize: 11.5, color: Color(0xFF94A3B8)),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Layar baca untuk konten buatan kader (edukasi maupun pengumuman).
+class BacaKontenScreen extends StatelessWidget {
+  final Konten konten;
+
+  const BacaKontenScreen({super.key, required this.konten});
+
+  @override
+  Widget build(BuildContext context) {
+    final paragraf = konten.isi
+        .split('\n')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+    final tgl = parseTanggalDb(konten.tanggal);
+    return Scaffold(
+      appBar: AppBar(
+          title: Text(konten.isPengumuman ? 'Pengumuman' : 'Edukasi')),
+      body: ListView(
+        padding: const EdgeInsets.all(20),
+        children: [
+          Row(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                decoration: BoxDecoration(
+                  color: (konten.isPengumuman
+                          ? const Color(0xFFF59E0B)
+                          : kTeal)
+                      .withOpacity(0.14),
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Text(
+                  konten.isPengumuman ? 'PENGUMUMAN' : 'EDUKASI',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 0.6,
+                    color: konten.isPengumuman
+                        ? const Color(0xFFB45309)
+                        : kTeal,
+                  ),
+                ),
+              ),
+              const Spacer(),
+              if (tgl != null)
+                Text(
+                  formatTanggalID(tgl.toIso8601String().substring(0, 10)),
+                  style: const TextStyle(
+                      color: Color(0xFF94A3B8), fontSize: 12),
+                ),
+            ],
+          ),
+          const SizedBox(height: 14),
+          Text(
+            konten.judul,
+            style: const TextStyle(
+              fontSize: 21,
+              fontWeight: FontWeight.bold,
+              color: Color(0xFF1C2A21),
+              height: 1.3,
+            ),
+          ),
+          if (konten.penulis != null && konten.penulis!.isNotEmpty) ...[
+            const SizedBox(height: 6),
+            Text(
+              'Oleh ${konten.penulis}',
+              style: const TextStyle(color: Color(0xFF64748B), fontSize: 13),
+            ),
+          ],
+          const SizedBox(height: 16),
+          for (final p in paragraf) ...[
+            Text(
+              p,
+              style: const TextStyle(
+                  fontSize: 15, height: 1.65, color: Color(0xFF334155)),
+            ),
+            const SizedBox(height: 12),
+          ],
         ],
       ),
     );

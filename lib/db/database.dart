@@ -93,6 +93,11 @@ class GrowTrackDB {
         'id INTEGER PRIMARY KEY DEFAULT 1,'
         'nama_posyandu TEXT, logo_path TEXT, alamat TEXT,'
         'no_telepon TEXT, nama_ketua TEXT, kota TEXT DEFAULT \'Jakarta\')');
+    batch.execute('CREATE TABLE IF NOT EXISTS konten ('
+        'id_konten TEXT PRIMARY KEY,'
+        'jenis TEXT NOT NULL DEFAULT \'edukasi\','
+        'judul TEXT NOT NULL, ringkasan TEXT, isi TEXT,'
+        'penulis TEXT, tanggal TEXT)');
     batch.execute('CREATE TABLE IF NOT EXISTS sesi ('
         'id INTEGER PRIMARY KEY CHECK (id = 1),'
         'username TEXT, nama_lengkap TEXT, role TEXT)');
@@ -124,6 +129,7 @@ class GrowTrackDB {
     'jadwal_imunisasi': 'id_jadwal',
     'konsumsi': 'id_konsumsi',
     'pengaturan': 'id',
+    'konten': 'id_konten',
   };
 
   /// Infrastruktur sinkronisasi offline-first: tabel outbox (penanda baris
@@ -361,7 +367,7 @@ class GrowTrackDB {
         ['PRK104', 'BLT010', tglRel(9), 10.9, 86.0, 46.0, 'Berdiri', -2.05, -2.61, -2.24, 'Stunting + Gizi Kurang', 'Dirujuk ke Puskesmas, diberi PMT pemulihan dan jadwal kontrol 2 minggu'],
         ['PRK105', 'BLT001', tglRel(16), 9.0, 74.5, 45.0, 'Berdiri', -0.4, -0.3, 0.0, 'Normal', 'Berat badan naik 500gr dari bulan lalu'],
         ['PRK106', 'BLT003', tglRel(16), 13.1, 90.0, 47.5, 'Berdiri', 0.2, 0.1, 0.3, 'Normal', 'Aktif dan ceria, lanjutkan menu keluarga'],
-        ['PRK107', 'BLT011', tglRel(35), 10.4, 84.0, 46.5, 'Berdiri', -2.31, -0.9, -1.8, 'Underweight (BB Kurang)', 'Nafsu makan menurun, disarankan tambah protein hewani dan kontrol bulan depan'],
+        ['PRK107', 'BLT011', tglRel(35), 10.4, 84.0, 46.5, 'Berdiri', -2.31, -0.9, -1.8, 'BB Kurang', 'Nafsu makan menurun, disarankan tambah protein hewani dan kontrol bulan depan'],
         ['PRK108', 'BLT012', tglRel(63), 14.6, 98.5, 48.5, 'Berdiri', 0.3, 0.5, 0.0, 'Normal', 'Perkembangan sesuai usia'],
         ['PRK109', 'BLT008', tglRel(35), 13.9, 95.0, 47.0, 'Berdiri', 0.0, 0.2, -0.1, 'Normal', 'Sudah bisa berlari, bicara lancar'],
       ];
@@ -1092,6 +1098,40 @@ class GrowTrackDB {
   }
 
   // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // Konten kader (edukasi + pengumuman, ikut sinkron)
+  // -------------------------------------------------------------------------
+
+  static Future<List<Konten>> ambilKonten({String? jenis}) async {
+    final db = await database;
+    final r = await db.query('konten',
+        where: jenis == null ? null : 'jenis = ?',
+        whereArgs: jenis == null ? null : [jenis],
+        orderBy: 'tanggal DESC');
+    return r.map(Konten.fromMap).toList();
+  }
+
+  static Future<void> tambahKonten(Konten k) async {
+    final db = await database;
+    if (k.idKonten.isEmpty) {
+      k.idKonten = 'KTN${DateTime.now().millisecondsSinceEpoch}';
+    }
+    k.tanggal ??= DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    await db.insert('konten', k.toMap());
+  }
+
+  static Future<void> ubahKonten(Konten k) async {
+    final db = await database;
+    k.tanggal = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    await db.update('konten', k.toMap(),
+        where: 'id_konten = ?', whereArgs: [k.idKonten]);
+  }
+
+  static Future<void> hapusKonten(String idKonten) async {
+    final db = await database;
+    await db.delete('konten', where: 'id_konten = ?', whereArgs: [idKonten]);
+  }
+
   // Backup & Restore (FormKelolaDatabase)
   // -------------------------------------------------------------------------
 

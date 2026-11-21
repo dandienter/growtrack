@@ -18,7 +18,7 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  String _namaPosyandu = '';
+  String _namaPosyandu = 'Posyandu Beringin DDN';
 
   @override
   void initState() {
@@ -111,16 +111,16 @@ class _SplashScreenState extends State<SplashScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              const SizedBox(height: 32),
               const SizedBox(
-                width: 22,
-                height: 22,
+                width: 30,
+                height: 30,
                 child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
+                  strokeWidth: 3,
                   color: kTeal,
                 ),
               ),
-              const SizedBox(height: 14),
+              const SizedBox(height: 18),
               Text(
                 _namaPosyandu.toUpperCase(),
                 maxLines: 1,

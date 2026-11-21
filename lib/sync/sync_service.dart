@@ -37,6 +37,7 @@ class LayananSinkron {
   /// Urutan proses mengikuti relasi antar tabel (induk sebelum anak).
   static const List<String> urutanTabel = [
     'pengaturan',
+    'konten',
     'imunisasi',
     'orang_tua',
     'balita',
@@ -74,6 +75,10 @@ class LayananSinkron {
     'pengaturan': [
       'id', 'nama_posyandu', 'logo_path', 'alamat', 'no_telepon',
       'nama_ketua', 'kota',
+    ],
+    'konten': [
+      'id_konten', 'jenis', 'judul', 'ringkasan', 'isi', 'penulis',
+      'tanggal',
     ],
   };
 
@@ -155,6 +160,7 @@ class LayananSinkron {
 
       // --- Tarik perubahan dari server ---
       for (final t in urutanTabel) {
+       try {
         final wm = await _meta(db, 'wm_$t') ?? '1970-01-01T00:00:00+00:00';
         final hasil = await _minta('GET',
             '/rest/v1/$t?select=*&updated_at=gt.${Uri.encodeComponent(wm)}&order=updated_at.asc');
@@ -171,11 +177,16 @@ class LayananSinkron {
           final wmBaru = hasil.last['updated_at']?.toString();
           if (wmBaru != null) await _aturMeta(db, 'wm_$t', wmBaru);
         }
+       } catch (_) {
+        // Tabel ini dilewati putaran ini (mis. belum ada di server);
+        // tabel lain tetap diproses.
+       }
       }
 
       // --- Kirim penghapusan (tombstone) ---
       final kuburan = await db.query('tombstone', orderBy: 'id ASC');
       for (final tb in kuburan) {
+       try {
         final t = tb['tabel'] as String;
         final id = tb['id_baris'] as String;
         final pk = GrowTrackDB.tabelSinkron[t]!;
@@ -186,10 +197,14 @@ class LayananSinkron {
         );
         await db.delete('tombstone', where: 'id = ?', whereArgs: [tb['id']]);
         dikirim++;
+       } catch (_) {
+        // Penghapusan tabel ini ditunda ke putaran berikutnya.
+       }
       }
 
       // --- Kirim baris kotor (outbox) sebagai upsert ---
       for (final t in urutanTabel) {
+       try {
         final pk = GrowTrackDB.tabelSinkron[t]!;
         final kotor = await db.query('outbox',
             where: 'tabel = ?', whereArgs: [t]);
@@ -214,6 +229,9 @@ class LayananSinkron {
               where: 'tabel = ? AND id_baris = ?', whereArgs: [t, id]);
           dikirim++;
         }
+       } catch (_) {
+        // Tabel ini dilewati putaran ini; antreannya dicoba lagi nanti.
+       }
       }
 
       await _aturMeta(

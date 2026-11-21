@@ -149,7 +149,7 @@ class _InfoScreenState extends State<InfoScreen> {
                 SizedBox(height: 4),
                 Text('•  Laporan PDF siap cetak'),
                 SizedBox(height: 4),
-                Text('•  Backup dan restore database'),
+                Text('•  Cadangkan dan pulihkan database'),
               ],
             ),
           ),
@@ -192,7 +192,7 @@ class _InfoScreenState extends State<InfoScreen> {
           const SizedBox(height: 16),
           const Center(
             child: Text(
-              'Copyright 2026 KKP Teknik Informatika UNINDRA',
+              '© 2026 KKP Teknik Informatika UNINDRA',
               style: TextStyle(fontSize: 11, color: Color(0xFF94A3B8)),
               textAlign: TextAlign.center,
             ),

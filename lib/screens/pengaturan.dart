@@ -424,9 +424,9 @@ class _PengaturanScreenState extends State<PengaturanScreen>
         title: const Text('Pengaturan Sistem'),
         bottom: TabBar(
           controller: _tab,
-          labelColor: Colors.white,
-          unselectedLabelColor: Colors.white70,
-          indicatorColor: Colors.white,
+          labelColor: kTeal,
+          unselectedLabelColor: const Color(0xFF64748B),
+          indicatorColor: kTeal,
           tabs: const [
             Tab(text: 'Identitas & Logo Posyandu'),
             Tab(text: 'Manajemen Akun Pengguna'),
