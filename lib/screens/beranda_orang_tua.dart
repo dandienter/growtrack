@@ -633,6 +633,16 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
                   const SizedBox(height: 8),
                   _kartuZScore(terakhir),
                 ],
+                const SizedBox(height: 16),
+                const Text(
+                  'Saran Tindakan',
+                  style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Color(0xFF1E293B)),
+                ),
+                const SizedBox(height: 8),
+                _kartuSaran(),
                 if (_periksa.isNotEmpty) ...[
                   const SizedBox(height: 16),
                   const Text(
@@ -876,6 +886,182 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
       child: Padding(
         padding: const EdgeInsets.all(14),
         child: kurva,
+      ),
+    );
+  }
+
+  /// Kartu saran tindakan untuk orang tua, berbasis aturan yang sama
+  /// dengan Pantauan Risiko kader: status gizi dan Z-Score terakhir,
+  /// tren berat badan, dan keterlambatan penimbangan.
+  Widget _kartuSaran() {
+    if (_periksa.isEmpty) {
+      return _isiKartuSaran(
+        judul: 'Mulai Pantau Tumbuh Kembang',
+        warna: const Color(0xFF64748B),
+        latar: Colors.white,
+        ikon: Icons.monitor_weight_outlined,
+        alasan: 'Anak belum pernah diperiksa di Posyandu.',
+        saran: const [
+          'Bawa anak ke Posyandu untuk penimbangan dan pengukuran pertama.',
+          'Hasil pemeriksaan akan tampil di halaman ini beserta saran tindakannya.',
+        ],
+      );
+    }
+    final t = _periksa.first;
+    final status = t.statusGizi ?? '';
+    var tingkat = 0; // 0 baik, 1 perlu ditingkatkan, 2 segera
+    String? alasan;
+    if (status.contains('Buruk') ||
+        status.contains('Stunting') ||
+        (t.zBbtb != null && t.zBbtb! < -3) ||
+        (t.zTbu != null && t.zTbu! < -3)) {
+      tingkat = 2;
+      if (status.isNotEmpty) alasan = 'Status terakhir: $status.';
+    } else if (status.contains('Kurang') ||
+        status.contains('Lebih') ||
+        status.contains('Obesitas') ||
+        (t.zBbtb != null && t.zBbtb! < -2) ||
+        (t.zTbu != null && t.zTbu! < -2) ||
+        (t.zBbu != null && t.zBbu! < -2)) {
+      tingkat = 1;
+      if (status.isNotEmpty) alasan = 'Status terakhir: $status.';
+    }
+    if (_periksa.length >= 2) {
+      final p0 = _periksa[0];
+      final p1 = _periksa[1];
+      if (p0.beratBadan <= p1.beratBadan) {
+        if (_periksa.length >= 3 && p1.beratBadan <= _periksa[2].beratBadan) {
+          tingkat = 2;
+          alasan = 'Berat badan tidak naik 2 kali berturut-turut.';
+        } else {
+          if (tingkat < 1) tingkat = 1;
+          alasan ??= 'Berat badan tidak naik dari pemeriksaan sebelumnya.';
+        }
+      }
+    }
+    final tgl = parseTanggalDb(t.tanggal);
+    if (tgl != null && DateTime.now().difference(tgl).inDays > 60) {
+      if (tingkat < 1) tingkat = 1;
+      alasan ??= 'Sudah lebih dari 2 bulan belum ditimbang ulang.';
+    }
+    if (tingkat == 2) {
+      return _isiKartuSaran(
+        judul: 'Perlu Perhatian Segera',
+        warna: const Color(0xFFDC2626),
+        latar: const Color(0xFFFEF2F2),
+        ikon: Icons.warning_amber_rounded,
+        alasan: alasan,
+        saran: const [
+          'Segera periksakan anak ke Puskesmas atau bidan terdekat.',
+          'Unduh surat rujukan di bagian bawah halaman ini dan bawa saat berobat.',
+          'Beri makanan berprotein hewani setiap hari, misalnya telur, ikan, ayam, atau susu.',
+          'Hubungi kader lewat tombol Hubungi Posyandu di beranda bila butuh pendampingan.',
+          'Datang timbang ulang bulan ini, jangan menunggu jadwal berikutnya.',
+        ],
+      );
+    }
+    if (tingkat == 1) {
+      return _isiKartuSaran(
+        judul: 'Perlu Ditingkatkan',
+        warna: const Color(0xFFD97706),
+        latar: const Color(0xFFFFFBEB),
+        ikon: Icons.trending_up,
+        alasan: alasan,
+        saran: const [
+          'Tambahkan protein hewani dan lemak sehat pada menu harian anak.',
+          'Makan utama 3 kali sehari ditambah 2 kali selingan bergizi.',
+          'Pastikan imunisasi yang tertinggal segera dilengkapi.',
+          'Timbang anak setiap bulan di Posyandu tanpa terputus.',
+          'Jaga kebersihan makanan dan biasakan cuci tangan pakai sabun.',
+        ],
+      );
+    }
+    return _isiKartuSaran(
+      judul: 'Tumbuh Kembang Baik, Pertahankan',
+      warna: const Color(0xFF16A34A),
+      latar: const Color(0xFFF0FDF4),
+      ikon: Icons.check_circle_outline,
+      alasan: alasan ?? 'Pertumbuhan anak terpantau baik.',
+      saran: const [
+        'Pertahankan pola makan bergizi seimbang setiap hari.',
+        'Tetap timbang anak setiap bulan di Posyandu.',
+        'Lengkapi imunisasi sesuai jadwal.',
+      ],
+    );
+  }
+
+  Widget _isiKartuSaran({
+    required String judul,
+    required Color warna,
+    required Color latar,
+    required IconData ikon,
+    String? alasan,
+    required List<String> saran,
+  }) {
+    return Card(
+      color: latar,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(ikon, color: warna, size: 20),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    judul,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: warna,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (alasan != null) ...[
+              const SizedBox(height: 6),
+              Text(
+                alasan,
+                style: const TextStyle(
+                    fontSize: 12.5, color: Color(0xFF475569)),
+              ),
+            ],
+            const SizedBox(height: 8),
+            for (final s in saran)
+              Padding(
+                padding: const EdgeInsets.only(bottom: 5),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 1),
+                      child: Icon(Icons.circle, size: 7, color: warna),
+                    ),
+                    const SizedBox(width: 8),
+                    Expanded(
+                      child: Text(
+                        s,
+                        style: const TextStyle(
+                            fontSize: 13, color: Color(0xFF334155)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            const SizedBox(height: 4),
+            const Text(
+              'Saran umum untuk orang tua. Keputusan medis tetap mengikuti arahan bidan atau Puskesmas.',
+              style: TextStyle(
+                  fontSize: 11,
+                  fontStyle: FontStyle.italic,
+                  color: Color(0xFF64748B)),
+            ),
+          ],
+        ),
       ),
     );
   }
