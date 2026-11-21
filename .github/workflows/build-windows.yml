@@ -1,0 +1,91 @@
+name: Build Desktop Windows GrowTrack
+
+permissions:
+  contents: write
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - name: Ambil sumber
+        uses: actions/checkout@v4
+
+      - name: Pasang Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Buat rangka platform Windows
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "$env:TEMP\rangka" | Out-Null
+          Copy-Item pubspec.yaml "$env:TEMP\rangka\"
+          Copy-Item -Recurse lib "$env:TEMP\rangka\"
+          Push-Location "$env:TEMP\rangka"
+          flutter create --org id.kkp --project-name growtrack --platforms=windows .
+          Pop-Location
+          Copy-Item -Recurse "$env:TEMP\rangka\windows" "$env:GITHUB_WORKSPACE\"
+          Copy-Item "$env:TEMP\rangka\.metadata" "$env:GITHUB_WORKSPACE\" -ErrorAction SilentlyContinue
+
+      - name: Beri nama exe GrowTrack
+        shell: pwsh
+        run: |
+          $p = 'windows\CMakeLists.txt'
+          $s = Get-Content $p -Raw
+          $s = $s -replace 'set\(BINARY_NAME "growtrack"\)', 'set(BINARY_NAME "GrowTrack")'
+          Set-Content $p $s -NoNewline
+          Write-Host 'BINARY_NAME dipasang GrowTrack'
+
+      - name: Pasang ikon logo Posyandu untuk exe
+        shell: pwsh
+        run: |
+          python -m pip install --quiet pillow
+          $kode = @'
+          from PIL import Image
+          img = Image.open('assets/icon/posyandu-logo.png').convert('RGBA')
+          ukuran = [(16, 16), (20, 20), (24, 24), (32, 32), (48, 48), (64, 64), (128, 128), (256, 256)]
+          img.save('windows/runner/resources/app_icon.ico', format='ICO', sizes=ukuran)
+          print('app_icon.ico diganti logo Posyandu')
+          '@
+          $kode | Set-Content -Path buat_ikon.py -Encoding UTF8
+          python buat_ikon.py
+
+      - name: Ambil dependensi
+        run: flutter pub get
+
+      - name: Build Windows release
+        run: flutter build windows --release
+
+      - name: Baca versi dari pubspec
+        id: versi
+        shell: pwsh
+        run: |
+          $baris = Get-Content pubspec.yaml | Where-Object { $_ -match '^version:' } | Select-Object -First 1
+          $versi = ($baris -replace 'version:\s*', '').Trim()
+          "versi=$versi" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+          Write-Host "Versi pubspec: $versi"
+
+      - name: Kemas paket desktop ZIP
+        shell: pwsh
+        run: |
+          Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath GrowTrack-Desktop-Windows.zip -Force
+          Get-Item GrowTrack-Desktop-Windows.zip | Select-Object Name, Length
+
+      - name: Unggah paket desktop sebagai artefak
+        uses: actions/upload-artifact@v4
+        with:
+          name: growtrack-desktop-windows
+          path: GrowTrack-Desktop-Windows.zip
+          if-no-files-found: error
+
+      - name: Terbitkan paket desktop ke Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v${{ steps.versi.outputs.versi }}
+          name: GrowTrack ${{ steps.versi.outputs.versi }}
+          files: GrowTrack-Desktop-Windows.zip
+          fail_on_unmatched_files: true
