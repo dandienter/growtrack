@@ -905,12 +905,37 @@ class GrowTrackDB {
         'JOIN balita b ON b.id_balita = p.id_balita');
     var diperbaiki = 0;
     for (final r in rows) {
-      final tglLahir = DateTime.tryParse(r['tgl_lahir']?.toString() ?? '');
-      final tglPeriksa = DateTime.tryParse(r['tanggal']?.toString() ?? '');
-      final bb = (r['berat_badan'] as num?)?.toDouble();
-      final tb = (r['tinggi_badan'] as num?)?.toDouble();
+      // Satu baris bermasalah tidak boleh menggagalkan baris lain.
+      try {
+        await _samakanSatuBaris(r, () => diperbaiki++);
+      } catch (_) {
+        // Lewati baris ini, lanjutkan baris berikutnya.
+      }
+    }
+    return diperbaiki;
+  }
+
+  static double? _keDoubleAman(Object? v) {
+    if (v is num) return v.toDouble();
+    return double.tryParse((v?.toString() ?? '').replaceAll(',', '.'));
+  }
+
+  static DateTime? _tanggalAman(Object? v) {
+    final t = v?.toString() ?? '';
+    if (t.length < 10) return null;
+    return DateTime.tryParse(t.substring(0, 10));
+  }
+
+  static Future<void> _samakanSatuBaris(
+      Map<String, Object?> r, void Function() tandai) async {
+    final db = await database;
+    {
+      final tglLahir = _tanggalAman(r['tgl_lahir']);
+      final tglPeriksa = _tanggalAman(r['tanggal']);
+      final bb = _keDoubleAman(r['berat_badan']);
+      final tb = _keDoubleAman(r['tinggi_badan']);
       if (tglLahir == null || tglPeriksa == null || bb == null || tb == null) {
-        continue;
+        return;
       }
       final umur = hitungUmurBulan(tglLahir, tglPeriksa);
       final koreksi = koreksiTinggi(
@@ -924,9 +949,9 @@ class GrowTrackDB {
       bool beda(double? a, double? b) =>
           (a == null) != (b == null) ||
           (a != null && b != null && (a - b).abs() > 0.005);
-      final berubah = beda((r['z_bbu'] as num?)?.toDouble(), zB) ||
-          beda((r['z_tbu'] as num?)?.toDouble(), zT) ||
-          beda((r['z_bbtb'] as num?)?.toDouble(), zBT) ||
+      final berubah = beda(_keDoubleAman(r['z_bbu']), zB) ||
+          beda(_keDoubleAman(r['z_tbu']), zT) ||
+          beda(_keDoubleAman(r['z_bbtb']), zBT) ||
           r['status_gizi']?.toString() != hasil.statusUtama;
       if (berubah) {
         await db.update(
@@ -940,10 +965,9 @@ class GrowTrackDB {
           where: 'id_periksa = ?',
           whereArgs: [r['id_periksa']],
         );
-        diperbaiki++;
+        tandai();
       }
     }
-    return diperbaiki;
   }
 
   // -------------------------------------------------------------------------

@@ -192,6 +192,15 @@ class LayananSinkron {
        }
       }
 
+      // Samakan lagi sesudah tarik data: baris yang baru tiba dari
+      // server bisa saja masih menyimpan angka lama, dan hasil
+      // perbaikan di sini masih sempat terkirim pada putaran yang sama.
+      try {
+        await GrowTrackDB.hitungUlangSemuaStatus();
+      } catch (_) {
+        // Abaikan, sinkronisasi tetap dilanjutkan.
+      }
+
       // --- Kirim penghapusan (tombstone) ---
       final kuburan = await db.query('tombstone', orderBy: 'id ASC');
       for (final tb in kuburan) {
