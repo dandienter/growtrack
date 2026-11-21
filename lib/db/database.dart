@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../logic/gizi.dart';
@@ -15,9 +16,18 @@ class GrowTrackDB {
   static Database? _db;
   static String? _jalurDb;
 
-  /// Jalur berkas database aktif.
+  /// Jalur berkas database aktif. Di desktop database disimpan di
+  /// folder data aplikasi pengguna (AppData), BUKAN di folder program,
+  /// supaya pembaruan versi desktop (ekstrak ZIP menimpa folder
+  /// aplikasi) tidak pernah menyentuh data.
   static Future<String> jalurDb() async {
-    _jalurDb ??= p.join(await getDatabasesPath(), namaBerkas);
+    if (_jalurDb != null) return _jalurDb!;
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+      final dir = await getApplicationSupportDirectory();
+      _jalurDb = p.join(dir.path, namaBerkas);
+    } else {
+      _jalurDb = p.join(await getDatabasesPath(), namaBerkas);
+    }
     return _jalurDb!;
   }
 
