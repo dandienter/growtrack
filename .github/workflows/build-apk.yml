@@ -46,7 +46,7 @@ jobs:
           m = re.search(r'gradle-([0-9.]+)-all\.zip', s)
           ver = m.group(1) if m else '9.3.1'
           s = re.sub(r'distributionUrl=.*',
-                     'distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
+                     'distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
                      s)
           open(p, 'w').write(s)
           print('distributionUrl dialihkan ke mirror Tencent, Gradle', ver)
@@ -114,9 +114,17 @@ jobs:
           s = open(p).read()
           if 'android.permission.INTERNET' not in s:
               s = s.replace('<application',
-                            '<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <application',
+                            '<uses-permission android:name="android.permission.INTERNET"/>\n    <application',
                             1)
-              open(p, 'w').write(s)
+          if 'android.permission.REQUEST_INSTALL_PACKAGES' not in s:
+              s = s.replace('<application',
+                            '<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>\n    <application',
+                            1)
+          if 'android.permission.POST_NOTIFICATIONS' not in s:
+              s = s.replace('<application',
+                            '<uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>\n    <application',
+                            1)
+          open(p, 'w').write(s)
           print('izin internet terpasang')
           PYEOF
 
