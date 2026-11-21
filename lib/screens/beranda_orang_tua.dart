@@ -11,6 +11,8 @@ import '../sync/update_service.dart';
 import '../widgets.dart';
 import 'edukasi.dart';
 import 'info.dart';
+import 'laporan.dart';
+import 'laporan_pdf.dart';
 import 'login.dart';
 
 /// Teks umur ringkas dari tanggal lahir db (yyyy-MM-dd):
@@ -519,6 +521,28 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
     return hasil;
   }
 
+  Future<void> _unduhLaporan() async {
+    try {
+      final bytes = await LaporanPdf.buat(ParameterLaporan(
+        jenis: 'Laporan Perkembangan per Balita',
+        balita: widget.balita,
+      ));
+      if (!mounted) return;
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => PratinjauLaporanScreen(
+            judul: 'Laporan ${widget.balita.namaBalita}',
+            namaBerkas:
+                'Laporan_${widget.balita.namaBalita.replaceAll(' ', '_')}.pdf',
+            bytes: bytes,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) tampilSnack(context, 'Gagal membuat PDF: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final b = widget.balita;
@@ -716,6 +740,19 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
                       ],
                     ),
                   ),
+                const SizedBox(height: 16),
+                FilledButton.icon(
+                  onPressed: _unduhLaporan,
+                  icon: const Icon(Icons.picture_as_pdf, size: 18),
+                  label: const Text('Unduh Laporan Anak (PDF)'),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Laporan berisi riwayat pemeriksaan, status gizi, dan '
+                  'imunisasi anak. Bisa disimpan atau dibagikan.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 11.5, color: Color(0xFF64748B)),
+                ),
                 const SizedBox(height: 12),
               ],
             ),

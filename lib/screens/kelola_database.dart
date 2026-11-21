@@ -8,6 +8,7 @@ import '../db/database.dart';
 import '../session.dart';
 import '../sync/sync_service.dart';
 import '../widgets.dart';
+import 'impor_data.dart';
 import 'login.dart';
 
 /// Port tampilan/FormKelolaDatabase.java untuk SQLite lokal:
@@ -253,12 +254,101 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 16),
+                const Text(
+                  'CADANGAN DAN PEMULIHAN',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: kTeal),
+                ),
+                const SizedBox(height: 6),
                 Text(
                   'File: $_jalurDb',
                   style: const TextStyle(fontSize: 11, color: Color(0xFF64748B)),
                 ),
-                const SizedBox(height: 12),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: FilledButton.icon(
+                        onPressed: _proses ? null : _backup,
+                        icon: const Icon(Icons.backup_outlined),
+                        label: const Text('Cadangkan Database'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: _proses ? null : _restore,
+                        icon: const Icon(Icons.restore_outlined),
+                        label: const Text('Pulihkan Database'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'IMPOR DATA',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: kTeal),
+                ),
+                const SizedBox(height: 6),
+                const Text(
+                  'Masukkan data orang tua atau balita secara massal dari '
+                  'berkas Excel (XLSX) atau CSV.',
+                  style: TextStyle(fontSize: 12, color: Color(0xFF64748B)),
+                ),
+                const SizedBox(height: 10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final hasil = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const ImporDataScreen(orangTua: true),
+                            ),
+                          );
+                          if (hasil == true) _muat();
+                        },
+                        icon: const Icon(Icons.family_restroom, size: 18),
+                        label: const Text('Impor Orang Tua'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: OutlinedButton.icon(
+                        onPressed: () async {
+                          final hasil = await Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  const ImporDataScreen(orangTua: false),
+                            ),
+                          );
+                          if (hasil == true) _muat();
+                        },
+                        icon: const Icon(Icons.child_care, size: 18),
+                        label: const Text('Impor Balita'),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                const Text(
+                  'JELAJAHI DAN EDIT TABEL',
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 0.8,
+                      color: kTeal),
+                ),
+                const SizedBox(height: 8),
                 DropdownButtonFormField<String>(
                   initialValue: _tabelDipilih,
                   isExpanded: true,
@@ -278,26 +368,6 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                   "Tabel '$_tabelDipilih': ${_baris.length} baris (maks 1000). "
                   'Ketuk sel untuk edit langsung.',
                   style: const TextStyle(fontSize: 12),
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  children: [
-                    Expanded(
-                      child: FilledButton.icon(
-                        onPressed: _proses ? null : _backup,
-                        icon: const Icon(Icons.backup_outlined),
-                        label: const Text('Cadangkan Database'),
-                      ),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(
-                      child: OutlinedButton.icon(
-                        onPressed: _proses ? null : _restore,
-                        icon: const Icon(Icons.restore_outlined),
-                        label: const Text('Pulihkan Database'),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),

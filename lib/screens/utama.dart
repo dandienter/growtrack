@@ -16,6 +16,7 @@ import 'konten.dart';
 import 'laporan.dart';
 import 'login.dart';
 import 'orang_tua.dart';
+import 'panduan.dart';
 import 'pantauan_risiko.dart';
 import 'pemeriksaan.dart';
 import 'pengaturan.dart';
@@ -415,14 +416,21 @@ class PengaturanHub extends StatelessWidget {
           ),
         ],
         const _UbinMenu(
+          ikon: Icons.menu_book_outlined,
+          judul: 'Panduan Penggunaan',
+          subJudul: 'Langkah demi langkah tiap fitur untuk kader',
+          tujuan: PanduanKaderScreen(),
+          indeks: 3,
+        ),
+        const _UbinMenu(
           ikon: Icons.info_outline,
           judul: 'Info Aplikasi',
           subJudul: 'Versi dan tentang aplikasi',
           tujuan: InfoScreen(),
-          indeks: 3,
+          indeks: 4,
         ),
         AnimasiMasuk(
-          indeks: 4,
+          indeks: 5,
           child: Card(
           color: Colors.white,
           elevation: 1,

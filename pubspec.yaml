@@ -1,7 +1,7 @@
 name: growtrack
 description: GrowTrack - Sistem Informasi Monitoring Tumbuh Kembang Anak (Posyandu). Konversi Flutter dari GrowTrack desktop.
 publish_to: 'none'
-version: 1.8.1+13
+version: 1.9.0+14
 
 environment:
   sdk: '>=3.4.0 <4.0.0'
@@ -15,6 +15,7 @@ dependencies:
   pdf: ^3.11.0
   printing: ^5.13.0
   file_picker: ^13.3.2
+  excel: ^4.0.6
   share_plus: ^13.3.1
   intl: ^0.19.0
   url_launcher: ^6.3.0

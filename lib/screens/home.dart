@@ -10,6 +10,7 @@ import '../widgets.dart';
 import 'balita.dart';
 import 'jadwal.dart';
 import 'laporan.dart';
+import 'panduan.dart';
 import 'pantauan_risiko.dart';
 import 'pemeriksaan.dart';
 
@@ -309,6 +310,47 @@ class _HomeScreenState extends State<HomeScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        InkWell(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const PanduanKaderScreen()),
+          ),
+          borderRadius: BorderRadius.circular(20),
+          child: Container(
+            padding: const EdgeInsets.all(14),
+            decoration: BoxDecoration(
+              color: kTeal,
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: const Row(
+              children: [
+                Icon(Icons.menu_book, color: Colors.white, size: 26),
+                SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Panduan Penggunaan',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      SizedBox(height: 2),
+                      Text(
+                        'Langkah demi langkah tiap fitur, dari data sampai laporan',
+                        style: TextStyle(color: Colors.white70, fontSize: 11.5),
+                      ),
+                    ],
+                  ),
+                ),
+                Icon(Icons.chevron_right, color: Colors.white),
+              ],
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
         _judulSeksi('Aksi Cepat', Icons.bolt, kTeal),
         const SizedBox(height: 8),
         Card(
