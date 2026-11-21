@@ -6,6 +6,7 @@ import '../sync/sync_service.dart';
 import '../sync/update_service.dart';
 import '../widgets.dart';
 import 'balita.dart';
+import 'cakupan_imunisasi.dart';
 import 'home.dart';
 import 'info.dart';
 import 'jadwal.dart';
@@ -15,6 +16,7 @@ import 'konten.dart';
 import 'laporan.dart';
 import 'login.dart';
 import 'orang_tua.dart';
+import 'pantauan_risiko.dart';
 import 'pemeriksaan.dart';
 import 'pengaturan.dart';
 import 'vaksin.dart';
@@ -341,6 +343,20 @@ class PelayananHub extends StatelessWidget {
           subJudul: 'Pencatatan konsumsi dan PMT',
           tujuan: KonsumsiListScreen(),
           indeks: 2,
+        ),
+        _UbinMenu(
+          ikon: Icons.health_and_safety_outlined,
+          judul: 'Pantauan Risiko',
+          subJudul: 'Peringatan dini stunting dan gizi buruk',
+          tujuan: PantauanRisikoScreen(),
+          indeks: 3,
+        ),
+        _UbinMenu(
+          ikon: Icons.verified_outlined,
+          judul: 'Cakupan Imunisasi',
+          subJudul: 'Persentase balita yang sudah imunisasi',
+          tujuan: CakupanImunisasiScreen(),
+          indeks: 4,
         ),
       ],
     );

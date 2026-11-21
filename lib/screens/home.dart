@@ -10,6 +10,7 @@ import '../widgets.dart';
 import 'balita.dart';
 import 'jadwal.dart';
 import 'laporan.dart';
+import 'pantauan_risiko.dart';
 import 'pemeriksaan.dart';
 
 /// Isi tab Beranda (cangkang AppBar + navigasi bawah ada di utama.dart),
@@ -431,7 +432,7 @@ class _HomeScreenState extends State<HomeScreen> {
           'Perhatian Khusus',
           Icons.warning_amber_outlined,
           const Color(0xFFEF4444),
-          onLihatSemua: () => _bukaCepat(const PemeriksaanListScreen()),
+          onLihatSemua: () => _bukaCepat(const PantauanRisikoScreen()),
         ),
         const SizedBox(height: 8),
         if (_perhatianKhusus.isEmpty)

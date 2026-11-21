@@ -1111,6 +1111,19 @@ class GrowTrackDB {
     return r.map(Konten.fromMap).toList();
   }
 
+  /// Cakupan imunisasi: jumlah balita yang sudah menyelesaikan tiap
+  /// jenis imunisasi dibanding total balita terdaftar.
+  static Future<List<Map<String, Object?>>> ambilCakupanImunisasi() async {
+    final db = await database;
+    return db.rawQuery(
+        'SELECT i.id_imunisasi, i.nama_imunisasi, '
+        '(SELECT COUNT(DISTINCT j.id_balita) FROM jadwal_imunisasi j '
+        "WHERE j.id_imunisasi = i.id_imunisasi AND j.status = 'Selesai') "
+        'AS selesai, '
+        '(SELECT COUNT(*) FROM balita) AS total_balita '
+        'FROM imunisasi i ORDER BY i.nama_imunisasi');
+  }
+
   static String _capWaktu() {
     final n = DateTime.now();
     String d(int v) => v.toString().padLeft(2, '0');
