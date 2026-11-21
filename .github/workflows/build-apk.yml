@@ -128,6 +128,52 @@ jobs:
           print('izin internet terpasang')
           PYEOF
 
+      - name: Aktifkan core library desugaring
+        run: |
+          python3 - << 'PYEOF'
+          import os
+          kts = 'android/app/build.gradle.kts'
+          groovy = 'android/app/build.gradle'
+          if os.path.exists(kts):
+            p = kts
+            s = open(p).read()
+            if 'coreLibraryDesugaring' not in s:
+              lines = s.splitlines(True)
+              out = []
+              for line in lines:
+                out.append(line)
+                if 'compileOptions {' in line:
+                  out.append('        isCoreLibraryDesugaringEnabled = true\n')
+              s = ''.join(out)
+              if not s.endswith('\n'):
+                s += '\n'
+              s += '\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n'
+              open(p, 'w').write(s)
+              print('core library desugaring diaktifkan di', p)
+            else:
+              print('core library desugaring sudah aktif di', p)
+          elif os.path.exists(groovy):
+            p = groovy
+            s = open(p).read()
+            if 'coreLibraryDesugaring' not in s:
+              lines = s.splitlines(True)
+              out = []
+              for line in lines:
+                out.append(line)
+                if 'compileOptions {' in line:
+                  out.append('        coreLibraryDesugaringEnabled true\n')
+              s = ''.join(out)
+              if not s.endswith('\n'):
+                s += '\n'
+              s += "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
+              open(p, 'w').write(s)
+              print('core library desugaring diaktifkan di', p)
+            else:
+              print('core library desugaring sudah aktif di', p)
+          else:
+            raise SystemExit('build.gradle.kts atau build.gradle tidak ditemukan di android/app/')
+          PYEOF
+
       - name: Poloskan splash bawaan Android (krem polos, tanpa ikon burik)
         run: |
           for d in drawable drawable-v21; do
