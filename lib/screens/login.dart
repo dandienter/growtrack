@@ -113,7 +113,9 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(24, 18, 24, 30),
-                    child: Column(
+                    child: SizedBox(
+                      width: double.infinity,
+                      child: Column(
                       children: [
                         AnimasiMasuk(
                           child: Container(
@@ -162,6 +164,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                       ],
+                      ),
                     ),
                   ),
                 ],
@@ -290,7 +293,9 @@ class _LoginScreenState extends State<LoginScreen> {
           // ---- Kaki ----
           Padding(
             padding: const EdgeInsets.only(bottom: 14),
-            child: Column(
+            child: SizedBox(
+              width: double.infinity,
+              child: Column(
               children: [
                 Text(
                   'Versi $kNamaVersiIni',
@@ -306,6 +311,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       fontWeight: FontWeight.w600),
                 ),
               ],
+              ),
             ),
           ),
         ],

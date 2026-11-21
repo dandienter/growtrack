@@ -31,7 +31,9 @@ class _SplashScreenState extends State<SplashScreen> {
     var sudahLogin = false;
     try {
       final pg = await GrowTrackDB.ambilPengaturan();
-      _namaPosyandu = pg.namaPosyandu ?? '';
+      if ((pg.namaPosyandu ?? '').isNotEmpty && mounted) {
+        setState(() => _namaPosyandu = pg.namaPosyandu!);
+      }
       sudahLogin = await GrowTrackDB.pulihkanSesi();
     } catch (_) {}
     await tunda;
@@ -56,9 +58,10 @@ class _SplashScreenState extends State<SplashScreen> {
     return Scaffold(
       backgroundColor: kLatar,
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: Column(
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -133,7 +136,8 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Color(0xFF94A3B8),
                 ),
               ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
