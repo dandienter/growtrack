@@ -52,7 +52,7 @@ class _KelolaKontenScreenState extends State<KelolaKontenScreen> {
     final yakin = await tampilKonfirmasi(
       context,
       judul: 'Hapus Konten',
-      isi: 'Hapus "${k.judul}"? Konten ini juga hilang dari aplikasi orang tua setelah sinkronisasi.',
+      pesan: 'Hapus "${k.judul}"? Konten ini juga hilang dari aplikasi orang tua setelah sinkronisasi.',
       teksYa: 'Hapus',
       teksTidak: 'Batal',
     );

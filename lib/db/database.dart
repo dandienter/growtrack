@@ -1111,18 +1111,25 @@ class GrowTrackDB {
     return r.map(Konten.fromMap).toList();
   }
 
+  static String _capWaktu() {
+    final n = DateTime.now();
+    String d(int v) => v.toString().padLeft(2, '0');
+    return '${n.year}-${d(n.month)}-${d(n.day)} '
+        '${d(n.hour)}:${d(n.minute)}:${d(n.second)}';
+  }
+
   static Future<void> tambahKonten(Konten k) async {
     final db = await database;
     if (k.idKonten.isEmpty) {
       k.idKonten = 'KTN${DateTime.now().millisecondsSinceEpoch}';
     }
-    k.tanggal ??= DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    k.tanggal ??= _capWaktu();
     await db.insert('konten', k.toMap());
   }
 
   static Future<void> ubahKonten(Konten k) async {
     final db = await database;
-    k.tanggal = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+    k.tanggal = _capWaktu();
     await db.update('konten', k.toMap(),
         where: 'id_konten = ?', whereArgs: [k.idKonten]);
   }
