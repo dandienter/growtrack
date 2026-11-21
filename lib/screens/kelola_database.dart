@@ -275,7 +275,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                       child: FilledButton.icon(
                         onPressed: _proses ? null : _backup,
                         icon: const Icon(Icons.backup_outlined),
-                        label: const Text('Cadangkan Database'),
+                        label: const Text('Cadangkan'),
                       ),
                     ),
                     const SizedBox(width: 12),
@@ -283,7 +283,7 @@ class _KelolaDatabaseScreenState extends State<KelolaDatabaseScreen> {
                       child: OutlinedButton.icon(
                         onPressed: _proses ? null : _restore,
                         icon: const Icon(Icons.restore_outlined),
-                        label: const Text('Pulihkan Database'),
+                        label: const Text('Pulihkan'),
                       ),
                     ),
                   ],

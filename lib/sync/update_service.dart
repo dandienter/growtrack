@@ -11,11 +11,11 @@ import '../widgets.dart';
 
 /// Kode versi aplikasi ini. WAJIB disamakan dengan angka sesudah tanda +
 /// pada version di pubspec.yaml setiap rilis (1.6.1+10 -> 10).
-const int kKodeVersiIni = 16;
-const String kNamaVersiIni = '1.9.2';
+const int kKodeVersiIni = 17;
+const String kNamaVersiIni = '1.9.3';
 
 const String _urlVersi =
-    'https://demo.43-130-228-96.sslip.io/growtrack-version.json';
+    'https://api.github.com/repos/dandienter/growtrack/releases/latest';
 
 class InfoUpdate {
   final int kode;
@@ -31,24 +31,44 @@ class InfoUpdate {
   });
 }
 
-/// Cek pembaruan dari berkas versi di server demo. Bila ada versi lebih
-/// baru, tampilkan dialog dengan tombol unduh; APK di server ditandatangani
-/// kunci rilis permanen sehingga bisa langsung menimpa versi terpasang.
+/// Cek pembaruan dari rilis GitHub terbaru repo growtrack. Bila ada versi
+/// lebih baru, tampilkan dialog dengan tombol unduh; APK rilis ditandatangani
+/// kunci rilis permanen di CI sehingga bisa langsung menimpa versi terpasang.
 class LayananUpdate {
   static Future<InfoUpdate?> _ambilInfo() async {
     final klien = HttpClient();
     try {
       klien.connectionTimeout = const Duration(seconds: 8);
       final req = await klien.getUrl(Uri.parse(_urlVersi));
+      req.headers.set(HttpHeaders.acceptHeader, 'application/vnd.github+json');
+      req.headers.set(HttpHeaders.userAgentHeader, 'GrowTrack/$kNamaVersiIni');
       final resp = await req.close();
       if (resp.statusCode != 200) return null;
       final teks = await resp.transform(utf8.decoder).join();
       final j = jsonDecode(teks) as Map<String, dynamic>;
+      // Tag rilis berbentuk v1.9.3+17: nama versi sebelum tanda +,
+      // kode versi sesudahnya.
+      final tag = (j['tag_name']?.toString() ?? '').replaceFirst('v', '');
+      final bagian = tag.split('+');
+      final kode = bagian.length > 1 ? int.tryParse(bagian[1]) ?? 0 : 0;
+      var urlApk = '';
+      final aset = j['assets'];
+      if (aset is List) {
+        for (final a in aset) {
+          if (a is Map && a['name']?.toString() == 'GrowTrack.apk') {
+            urlApk = a['browser_download_url']?.toString() ?? '';
+            break;
+          }
+        }
+      }
+      if (kode == 0 || urlApk.isEmpty) return null;
+      var catatan = j['body']?.toString() ?? '';
+      if (catatan.length > 400) catatan = catatan.substring(0, 400);
       return InfoUpdate(
-        kode: (j['versionCode'] as num?)?.toInt() ?? 0,
-        nama: j['versionName']?.toString() ?? '',
-        urlApk: j['url']?.toString() ?? '',
-        catatan: j['catatan']?.toString() ?? '',
+        kode: kode,
+        nama: bagian.first,
+        urlApk: urlApk,
+        catatan: catatan,
       );
     } catch (_) {
       return null;
