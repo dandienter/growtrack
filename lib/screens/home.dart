@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -212,6 +213,10 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                 ),
+                if (MediaQuery.of(context).size.width >= 900) ...[
+                  const SizedBox(width: 16),
+                  const _JamLangsung(),
+                ],
               ],
             ),
           ),
@@ -649,6 +654,64 @@ class _KartuStat extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+/// Jam langsung di kartu sapaan Beranda, hanya tampil pada layar lebar
+/// (desktop): jam besar yang berjalan per detik + tanggal lengkap.
+class _JamLangsung extends StatefulWidget {
+  const _JamLangsung();
+
+  @override
+  State<_JamLangsung> createState() => _JamLangsungState();
+}
+
+class _JamLangsungState extends State<_JamLangsung> {
+  DateTime _kini = DateTime.now();
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) setState(() => _kini = DateTime.now());
+    });
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dua(int n) => n.toString().padLeft(2, '0');
+    final jam =
+        '${dua(_kini.hour)}:${dua(_kini.minute)}:${dua(_kini.second)}';
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          jam,
+          style: const TextStyle(
+            fontSize: 27,
+            fontWeight: FontWeight.w800,
+            color: Colors.white,
+            fontFeatures: [FontFeature.tabularFigures()],
+          ),
+        ),
+        const SizedBox(height: 2),
+        Text(
+          tanggalPanjangId(_kini),
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.white.withOpacity(0.75),
+          ),
+        ),
+      ],
     );
   }
 }
