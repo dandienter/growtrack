@@ -216,6 +216,17 @@ class GrowTrackDB {
           "('ortu', '$hash', '', 'Dewi Lestari', 'Orang Tua', 'ORT001')");
     }
 
+    // Akun demo orang tua kedua (tertaut ke ORT002, ibunya Siti Aisyah)
+    // agar contoh kasus stunting bisa langsung dilihat dari sisi
+    // orang tua; password sama dengan akun bawaan lain.
+    final adaAisyah = await db.rawQuery(
+        "SELECT COUNT(*) AS c FROM users WHERE username = 'aisyah'");
+    if (((adaAisyah.first['c'] as num?)?.toInt() ?? 0) == 0) {
+      await db.rawInsert(
+          'INSERT INTO users (username, password_hash, salt, nama_lengkap, role, id_ortu) VALUES '
+          "('aisyah', '$hash', '', 'Siti Rahayu', 'Orang Tua', 'ORT002')");
+    }
+
     if (await _hitung(db, 'pengaturan') == 0) {
       await db.rawInsert(
           'INSERT INTO pengaturan (id, nama_posyandu, alamat, no_telepon, nama_ketua, kota) VALUES '
