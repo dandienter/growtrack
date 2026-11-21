@@ -46,9 +46,62 @@ List<double> _garisAcuan(List<List<double>> tabel, double bulan) {
   return [_nilaiZ(lms, 0), _nilaiZ(lms, 2), _nilaiZ(lms, -2)];
 }
 
-/// Kurva pertumbuhan WHO: zona normal (-2SD s.d. +2SD) hijau muda,
-/// garis median dan batas SD oranye/hijau, titik anak garis hijau tua.
-class KurvaPertumbuhan extends StatelessWidget {
+/// Skala gambar kurva: batas sumbu dan pemetaan nilai ke piksel.
+/// Dipakai bersama oleh pelukis dan oleh penanganan sentuhan,
+/// supaya titik yang diketuk sama persis dengan titik yang digambar.
+class _Skala {
+  static const padKiri = 30.0;
+  static const padBawah = 16.0;
+  static const padAtas = 8.0;
+  static const padKanan = 8.0;
+
+  final double xMaks;
+  final double yMin;
+  final double yMaks;
+
+  const _Skala(this.xMaks, this.yMin, this.yMaks);
+
+  factory _Skala.hitung(List<List<double>> tabel, List<TitikKurva> titik) {
+    var xMaks = 24.0;
+    for (final t in titik) {
+      xMaks = math.max(xMaks, t.bulan + 4);
+    }
+    xMaks = math.min(xMaks, 61.0);
+
+    var yMin = double.infinity;
+    var yMaks = -double.infinity;
+    for (var x = 0.0; x <= xMaks; x += 2) {
+      final g = _garisAcuan(tabel, x);
+      yMin = math.min(yMin, g[2]);
+      yMaks = math.max(yMaks, g[1]);
+    }
+    for (final t in titik) {
+      yMin = math.min(yMin, t.nilai);
+      yMaks = math.max(yMaks, t.nilai);
+    }
+    if (!yMin.isFinite || !yMaks.isFinite) {
+      yMin = 0;
+      yMaks = 10;
+    }
+    final rentang = (yMaks - yMin).abs() < 0.001 ? 1.0 : (yMaks - yMin);
+    return _Skala(xMaks, yMin - rentang * 0.12, yMaks + rentang * 0.12);
+  }
+
+  double px(Size size, double bulan) =>
+      padKiri + (bulan / xMaks) * (size.width - padKiri - padKanan);
+
+  double py(Size size, double nilai) =>
+      padAtas +
+      (size.height - padAtas - padBawah) -
+      ((nilai - yMin) / (yMaks - yMin)) *
+          (size.height - padAtas - padBawah);
+}
+
+/// Kurva pertumbuhan WHO interaktif: zona normal (-2SD s.d. +2SD)
+/// hijau muda, garis median dan batas SD, titik anak garis hijau tua.
+/// Ketuk atau geser pada kurva untuk memilih titik pengukuran dan
+/// melihat umur serta nilainya.
+class KurvaPertumbuhan extends StatefulWidget {
   final String jenisKelamin; // 'L' atau 'P'
   final bool berat; // true = BB/U (kg), false = TB/U (cm)
   final List<TitikKurva> titik;
@@ -61,20 +114,98 @@ class KurvaPertumbuhan extends StatelessWidget {
   });
 
   @override
+  State<KurvaPertumbuhan> createState() => _KurvaPertumbuhanState();
+}
+
+class _KurvaPertumbuhanState extends State<KurvaPertumbuhan> {
+  int? _dipilih;
+
+  List<TitikKurva> get _urut =>
+      [...widget.titik]..sort((a, b) => a.bulan.compareTo(b.bulan));
+
+  List<List<double>> get _tabel => _parseLms(widget.berat
+      ? (widget.jenisKelamin == 'P' ? kWFA_PEREMPUAN : kWFA_LAKI)
+      : (widget.jenisKelamin == 'P' ? kLHFA_PEREMPUAN : kLHFA_LAKI));
+
+  void _sentuh(Offset lokal, Size ukuran) {
+    final urut = _urut;
+    if (urut.isEmpty) return;
+    final skala = _Skala.hitung(_tabel, urut);
+    var terbaik = 0;
+    var jarakTerbaik = double.infinity;
+    for (var i = 0; i < urut.length; i++) {
+      final o = Offset(
+        skala.px(ukuran, urut[i].bulan),
+        skala.py(ukuran, urut[i].nilai),
+      );
+      final j = (o - lokal).distance;
+      if (j < jarakTerbaik) {
+        jarakTerbaik = j;
+        terbaik = i;
+      }
+    }
+    if (_dipilih != terbaik) setState(() => _dipilih = terbaik);
+  }
+
+  String _teksInfo() {
+    final urut = _urut;
+    if (urut.isEmpty) return 'Belum ada data pengukuran.';
+    final i = _dipilih ?? urut.length - 1;
+    final t = urut[i];
+    final umur = t.bulan == t.bulan.roundToDouble()
+        ? '${t.bulan.toInt()} bulan'
+        : '${t.bulan.toStringAsFixed(1)} bulan';
+    final satuan = widget.berat ? 'kg' : 'cm';
+    final label = widget.berat ? 'BB' : 'TB';
+    return 'Umur $umur: $label ${t.nilai.toStringAsFixed(1)} $satuan';
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final tabel = _parseLms(berat
-        ? (jenisKelamin == 'P' ? kWFA_PEREMPUAN : kWFA_LAKI)
-        : (jenisKelamin == 'P' ? kLHFA_PEREMPUAN : kLHFA_LAKI));
+    final urut = _urut;
+    final dipilih = _dipilih ?? (urut.isEmpty ? null : urut.length - 1);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AspectRatio(
           aspectRatio: 1.55,
-          child: CustomPaint(
-            painter: _PelukisKurva(tabel: tabel, titik: titik),
+          child: LayoutBuilder(
+            builder: (ctx, batas) {
+              final ukuran = Size(batas.maxWidth, batas.maxHeight);
+              return GestureDetector(
+                onTapDown: (d) => _sentuh(d.localPosition, ukuran),
+                onHorizontalDragUpdate: (d) =>
+                    _sentuh(d.localPosition, ukuran),
+                child: CustomPaint(
+                  painter: _PelukisKurva(
+                    tabel: _tabel,
+                    titik: widget.titik,
+                    dipilih: dipilih,
+                  ),
+                ),
+              );
+            },
           ),
         ),
         const SizedBox(height: 6),
+        Row(
+          children: [
+            const Icon(Icons.touch_app_outlined,
+                size: 14, color: Color(0xFF1E7A46)),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                urut.isEmpty ? _teksInfo() : '${_teksInfo()} (ketuk titik lain untuk berpindah)',
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1E7A46),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
         const Row(
           children: [
             _Legenda(warna: Color(0xFF1E7A46), teks: 'Anak'),
@@ -112,46 +243,23 @@ class _Legenda extends StatelessWidget {
 class _PelukisKurva extends CustomPainter {
   final List<List<double>> tabel;
   final List<TitikKurva> titik;
+  final int? dipilih;
 
-  _PelukisKurva({required this.tabel, required this.titik});
+  _PelukisKurva({required this.tabel, required this.titik, this.dipilih});
 
   @override
   void paint(Canvas canvas, Size size) {
-    const padKiri = 30.0;
-    const padBawah = 16.0;
-    const padAtas = 8.0;
-    const padKanan = 8.0;
-    final w = size.width - padKiri - padKanan;
-    final h = size.height - padAtas - padBawah;
+    final skala = _Skala.hitung(tabel, titik);
+    const padKiri = _Skala.padKiri;
+    const padAtas = _Skala.padAtas;
+    final w = size.width - _Skala.padKiri - _Skala.padKanan;
+    final h = size.height - _Skala.padAtas - _Skala.padBawah;
+    final xMaks = skala.xMaks;
+    final yMin = skala.yMin;
+    final yMaks = skala.yMaks;
 
-    var xMaks = 24.0;
-    for (final t in titik) {
-      xMaks = math.max(xMaks, t.bulan + 4);
-    }
-    xMaks = math.min(xMaks, 61.0);
-
-    var yMin = double.infinity;
-    var yMaks = -double.infinity;
-    for (var x = 0.0; x <= xMaks; x += 2) {
-      final g = _garisAcuan(tabel, x);
-      yMin = math.min(yMin, g[2]);
-      yMaks = math.max(yMaks, g[1]);
-    }
-    for (final t in titik) {
-      yMin = math.min(yMin, t.nilai);
-      yMaks = math.max(yMaks, t.nilai);
-    }
-    if (!yMin.isFinite || !yMaks.isFinite) {
-      yMin = 0;
-      yMaks = 10;
-    }
-    final rentang = (yMaks - yMin).abs() < 0.001 ? 1.0 : (yMaks - yMin);
-    yMin -= rentang * 0.12;
-    yMaks += rentang * 0.12;
-
-    double px(double bulan) => padKiri + (bulan / xMaks) * w;
-    double py(double nilai) =>
-        padAtas + h - ((nilai - yMin) / (yMaks - yMin)) * h;
+    double px(double bulan) => skala.px(size, bulan);
+    double py(double nilai) => skala.py(size, nilai);
 
     // Zona normal antara -2SD dan +2SD
     final zona = Path();
@@ -263,8 +371,33 @@ class _PelukisKurva extends CustomPainter {
           ..strokeWidth = 2.2
           ..strokeJoin = StrokeJoin.round,
       );
-      for (final t in urut) {
+      for (var i = 0; i < urut.length; i++) {
+        final t = urut[i];
         final o = Offset(px(t.bulan), py(t.nilai));
+        if (dipilih != null && i == dipilih) {
+          // Titik terpilih: garis penuntun + lingkaran sorot.
+          canvas.drawLine(
+            Offset(o.dx, padAtas),
+            Offset(o.dx, padAtas + h),
+            Paint()
+              ..color = const Color(0xFF1E7A46).withOpacity(0.35)
+              ..strokeWidth = 1,
+          );
+          canvas.drawCircle(
+            o,
+            8,
+            Paint()
+              ..color = const Color(0xFF1E7A46).withOpacity(0.18),
+          );
+          canvas.drawCircle(
+            o,
+            5,
+            Paint()
+              ..color = const Color(0xFF1E7A46)
+              ..style = PaintingStyle.stroke
+              ..strokeWidth = 2,
+          );
+        }
         canvas.drawCircle(o, 3.6, Paint()..color = const Color(0xFF1E7A46));
         canvas.drawCircle(o, 1.7, Paint()..color = Colors.white);
       }
@@ -273,5 +406,7 @@ class _PelukisKurva extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant _PelukisKurva oldDelegate) =>
-      oldDelegate.tabel != tabel || oldDelegate.titik != titik;
+      oldDelegate.tabel != tabel ||
+      oldDelegate.titik != titik ||
+      oldDelegate.dipilih != dipilih;
 }
