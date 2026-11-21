@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../db/database.dart';
@@ -115,8 +117,8 @@ class LayananUpdate {
         content: Text(
           'GrowTrack ${info.nama} sudah tersedia.'
           '${info.catatan.isEmpty ? '' : '\n\n${info.catatan}'}'
-          '\n\nKetuk Perbarui untuk mengunduh, lalu pasang seperti biasa '
-          '(langsung menimpa versi ini, data tidak hilang).',
+          '\n\nKetuk Perbarui untuk mengunduh langsung di dalam aplikasi, '
+          'lalu pasang menimpa versi ini (data tidak hilang).',
         ),
         actions: [
           TextButton(
@@ -124,15 +126,84 @@ class LayananUpdate {
             child: const Text('Nanti'),
           ),
           FilledButton(
-            onPressed: () async {
+            onPressed: () {
               Navigator.pop(ctx);
-              await launchUrl(Uri.parse(info.urlApk),
-                  mode: LaunchMode.externalApplication);
+              _unduhDanPasang(context, info);
             },
             child: const Text('Perbarui'),
           ),
         ],
       ),
     );
+  }
+
+  /// Unduh APK versi baru di dalam aplikasi (dengan indikator progres),
+  /// lalu buka pemasang sistem. Bila unduhan gagal, jatuhkan ke peramban.
+  static Future<void> _unduhDanPasang(
+      BuildContext context, InfoUpdate info) async {
+    final progres = ValueNotifier<double?>(null);
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Mengunduh Pembaruan'),
+        content: ValueListenableBuilder<double?>(
+          valueListenable: progres,
+          builder: (_, v, __) => Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              LinearProgressIndicator(value: v),
+              const SizedBox(height: 12),
+              Text(v == null
+                  ? 'Menyiapkan unduhan...'
+                  : 'Terunduh ${(v * 100).toStringAsFixed(0)}%'),
+            ],
+          ),
+        ),
+      ),
+    );
+    File? berkas;
+    try {
+      final dir = await getTemporaryDirectory();
+      berkas = File('${dir.path}/growtrack-update.apk');
+      final klien = HttpClient();
+      try {
+        final req = await klien.getUrl(Uri.parse(info.urlApk));
+        final resp = await req.close();
+        if (resp.statusCode != 200) {
+          throw Exception('status ${resp.statusCode}');
+        }
+        final total = resp.contentLength;
+        var diterima = 0;
+        final penampung = berkas.openWrite();
+        await for (final potong in resp) {
+          penampung.add(potong);
+          diterima += potong.length;
+          if (total > 0) progres.value = diterima / total;
+        }
+        await penampung.flush();
+        await penampung.close();
+      } finally {
+        klien.close(force: true);
+      }
+    } catch (_) {
+      berkas = null;
+    }
+    if (!context.mounted) return;
+    Navigator.of(context, rootNavigator: true).pop();
+    if (berkas == null) {
+      await launchUrl(Uri.parse(info.urlApk),
+          mode: LaunchMode.externalApplication);
+      return;
+    }
+    final hasil = await OpenFilex.open(
+      berkas.path,
+      type: 'application/vnd.android.package-archive',
+    );
+    if (hasil.type != ResultType.done && context.mounted) {
+      await launchUrl(Uri.parse(info.urlApk),
+          mode: LaunchMode.externalApplication);
+    }
   }
 }
