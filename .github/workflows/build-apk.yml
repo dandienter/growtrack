@@ -14,6 +14,12 @@ jobs:
     steps:
       - name: Ambil sumber
         uses: actions/checkout@v4
+      - name: Buka keystore rilis
+        env:
+          ENC_PASS: ${{ secrets.KEYSTORE_ENC_PASS }}
+        run: |
+          openssl enc -d -aes-256-cbc -pbkdf2 -in growtrack-release.jks.enc -out "$RUNNER_TEMP/growtrack-release.jks" -pass pass:"$ENC_PASS"
+          ls -la "$RUNNER_TEMP/growtrack-release.jks"
 
       - name: Pasang Java 17
         uses: actions/setup-java@v4
@@ -46,7 +52,7 @@ jobs:
           m = re.search(r'gradle-([0-9.]+)-all\.zip', s)
           ver = m.group(1) if m else '9.3.1'
           s = re.sub(r'distributionUrl=.*',
-                     'distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
+                     'distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
                      s)
           open(p, 'w').write(s)
           print('distributionUrl dialihkan ke mirror Tencent, Gradle', ver)
@@ -148,10 +154,10 @@ jobs:
               if not s.endswith('\n'):
                 s += '\n'
               s += '\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n'
-              open(p, 'w').write(s)
-              print('core library desugaring diaktifkan di', p)
-            else:
-              print('core library desugaring sudah aktif di', p)
+            open(p, 'w').write(s)
+            print('core library desugaring diaktifkan di', p)
+          else:
+            print('core library desugaring sudah aktif di', p)
           elif os.path.exists(groovy):
             p = groovy
             s = open(p).read()
@@ -166,26 +172,41 @@ jobs:
               if not s.endswith('\n'):
                 s += '\n'
               s += "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
-              open(p, 'w').write(s)
-              print('core library desugaring diaktifkan di', p)
-            else:
-              print('core library desugaring sudah aktif di', p)
+            open(p, 'w').write(s)
+            print('core library desugaring diaktifkan di', p)
+          else:
+            print('core library desugaring sudah aktif di', p)
           else:
             raise SystemExit('build.gradle.kts atau build.gradle tidak ditemukan di android/app/')
           PYEOF
+      - name: Pasang tanda tangan rilis permanen
+        env:
+          ENC_PASS: ${{ secrets.KEYSTORE_ENC_PASS }}
+        run: |
+          printf 'storeFile=%s\nstorePassword=%s\nkeyAlias=growtrack\nkeyPassword=%s\n' "$RUNNER_TEMP/growtrack-release.jks" "$ENC_PASS" "$ENC_PASS" > android/key.properties
+          python3 - <<'PY'
+          p = 'android/app/build.gradle.kts'
+          s = open(p).read()
+          blok = '    signingConfigs {\n        create("rilis") {\n            val kp = java.util.Properties()\n            val kf = rootProject.file("key.properties")\n            if (kf.exists()) {\n                kp.load(java.io.FileInputStream(kf))\n                storeFile = file(kp.getProperty("storeFile"))\n                storePassword = kp.getProperty("storePassword")\n                keyAlias = kp.getProperty("keyAlias")\n                keyPassword = kp.getProperty("keyPassword")\n            }\n        }\n    }\n'
+          if 'signingConfigs' not in s:
+              s = s.replace('buildTypes {', blok + '    buildTypes {', 1)
+          s = s.replace('signingConfigs.getByName("debug")', 'signingConfigs.getByName("rilis")')
+          open(p, 'w').write(s)
+          print('signing rilis terpasang:', 'rilis' in s)
+          PY
 
       - name: Poloskan splash bawaan Android (krem polos, tanpa ikon burik)
         run: |
           for d in drawable drawable-v21; do
             mkdir -p android/app/src/main/res/$d
             cat > android/app/src/main/res/$d/launch_background.xml << 'XEOF'
-          <?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+            <?xml version="1.0" encoding="utf-8"?>
+            <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
               <item>
                   <color android:color="#F7F5EF"/>
               </item>
-          </layer-list>
-          XEOF
+            </layer-list>
+            XEOF
           done
           echo 'splash bawaan diganti krem polos'
 
@@ -204,10 +225,16 @@ jobs:
           path: GrowTrack.apk
           if-no-files-found: error
 
+      - name: Baca versi dari pubspec
+        id: versi
+        run: |
+          echo "version=$(grep '^version:' pubspec.yaml | sed 's/^version: *//')" >> "$GITHUB_OUTPUT"
+
       - name: Terbitkan APK ke Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: build-${{ github.run_number }}
-          name: GrowTrack build ${{ github.run_number }}
+          tag_name: v${{ steps.versi.outputs.version }}
+          name: GrowTrack v${{ steps.versi.outputs.version }}
+          body: Pembaruan GrowTrack. Unduh GrowTrack.apk dari rilis ini lalu pasang menimpa versi lama; data tidak hilang.
           files: GrowTrack.apk
           fail_on_unmatched_files: true
