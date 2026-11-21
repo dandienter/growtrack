@@ -46,7 +46,7 @@ jobs:
           m = re.search(r'gradle-([0-9.]+)-all\.zip', s)
           ver = m.group(1) if m else '9.3.1'
           s = re.sub(r'distributionUrl=.*',
-                     'distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
+                     'distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
                      s)
           open(p, 'w').write(s)
           print('distributionUrl dialihkan ke mirror Tencent, Gradle', ver)
