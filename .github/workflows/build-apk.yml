@@ -52,7 +52,7 @@ jobs:
           m = re.search(r'gradle-([0-9.]+)-all\.zip', s)
           ver = m.group(1) if m else '9.3.1'
           s = re.sub(r'distributionUrl=.*',
-                     'distributionUrl=https\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
+                     'distributionUrl=https\\://mirrors.cloud.tencent.com/gradle/gradle-' + ver + '-all.zip',
                      s)
           open(p, 'w').write(s)
           print('distributionUrl dialihkan ke mirror Tencent, Gradle', ver)
@@ -154,10 +154,10 @@ jobs:
               if not s.endswith('\n'):
                 s += '\n'
               s += '\ndependencies {\n    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.4")\n}\n'
-            open(p, 'w').write(s)
-            print('core library desugaring diaktifkan di', p)
-          else:
-            print('core library desugaring sudah aktif di', p)
+              open(p, 'w').write(s)
+              print('core library desugaring diaktifkan di', p)
+            else:
+              print('core library desugaring sudah aktif di', p)
           elif os.path.exists(groovy):
             p = groovy
             s = open(p).read()
@@ -172,10 +172,10 @@ jobs:
               if not s.endswith('\n'):
                 s += '\n'
               s += "\ndependencies {\n    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.1.4'\n}\n"
-            open(p, 'w').write(s)
-            print('core library desugaring diaktifkan di', p)
-          else:
-            print('core library desugaring sudah aktif di', p)
+              open(p, 'w').write(s)
+              print('core library desugaring diaktifkan di', p)
+            else:
+              print('core library desugaring sudah aktif di', p)
           else:
             raise SystemExit('build.gradle.kts atau build.gradle tidak ditemukan di android/app/')
           PYEOF
@@ -200,13 +200,13 @@ jobs:
           for d in drawable drawable-v21; do
             mkdir -p android/app/src/main/res/$d
             cat > android/app/src/main/res/$d/launch_background.xml << 'XEOF'
-            <?xml version="1.0" encoding="utf-8"?>
-            <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+          <?xml version="1.0" encoding="utf-8"?>
+          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
               <item>
                   <color android:color="#F7F5EF"/>
               </item>
-            </layer-list>
-            XEOF
+          </layer-list>
+          XEOF
           done
           echo 'splash bawaan diganti krem polos'
 
