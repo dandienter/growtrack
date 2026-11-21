@@ -116,14 +116,17 @@ class _PantauanRisikoScreenState extends State<PantauanRisikoScreen> {
           : Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(12, 12, 12, 4),
-                  child: Row(
-                    children: [
-                      _chipSaring('Semua', -1, const Color(0xFF475569)),
-                      _chipSaring('Tinggi', 2, const Color(0xFFDC2626)),
-                      _chipSaring('Sedang', 1, const Color(0xFFD97706)),
-                      _chipSaring('Rendah', 0, kTeal),
-                    ],
+                  padding: const EdgeInsets.fromLTRB(12, 12, 0, 4),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        _chipSaring('Semua', -1, const Color(0xFF475569)),
+                        _chipSaring('Tinggi', 2, const Color(0xFFDC2626)),
+                        _chipSaring('Sedang', 1, const Color(0xFFD97706)),
+                        _chipSaring('Rendah', 0, kTeal),
+                      ],
+                    ),
                   ),
                 ),
                 Expanded(
