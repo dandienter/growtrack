@@ -218,6 +218,12 @@ class KolomTanggal extends StatelessWidget {
       child: InputDecorator(
         decoration: dekorasiInput(label, ikon: Icons.calendar_month_outlined)
             .copyWith(
+          // Ruang tanggal dipadatkan agar teksnya muat satu baris
+          // walau kolomnya sempit (mis. pasangan Dari/Sampai).
+          prefixIconConstraints:
+              const BoxConstraints(minWidth: 38, minHeight: 38),
+          contentPadding:
+              const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
           suffixIcon: bolehKosong && nilai != null
               ? IconButton(
                   icon: const Icon(Icons.clear, size: 18),
@@ -227,7 +233,9 @@ class KolomTanggal extends StatelessWidget {
         ),
         child: Text(
           nilai == null ? '-' : keTeksTampil(nilai),
-          style: const TextStyle(fontSize: 15),
+          style: const TextStyle(fontSize: 14),
+          softWrap: false,
+          overflow: TextOverflow.ellipsis,
         ),
       ),
     );
