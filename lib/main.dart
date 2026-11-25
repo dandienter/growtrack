@@ -57,6 +57,10 @@ class GrowTrackApp extends StatelessWidget {
         useMaterial3: true,
         fontFamily: 'PlusJakartaSans',
         colorScheme: skema,
+        textTheme: const TextTheme(
+          bodyLarge: TextStyle(fontSize: 15),
+          titleLarge: TextStyle(fontSize: 20),
+        ),
         scaffoldBackgroundColor: kLatar,
         appBarTheme: const AppBarTheme(
           backgroundColor: kLatar,
