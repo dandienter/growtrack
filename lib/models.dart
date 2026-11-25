@@ -1,1 +1,408 @@
-Ly8vIE1vZGVsIGRhdGEgc2VzdWFpIHRhYmVsIHBhZGEga29uZmlndXJhc2kvS29uZWtzaURCLmphdmEgKGVkaXNpIFNRTGl0ZSkuCgpkb3VibGUgX2tlRG91YmxlKE9iamVjdD8gdikgewogIGlmICh2ID09IG51bGwpIHJldHVybiAwOwogIGlmICh2IGlzIG51bSkgcmV0dXJuIHYudG9Eb3VibGUoKTsKICByZXR1cm4gZG91YmxlLnRyeVBhcnNlKHYudG9TdHJpbmcoKS5yZXBsYWNlQWxsKCcsJywgJy4nKSkgPz8gMDsKfQoKZG91YmxlPyBfa2VEb3VibGVOdWxsKE9iamVjdD8gdikgewogIGlmICh2ID09IG51bGwpIHJldHVybiBudWxsOwogIGlmICh2IGlzIG51bSkgcmV0dXJuIHYudG9Eb3VibGUoKTsKICByZXR1cm4gZG91YmxlLnRyeVBhcnNlKHYudG9TdHJpbmcoKS5yZXBsYWNlQWxsKCcsJywgJy4nKSk7Cn0KCmludCBfa2VJbnQoT2JqZWN0PyB2KSB7CiAgaWYgKHYgPT0gbnVsbCkgcmV0dXJuIDA7CiAgaWYgKHYgaXMgbnVtKSByZXR1cm4gdi50b0ludCgpOwogIHJldHVybiBpbnQudHJ5UGFyc2Uodi50b1N0cmluZygpKSA/PyAwOwp9CgpjbGFzcyBPcmFuZ1R1YSB7CiAgU3RyaW5nIGlkT3J0dTsKICBTdHJpbmcgbmFtYUF5YWg7CiAgU3RyaW5nIG5hbWFJYnU7CiAgU3RyaW5nPyBwZWtlcmphYW47CiAgU3RyaW5nPyBub0hwOwogIFN0cmluZz8gYWxhbWF0OwoKICBPcmFuZ1R1YSh7CiAgICByZXF1aXJlZCB0aGlzLmlkT3J0dSwKICAgIHJlcXVpcmVkIHRoaXMubmFtYUF5YWgsCiAgICByZXF1aXJlZCB0aGlzLm5hbWFJYnUsCiAgICB0aGlzLnBla2VyamFhbiwKICAgIHRoaXMubm9IcCwKICAgIHRoaXMuYWxhbWF0LAogIH0pOwoKICBmYWN0b3J5IE9yYW5nVHVhLmZyb21NYXAoTWFwPFN0cmluZywgT2JqZWN0Pz4gbSkgPT4gT3JhbmdUdWEoCiAgICAgICAgaWRPcnR1OiBtWydpZF9vcnR1J10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgbmFtYUF5YWg6IG1bJ25hbWFfYXlhaCddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIG5hbWFJYnU6IG1bJ25hbWFfaWJ1J10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgcGVrZXJqYWFuOiBtWydwZWtlcmphYW4nXT8udG9TdHJpbmcoKSwKICAgICAgICBub0hwOiBtWydub19ocCddPy50b1N0cmluZygpLAogICAgICAgIGFsYW1hdDogbVsnYWxhbWF0J10/LnRvU3RyaW5nKCksCiAgICAgICk7CgogIE1hcDxTdHJpbmcsIE9iamVjdD8+IHRvTWFwKCkgPT4gewogICAgICAgICdpZF9vcnR1JzogaWRPcnR1LAogICAgICAgICduYW1hX2F5YWgnOiBuYW1hQXlhaCwKICAgICAgICAnbmFtYV9pYnUnOiBuYW1hSWJ1LAogICAgICAgICdwZWtlcmphYW4nOiBwZWtlcmphYW4sCiAgICAgICAgJ25vX2hwJzogbm9IcCwKICAgICAgICAnYWxhbWF0JzogYWxhbWF0LAogICAgICB9Owp9CgpjbGFzcyBCYWxpdGEgewogIFN0cmluZyBpZEJhbGl0YTsKICBTdHJpbmcgbmFtYUJhbGl0YTsKICBTdHJpbmcgamVuaXNLZWxhbWluOyAvLyAnTCcgYXRhdSAnUCcKICBTdHJpbmcgdGdsTGFoaXI7IC8vIHl5eXktTU0tZGQKICBkb3VibGUgYmVyYXRMYWhpcjsKICBkb3VibGUgdGluZ2dpTGFoaXI7CiAgU3RyaW5nPyBpZE9ydHU7CiAgU3RyaW5nPyB0Z2xEYWZ0YXI7IC8vIHl5eXktTU0tZGQKICBTdHJpbmc/IG5hbWFJYnU7IC8vIGhhc2lsIGpvaW4gKHRhbXBpbGFuKQogIFN0cmluZz8gbmFtYUF5YWg7IC8vIGhhc2lsIGpvaW4gKHRhbXBpbGFuKQoKICBCYWxpdGEoewogICAgcmVxdWlyZWQgdGhpcy5pZEJhbGl0YSwKICAgIHJlcXVpcmVkIHRoaXMubmFtYUJhbGl0YSwKICAgIHJlcXVpcmVkIHRoaXMuamVuaXNLZWxhbWluLAogICAgcmVxdWlyZWQgdGhpcy50Z2xMYWhpciwKICAgIHRoaXMuYmVyYXRMYWhpciA9IDAsCiAgICB0aGlzLnRpbmdnaUxhaGlyID0gMCwKICAgIHRoaXMuaWRPcnR1LAogICAgdGhpcy50Z2xEYWZ0YXIsCiAgICB0aGlzLm5hbWFJYnUsCiAgICB0aGlzLm5hbWFBeWFoLAogIH0pOwoKICBTdHJpbmcgZ2V0IGplbmlzS2VsYW1pbkxlbmdrYXAgPT4KICAgICAgamVuaXNLZWxhbWluID09ICdMJyA/ICdMYWtpLWxha2knIDogJ1BlcmVtcHVhbic7CgogIGZhY3RvcnkgQmFsaXRhLmZyb21NYXAoTWFwPFN0cmluZywgT2JqZWN0Pz4gbSkgPT4gQmFsaXRhKAogICAgICAgIGlkQmFsaXRhOiBtWydpZF9iYWxpdGEnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBuYW1hQmFsaXRhOiBtWyduYW1hX2JhbGl0YSddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIGplbmlzS2VsYW1pbjogbVsnamVuaXNfa2VsYW1pbiddPy50b1N0cmluZygpID8/ICdMJywKICAgICAgICB0Z2xMYWhpcjogbVsndGdsX2xhaGlyJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgYmVyYXRMYWhpcjogX2tlRG91YmxlKG1bJ2JlcmF0X2xhaGlyJ10pLAogICAgICAgIHRpbmdnaUxhaGlyOiBfa2VEb3VibGUobVsndGluZ2dpX2xhaGlyJ10pLAogICAgICAgIGlkT3J0dTogbVsnaWRfb3J0dSddPy50b1N0cmluZygpLAogICAgICAgIHRnbERhZnRhcjogbVsndGdsX2RhZnRhciddPy50b1N0cmluZygpLAogICAgICAgIG5hbWFJYnU6IG1bJ25hbWFfaWJ1J10/LnRvU3RyaW5nKCksCiAgICAgICAgbmFtYUF5YWg6IG1bJ25hbWFfYXlhaCddPy50b1N0cmluZygpLAogICAgICApOwoKICBNYXA8U3RyaW5nLCBPYmplY3Q/PiB0b01hcCgpID0+IHsKICAgICAgICAnaWRfYmFsaXRhJzogaWRCYWxpdGEsCiAgICAgICAgJ25hbWFfYmFsaXRhJzogbmFtYUJhbGl0YSwKICAgICAgICAnamVuaXNfa2VsYW1pbic6IGplbmlzS2VsYW1pbiwKICAgICAgICAndGdsX2xhaGlyJzogdGdsTGFoaXIsCiAgICAgICAgJ2JlcmF0X2xhaGlyJzogYmVyYXRMYWhpciwKICAgICAgICAndGluZ2dpX2xhaGlyJzogdGluZ2dpTGFoaXIsCiAgICAgICAgJ2lkX29ydHUnOiBpZE9ydHUsCiAgICAgICAgJ3RnbF9kYWZ0YXInOiB0Z2xEYWZ0YXIsCiAgICAgIH07Cn0KCmNsYXNzIFBlbWVyaWtzYWFuIHsKICBTdHJpbmcgaWRQZXJpa3NhOwogIFN0cmluZyBpZEJhbGl0YTsKICBTdHJpbmcgdGFuZ2dhbDsgLy8geXl5eS1NTS1kZAogIGRvdWJsZSBiZXJhdEJhZGFuOwogIGRvdWJsZSB0aW5nZ2lCYWRhbjsKICBkb3VibGUgbGluZ2thcktlcGFsYTsKICBTdHJpbmc/IHBvc2lzaVVrdXI7CiAgZG91YmxlPyB6QmJ1OwogIGRvdWJsZT8gelRidTsKICBkb3VibGU/IHpCYnRiOwogIGRvdWJsZT8gekltdHU7CiAgU3RyaW5nPyBzdGF0dXNHaXppOwogIFN0cmluZz8gY2F0YXRhbkJpZGFuOwogIFN0cmluZz8gbmFtYUJhbGl0YTsgLy8gaGFzaWwgam9pbiAodGFtcGlsYW4pCiAgU3RyaW5nPyBqZW5pc0tlbGFtaW47IC8vIGhhc2lsIGpvaW4gKHRhbXBpbGFuIGF2YXRhcikKICBTdHJpbmc/IHRnbExhaGlyOyAvLyBoYXNpbCBqb2luICh0YW1waWxhbiBhdmF0YXIpCgogIFBlbWVyaWtzYWFuKHsKICAgIHJlcXVpcmVkIHRoaXMuaWRQZXJpa3NhLAogICAgcmVxdWlyZWQgdGhpcy5pZEJhbGl0YSwKICAgIHJlcXVpcmVkIHRoaXMudGFuZ2dhbCwKICAgIHJlcXVpcmVkIHRoaXMuYmVyYXRCYWRhbiwKICAgIHJlcXVpcmVkIHRoaXMudGluZ2dpQmFkYW4sCiAgICB0aGlzLmxpbmdrYXJLZXBhbGEgPSAwLAogICAgdGhpcy5wb3Npc2lVa3VyLAogICAgdGhpcy56QmJ1LAogICAgdGhpcy56VGJ1LAogICAgdGhpcy56QmJ0YiwKICAgIHRoaXMuekltdHUsCiAgICB0aGlzLnN0YXR1c0dpemksCiAgICB0aGlzLmNhdGF0YW5CaWRhbiwKICAgIHRoaXMubmFtYUJhbGl0YSwKICAgIHRoaXMuamVuaXNLZWxhbWluLAogICAgdGhpcy50Z2xMYWhpciwKICB9KTsKCiAgZmFjdG9yeSBQZW1lcmlrc2Fhbi5mcm9tTWFwKE1hcDxTdHJpbmcsIE9iamVjdD8+IG0pID0+IFBlbWVyaWtzYWFuKAogICAgICAgIGlkUGVyaWtzYTogbVsnaWRfcGVyaWtzYSddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIGlkQmFsaXRhOiBtWydpZF9iYWxpdGEnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICB0YW5nZ2FsOiBtWyd0YW5nZ2FsJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgYmVyYXRCYWRhbjogX2tlRG91YmxlKG1bJ2JlcmF0X2JhZGFuJ10pLAogICAgICAgIHRpbmdnaUJhZGFuOiBfa2VEb3VibGUobVsndGluZ2dpX2JhZGFuJ10pLAogICAgICAgIGxpbmdrYXJLZXBhbGE6IF9rZURvdWJsZShtWydsaW5na2FyX2tlcGFsYSddKSwKICAgICAgICBwb3Npc2lVa3VyOiBtWydwb3Npc2lfdWt1ciddPy50b1N0cmluZygpLAogICAgICAgIHpCYnU6IF9rZURvdWJsZU51bGwobVsnel9iYnUnXSksCiAgICAgICAgelRidTogX2tlRG91YmxlTnVsbChtWyd6X3RidSddKSwKICAgICAgICB6QmJ0YjogX2tlRG91YmxlTnVsbChtWyd6X2JidGInXSksCiAgICAgICAgekltdHU6IF9rZURvdWJsZU51bGwobVsnel9pbXR1J10pLAogICAgICAgIHN0YXR1c0dpemk6IG1bJ3N0YXR1c19naXppJ10/LnRvU3RyaW5nKCksCiAgICAgICAgY2F0YXRhbkJpZGFuOiBtWydjYXRhdGFuX2JpZGFuJ10/LnRvU3RyaW5nKCksCiAgICAgICAgbmFtYUJhbGl0YTogbVsnbmFtYV9iYWxpdGEnXT8udG9TdHJpbmcoKSwKICAgICAgICBqZW5pc0tlbGFtaW46IG1bJ2plbmlzX2tlbGFtaW4nXT8udG9TdHJpbmcoKSwKICAgICAgICB0Z2xMYWhpcjogbVsndGdsX2xhaGlyJ10/LnRvU3RyaW5nKCksCiAgICAgICk7CgogIE1hcDxTdHJpbmcsIE9iamVjdD8+IHRvTWFwKCkgPT4gewogICAgICAgICdpZF9wZXJpa3NhJzogaWRQZXJpa3NhLAogICAgICAgICdpZF9iYWxpdGEnOiBpZEJhbGl0YSwKICAgICAgICAndGFuZ2dhbCc6IHRhbmdnYWwsCiAgICAgICAgJ2JlcmF0X2JhZGFuJzogYmVyYXRCYWRhbiwKICAgICAgICAndGluZ2dpX2JhZGFuJzogdGluZ2dpQmFkYW4sCiAgICAgICAgJ2xpbmdrYXJfa2VwYWxhJzogbGluZ2thcktlcGFsYSwKICAgICAgICAncG9zaXNpX3VrdXInOiBwb3Npc2lVa3VyLAogICAgICAgICd6X2JidSc6IHpCYnUsCiAgICAgICAgJ3pfdGJ1JzogelRidSwKICAgICAgICAnel9iYnRiJzogekJidGIsCiAgICAgICAgJ3pfaW10dSc6IHpJbXR1LAogICAgICAgICdzdGF0dXNfZ2l6aSc6IHN0YXR1c0dpemksCiAgICAgICAgJ2NhdGF0YW5fYmlkYW4nOiBjYXRhdGFuQmlkYW4sCiAgICAgIH07Cn0KCmNsYXNzIEltdW5pc2FzaVZha3NpbiB7CiAgU3RyaW5nIGlkSW11bmlzYXNpOwogIFN0cmluZyBuYW1hSW11bmlzYXNpOwogIFN0cmluZz8gbWVya1Byb2R1c2VuOwogIFN0cmluZz8gZG9zaXM7CiAgU3RyaW5nPyB1c2lhUGVtYmVyaWFuOwogIFN0cmluZz8ga2F0ZWdvcmk7CgogIEltdW5pc2FzaVZha3Npbih7CiAgICByZXF1aXJlZCB0aGlzLmlkSW11bmlzYXNpLAogICAgcmVxdWlyZWQgdGhpcy5uYW1hSW11bmlzYXNpLAogICAgdGhpcy5tZXJrUHJvZHVzZW4sCiAgICB0aGlzLmRvc2lzLAogICAgdGhpcy51c2lhUGVtYmVyaWFuLAogICAgdGhpcy5rYXRlZ29yaSwKICB9KTsKCiAgZmFjdG9yeSBJbXVuaXNhc2lWYWtzaW4uZnJvbU1hcChNYXA8U3RyaW5nLCBPYmplY3Q/PiBtKSA9PiBJbXVuaXNhc2lWYWtzaW4oCiAgICAgICAgaWRJbXVuaXNhc2k6IG1bJ2lkX2ltdW5pc2FzaSddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIG5hbWFJbXVuaXNhc2k6IG1bJ25hbWFfaW11bmlzYXNpJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgbWVya1Byb2R1c2VuOiBtWydtZXJrX3Byb2R1c2VuJ10/LnRvU3RyaW5nKCksCiAgICAgICAgZG9zaXM6IG1bJ2Rvc2lzJ10/LnRvU3RyaW5nKCksCiAgICAgICAgdXNpYVBlbWJlcmlhbjogbVsndXNpYV9wZW1iZXJpYW4nXT8udG9TdHJpbmcoKSwKICAgICAgICBrYXRlZ29yaTogbVsna2F0ZWdvcmknXT8udG9TdHJpbmcoKSwKICAgICAgKTsKCiAgTWFwPFN0cmluZywgT2JqZWN0Pz4gdG9NYXAoKSA9PiB7CiAgICAgICAgJ2lkX2ltdW5pc2FzaSc6IGlkSW11bmlzYXNpLAogICAgICAgICduYW1hX2ltdW5pc2FzaSc6IG5hbWFJbXVuaXNhc2ksCiAgICAgICAgJ21lcmtfcHJvZHVzZW4nOiBtZXJrUHJvZHVzZW4sCiAgICAgICAgJ2Rvc2lzJzogZG9zaXMsCiAgICAgICAgJ3VzaWFfcGVtYmVyaWFuJzogdXNpYVBlbWJlcmlhbiwKICAgICAgICAna2F0ZWdvcmknOiBrYXRlZ29yaSwKICAgICAgfTsKfQoKY2xhc3MgSmFkd2FsSW11bmlzYXNpIHsKICBTdHJpbmcgaWRKYWR3YWw7CiAgU3RyaW5nIGlkQmFsaXRhOwogIFN0cmluZyBpZEltdW5pc2FzaTsKICBTdHJpbmc/IHRnbERpYmVyaWthbjsgLy8geXl5eS1NTS1kZAogIFN0cmluZz8gdGdsQmVyaWt1dG55YTsgLy8geXl5eS1NTS1kZAogIFN0cmluZyBzdGF0dXM7IC8vICdCZWx1bScgLyAnU2VsZXNhaScKICBTdHJpbmc/IG5hbWFCYWxpdGE7IC8vIGhhc2lsIGpvaW4gKHRhbXBpbGFuKQogIFN0cmluZz8gbmFtYUltdW5pc2FzaTsgLy8gaGFzaWwgam9pbiAodGFtcGlsYW4pCgogIEphZHdhbEltdW5pc2FzaSh7CiAgICByZXF1aXJlZCB0aGlzLmlkSmFkd2FsLAogICAgcmVxdWlyZWQgdGhpcy5pZEJhbGl0YSwKICAgIHJlcXVpcmVkIHRoaXMuaWRJbXVuaXNhc2ksCiAgICB0aGlzLnRnbERpYmVyaWthbiwKICAgIHRoaXMudGdsQmVyaWt1dG55YSwKICAgIHRoaXMuc3RhdHVzID0gJ0JlbHVtJywKICAgIHRoaXMubmFtYUJhbGl0YSwKICAgIHRoaXMubmFtYUltdW5pc2FzaSwKICB9KTsKCiAgZmFjdG9yeSBKYWR3YWxJbXVuaXNhc2kuZnJvbU1hcChNYXA8U3RyaW5nLCBPYmplY3Q/PiBtKSA9PiBKYWR3YWxJbXVuaXNhc2koCiAgICAgICAgaWRKYWR3YWw6IG1bJ2lkX2phZHdhbCddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIGlkQmFsaXRhOiBtWydpZF9iYWxpdGEnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBpZEltdW5pc2FzaTogbVsnaWRfaW11bmlzYXNpJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgdGdsRGliZXJpa2FuOiBtWyd0Z2xfZGliZXJpa2FuJ10/LnRvU3RyaW5nKCksCiAgICAgICAgdGdsQmVyaWt1dG55YTogbVsndGdsX2JlcmlrdXRueWEnXT8udG9TdHJpbmcoKSwKICAgICAgICBzdGF0dXM6IG1bJ3N0YXR1cyddPy50b1N0cmluZygpID8/ICdCZWx1bScsCiAgICAgICAgbmFtYUJhbGl0YTogbVsnbmFtYV9iYWxpdGEnXT8udG9TdHJpbmcoKSwKICAgICAgICBuYW1hSW11bmlzYXNpOiBtWyduYW1hX2ltdW5pc2FzaSddPy50b1N0cmluZygpLAogICAgICApOwoKICBNYXA8U3RyaW5nLCBPYmplY3Q/PiB0b01hcCgpID0+IHsKICAgICAgICAnaWRfamFkd2FsJzogaWRKYWR3YWwsCiAgICAgICAgJ2lkX2JhbGl0YSc6IGlkQmFsaXRhLAogICAgICAgICdpZF9pbXVuaXNhc2knOiBpZEltdW5pc2FzaSwKICAgICAgICAndGdsX2RpYmVyaWthbic6IHRnbERpYmVyaWthbiwKICAgICAgICAndGdsX2JlcmlrdXRueWEnOiB0Z2xCZXJpa3V0bnlhLAogICAgICAgICdzdGF0dXMnOiBzdGF0dXMsCiAgICAgIH07Cn0KCmNsYXNzIEtvbnN1bXNpIHsKICBTdHJpbmcgaWRLb25zdW1zaTsKICBTdHJpbmcgdGFuZ2dhbDsgLy8geXl5eS1NTS1kZAogIFN0cmluZyBuYW1hS2VnaWF0YW47CiAgU3RyaW5nPyBwZW1iZXJpYW5NdDsKICBTdHJpbmc/IHJ0OwogIFN0cmluZz8gcGVuYW5nZ3VuZ0phd2FiOwogIGludCBqdW1sYWhCYWxpdGE7CiAgZG91YmxlIHRvdGFsQmlheWE7CiAgU3RyaW5nPyBrZXRlcmFuZ2FuOwoKICBLb25zdW1zaSh7CiAgICByZXF1aXJlZCB0aGlzLmlkS29uc3Vtc2ksCiAgICByZXF1aXJlZCB0aGlzLnRhbmdnYWwsCiAgICByZXF1aXJlZCB0aGlzLm5hbWFLZWdpYXRhbiwKICAgIHRoaXMucGVtYmVyaWFuTXQsCiAgICB0aGlzLnJ0LAogICAgdGhpcy5wZW5hbmdndW5nSmF3YWIsCiAgICB0aGlzLmp1bWxhaEJhbGl0YSA9IDAsCiAgICB0aGlzLnRvdGFsQmlheWEgPSAwLAogICAgdGhpcy5rZXRlcmFuZ2FuLAogIH0pOwoKICBmYWN0b3J5IEtvbnN1bXNpLmZyb21NYXAoTWFwPFN0cmluZywgT2JqZWN0Pz4gbSkgPT4gS29uc3Vtc2koCiAgICAgICAgaWRLb25zdW1zaTogbVsnaWRfa29uc3Vtc2knXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICB0YW5nZ2FsOiBtWyd0YW5nZ2FsJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgbmFtYUtlZ2lhdGFuOiBtWyduYW1hX2tlZ2lhdGFuJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgcGVtYmVyaWFuTXQ6IG1bJ3BlbWJlcmlhbl9tdCddPy50b1N0cmluZygpLAogICAgICAgIHJ0OiBtWydydCddPy50b1N0cmluZygpLAogICAgICAgIHBlbmFuZ2d1bmdKYXdhYjogbVsncGVuYW5nZ3VuZ19qYXdhYiddPy50b1N0cmluZygpLAogICAgICAgIGp1bWxhaEJhbGl0YTogX2tlSW50KG1bJ2p1bWxhaF9iYWxpdGEnXSksCiAgICAgICAgdG90YWxCaWF5YTogX2tlRG91YmxlKG1bJ3RvdGFsX2JpYXlhJ10pLAogICAgICAgIGtldGVyYW5nYW46IG1bJ2tldGVyYW5nYW4nXT8udG9TdHJpbmcoKSwKICAgICAgKTsKCiAgTWFwPFN0cmluZywgT2JqZWN0Pz4gdG9NYXAoKSA9PiB7CiAgICAgICAgJ2lkX2tvbnN1bXNpJzogaWRLb25zdW1zaSwKICAgICAgICAndGFuZ2dhbCc6IHRhbmdnYWwsCiAgICAgICAgJ25hbWFfa2VnaWF0YW4nOiBuYW1hS2VnaWF0YW4sCiAgICAgICAgJ3BlbWJlcmlhbl9tdCc6IHBlbWJlcmlhbk10LAogICAgICAgICdydCc6IHJ0LAogICAgICAgICdwZW5hbmdndW5nX2phd2FiJzogcGVuYW5nZ3VuZ0phd2FiLAogICAgICAgICdqdW1sYWhfYmFsaXRhJzoganVtbGFoQmFsaXRhLAogICAgICAgICd0b3RhbF9iaWF5YSc6IHRvdGFsQmlheWEsCiAgICAgICAgJ2tldGVyYW5nYW4nOiBrZXRlcmFuZ2FuLAogICAgICB9Owp9CgpjbGFzcyBVc2VyQWt1biB7CiAgaW50IGlkVXNlcjsKICBTdHJpbmcgdXNlcm5hbWU7CiAgU3RyaW5nIHBhc3N3b3JkSGFzaDsKICBTdHJpbmcgc2FsdDsKICBTdHJpbmcgbmFtYUxlbmdrYXA7CiAgU3RyaW5nIHJvbGU7IC8vICdBZG1pbicgLyAnUGV0dWdhcycgLyAnT3JhbmcgVHVhJwogIFN0cmluZz8gaWRPcnR1OyAvLyB0YXV0YW4ga2UgZGF0YSBvcmFuZ190dWEsIGtodXN1cyBha3VuIE9yYW5nIFR1YQoKICBVc2VyQWt1bih7CiAgICByZXF1aXJlZCB0aGlzLmlkVXNlciwKICAgIHJlcXVpcmVkIHRoaXMudXNlcm5hbWUsCiAgICByZXF1aXJlZCB0aGlzLnBhc3N3b3JkSGFzaCwKICAgIHRoaXMuc2FsdCA9ICcnLAogICAgcmVxdWlyZWQgdGhpcy5uYW1hTGVuZ2thcCwKICAgIHJlcXVpcmVkIHRoaXMucm9sZSwKICAgIHRoaXMuaWRPcnR1LAogIH0pOwoKICBmYWN0b3J5IFVzZXJBa3VuLmZyb21NYXAoTWFwPFN0cmluZywgT2JqZWN0Pz4gbSkgPT4gVXNlckFrdW4oCiAgICAgICAgaWRVc2VyOiBfa2VJbnQobVsnaWRfdXNlciddKSwKICAgICAgICB1c2VybmFtZTogbVsndXNlcm5hbWUnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBwYXNzd29yZEhhc2g6IG1bJ3Bhc3N3b3JkX2hhc2gnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBzYWx0OiBtWydzYWx0J10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgbmFtYUxlbmdrYXA6IG1bJ25hbWFfbGVuZ2thcCddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIHJvbGU6IG1bJ3JvbGUnXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBpZE9ydHU6IG1bJ2lkX29ydHUnXT8udG9TdHJpbmcoKSwKICAgICAgKTsKfQoKY2xhc3MgUGVuZ2F0dXJhbiB7CiAgU3RyaW5nPyBuYW1hUG9zeWFuZHU7CiAgU3RyaW5nPyBsb2dvUGF0aDsKICBTdHJpbmc/IGFsYW1hdDsKICBTdHJpbmc/IG5vVGVsZXBvbjsKICBTdHJpbmc/IG5hbWFLZXR1YTsKICBTdHJpbmc/IGtvdGE7CgogIFBlbmdhdHVyYW4oewogICAgdGhpcy5uYW1hUG9zeWFuZHUsCiAgICB0aGlzLmxvZ29QYXRoLAogICAgdGhpcy5hbGFtYXQsCiAgICB0aGlzLm5vVGVsZXBvbiwKICAgIHRoaXMubmFtYUtldHVhLAogICAgdGhpcy5rb3RhLAogIH0pOwoKICBmYWN0b3J5IFBlbmdhdHVyYW4uZnJvbU1hcChNYXA8U3RyaW5nLCBPYmplY3Q/PiBtKSA9PiBQZW5nYXR1cmFuKAogICAgICAgIG5hbWFQb3N5YW5kdTogbVsnbmFtYV9wb3N5YW5kdSddPy50b1N0cmluZygpLAogICAgICAgIGxvZ29QYXRoOiBtWydsb2dvX3BhdGgnXT8udG9TdHJpbmcoKSwKICAgICAgICBhbGFtYXQ6IG1bJ2FsYW1hdCddPy50b1N0cmluZygpLAogICAgICAgIG5vVGVsZXBvbjogbVsnbm9fdGVsZXBvbiddPy50b1N0cmluZygpLAogICAgICAgIG5hbWFLZXR1YTogbVsnbmFtYV9rZXR1YSddPy50b1N0cmluZygpLAogICAgICAgIGtvdGE6IG1bJ2tvdGEnXT8udG9TdHJpbmcoKSwKICAgICAgKTsKfQoKLy8vIEtvbnRlbiBidWF0YW4ga2FkZXIgeWFuZyB0ZXJzaW5rcm9uIGtlIHNlbXVhIHBlcmFuZ2thdDogbWF0ZXJpCi8vLyBlZHVrYXNpIHVudHVrIG9yYW5nIHR1YSBkYW4gcGVuZ3VtdW1hbiBwb3N5YW5kdS4KY2xhc3MgS29udGVuIHsKICBTdHJpbmcgaWRLb250ZW47CiAgU3RyaW5nIGplbmlzOyAvLyAnZWR1a2FzaScgfCAncGVuZ3VtdW1hbicKICBTdHJpbmcganVkdWw7CiAgU3RyaW5nPyByaW5na2FzYW47CiAgU3RyaW5nIGlzaTsKICBTdHJpbmc/IHBlbnVsaXM7CiAgU3RyaW5nPyB0YW5nZ2FsOyAvLyB5eXl5LU1NLWRkIEhIOm1tOnNzCgogIEtvbnRlbih7CiAgICByZXF1aXJlZCB0aGlzLmlkS29udGVuLAogICAgcmVxdWlyZWQgdGhpcy5qZW5pcywKICAgIHJlcXVpcmVkIHRoaXMuanVkdWwsCiAgICB0aGlzLnJpbmdrYXNhbiwKICAgIHJlcXVpcmVkIHRoaXMuaXNpLAogICAgdGhpcy5wZW51bGlzLAogICAgdGhpcy50YW5nZ2FsLAogIH0pOwoKICBib29sIGdldCBpc1Blbmd1bXVtYW4gPT4gamVuaXMgPT0gJ3Blbmd1bXVtYW4nOwoKICBmYWN0b3J5IEtvbnRlbi5mcm9tTWFwKE1hcDxTdHJpbmcsIE9iamVjdD8+IG0pID0+IEtvbnRlbigKICAgICAgICBpZEtvbnRlbjogbVsnaWRfa29udGVuJ10/LnRvU3RyaW5nKCkgPz8gJycsCiAgICAgICAgamVuaXM6IG1bJ2plbmlzJ10/LnRvU3RyaW5nKCkgPz8gJ2VkdWthc2knLAogICAgICAgIGp1ZHVsOiBtWydqdWR1bCddPy50b1N0cmluZygpID8/ICcnLAogICAgICAgIHJpbmdrYXNhbjogbVsncmluZ2thc2FuJ10/LnRvU3RyaW5nKCksCiAgICAgICAgaXNpOiBtWydpc2knXT8udG9TdHJpbmcoKSA/PyAnJywKICAgICAgICBwZW51bGlzOiBtWydwZW51bGlzJ10/LnRvU3RyaW5nKCksCiAgICAgICAgdGFuZ2dhbDogbVsndGFuZ2dhbCddPy50b1N0cmluZygpLAogICAgICApOwoKICBNYXA8U3RyaW5nLCBPYmplY3Q/PiB0b01hcCgpID0+IHsKICAgICAgICAnaWRfa29udGVuJzogaWRLb250ZW4sCiAgICAgICAgJ2plbmlzJzogamVuaXMsCiAgICAgICAgJ2p1ZHVsJzoganVkdWwsCiAgICAgICAgJ3JpbmdrYXNhbic6IHJpbmdrYXNhbiwKICAgICAgICAnaXNpJzogaXNpLAogICAgICAgICdwZW51bGlzJzogcGVudWxpcywKICAgICAgICAndGFuZ2dhbCc6IHRhbmdnYWwsCiAgICAgIH07Cn0K
+/// Model data sesuai tabel pada konfigurasi/KoneksiDB.java (edisi SQLite).
+
+double _keDouble(Object? v) {
+  if (v == null) return 0;
+  if (v is num) return v.toDouble();
+  return double.tryParse(v.toString().replaceAll(',', '.')) ?? 0;
+}
+
+double? _keDoubleNull(Object? v) {
+  if (v == null) return null;
+  if (v is num) return v.toDouble();
+  return double.tryParse(v.toString().replaceAll(',', '.'));
+}
+
+int _keInt(Object? v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  return int.tryParse(v.toString()) ?? 0;
+}
+
+class OrangTua {
+  String idOrtu;
+  String namaAyah;
+  String namaIbu;
+  String? pekerjaan;
+  String? noHp;
+  String? alamat;
+
+  OrangTua({
+    required this.idOrtu,
+    required this.namaAyah,
+    required this.namaIbu,
+    this.pekerjaan,
+    this.noHp,
+    this.alamat,
+  });
+
+  factory OrangTua.fromMap(Map<String, Object?> m) => OrangTua(
+        idOrtu: m['id_ortu']?.toString() ?? '',
+        namaAyah: m['nama_ayah']?.toString() ?? '',
+        namaIbu: m['nama_ibu']?.toString() ?? '',
+        pekerjaan: m['pekerjaan']?.toString(),
+        noHp: m['no_hp']?.toString(),
+        alamat: m['alamat']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_ortu': idOrtu,
+        'nama_ayah': namaAyah,
+        'nama_ibu': namaIbu,
+        'pekerjaan': pekerjaan,
+        'no_hp': noHp,
+        'alamat': alamat,
+      };
+}
+
+class Balita {
+  String idBalita;
+  String namaBalita;
+  String jenisKelamin; // 'L' atau 'P'
+  String tglLahir; // yyyy-MM-dd
+  double beratLahir;
+  double tinggiLahir;
+  String? idOrtu;
+  String? tglDaftar; // yyyy-MM-dd
+  String? namaIbu; // hasil join (tampilan)
+  String? namaAyah; // hasil join (tampilan)
+
+  Balita({
+    required this.idBalita,
+    required this.namaBalita,
+    required this.jenisKelamin,
+    required this.tglLahir,
+    this.beratLahir = 0,
+    this.tinggiLahir = 0,
+    this.idOrtu,
+    this.tglDaftar,
+    this.namaIbu,
+    this.namaAyah,
+  });
+
+  String get jenisKelaminLengkap =>
+      jenisKelamin == 'L' ? 'Laki-laki' : 'Perempuan';
+
+  factory Balita.fromMap(Map<String, Object?> m) => Balita(
+        idBalita: m['id_balita']?.toString() ?? '',
+        namaBalita: m['nama_balita']?.toString() ?? '',
+        jenisKelamin: m['jenis_kelamin']?.toString() ?? 'L',
+        tglLahir: m['tgl_lahir']?.toString() ?? '',
+        beratLahir: _keDouble(m['berat_lahir']),
+        tinggiLahir: _keDouble(m['tinggi_lahir']),
+        idOrtu: m['id_ortu']?.toString(),
+        tglDaftar: m['tgl_daftar']?.toString(),
+        namaIbu: m['nama_ibu']?.toString(),
+        namaAyah: m['nama_ayah']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_balita': idBalita,
+        'nama_balita': namaBalita,
+        'jenis_kelamin': jenisKelamin,
+        'tgl_lahir': tglLahir,
+        'berat_lahir': beratLahir,
+        'tinggi_lahir': tinggiLahir,
+        'id_ortu': idOrtu,
+        'tgl_daftar': tglDaftar,
+      };
+}
+
+class Pemeriksaan {
+  String idPeriksa;
+  String idBalita;
+  String tanggal; // yyyy-MM-dd
+  double beratBadan;
+  double tinggiBadan;
+  double lingkarKepala;
+  String? posisiUkur;
+  double? zBbu;
+  double? zTbu;
+  double? zBbtb;
+  double? zImtu;
+  String? statusGizi;
+  String? catatanBidan;
+  String? namaBalita; // hasil join (tampilan)
+  String? jenisKelamin; // hasil join (tampilan avatar)
+  String? tglLahir; // hasil join (tampilan avatar)
+
+  Pemeriksaan({
+    required this.idPeriksa,
+    required this.idBalita,
+    required this.tanggal,
+    required this.beratBadan,
+    required this.tinggiBadan,
+    this.lingkarKepala = 0,
+    this.posisiUkur,
+    this.zBbu,
+    this.zTbu,
+    this.zBbtb,
+    this.zImtu,
+    this.statusGizi,
+    this.catatanBidan,
+    this.namaBalita,
+    this.jenisKelamin,
+    this.tglLahir,
+  });
+
+  factory Pemeriksaan.fromMap(Map<String, Object?> m) => Pemeriksaan(
+        idPeriksa: m['id_periksa']?.toString() ?? '',
+        idBalita: m['id_balita']?.toString() ?? '',
+        tanggal: m['tanggal']?.toString() ?? '',
+        beratBadan: _keDouble(m['berat_badan']),
+        tinggiBadan: _keDouble(m['tinggi_badan']),
+        lingkarKepala: _keDouble(m['lingkar_kepala']),
+        posisiUkur: m['posisi_ukur']?.toString(),
+        zBbu: _keDoubleNull(m['z_bbu']),
+        zTbu: _keDoubleNull(m['z_tbu']),
+        zBbtb: _keDoubleNull(m['z_bbtb']),
+        zImtu: _keDoubleNull(m['z_imtu']),
+        statusGizi: m['status_gizi']?.toString(),
+        catatanBidan: m['catatan_bidan']?.toString(),
+        namaBalita: m['nama_balita']?.toString(),
+        jenisKelamin: m['jenis_kelamin']?.toString(),
+        tglLahir: m['tgl_lahir']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_periksa': idPeriksa,
+        'id_balita': idBalita,
+        'tanggal': tanggal,
+        'berat_badan': beratBadan,
+        'tinggi_badan': tinggiBadan,
+        'lingkar_kepala': lingkarKepala,
+        'posisi_ukur': posisiUkur,
+        'z_bbu': zBbu,
+        'z_tbu': zTbu,
+        'z_bbtb': zBbtb,
+        'z_imtu': zImtu,
+        'status_gizi': statusGizi,
+        'catatan_bidan': catatanBidan,
+      };
+}
+
+class ImunisasiVaksin {
+  String idImunisasi;
+  String namaImunisasi;
+  String? merkProdusen;
+  String? dosis;
+  String? usiaPemberian;
+  String? kategori;
+
+  ImunisasiVaksin({
+    required this.idImunisasi,
+    required this.namaImunisasi,
+    this.merkProdusen,
+    this.dosis,
+    this.usiaPemberian,
+    this.kategori,
+  });
+
+  factory ImunisasiVaksin.fromMap(Map<String, Object?> m) => ImunisasiVaksin(
+        idImunisasi: m['id_imunisasi']?.toString() ?? '',
+        namaImunisasi: m['nama_imunisasi']?.toString() ?? '',
+        merkProdusen: m['merk_produsen']?.toString(),
+        dosis: m['dosis']?.toString(),
+        usiaPemberian: m['usia_pemberian']?.toString(),
+        kategori: m['kategori']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_imunisasi': idImunisasi,
+        'nama_imunisasi': namaImunisasi,
+        'merk_produsen': merkProdusen,
+        'dosis': dosis,
+        'usia_pemberian': usiaPemberian,
+        'kategori': kategori,
+      };
+}
+
+class JadwalImunisasi {
+  String idJadwal;
+  String idBalita;
+  String idImunisasi;
+  String? tglDiberikan; // yyyy-MM-dd
+  String? tglBerikutnya; // yyyy-MM-dd
+  String status; // 'Belum' / 'Selesai'
+  String? namaBalita; // hasil join (tampilan)
+  String? namaImunisasi; // hasil join (tampilan)
+
+  JadwalImunisasi({
+    required this.idJadwal,
+    required this.idBalita,
+    required this.idImunisasi,
+    this.tglDiberikan,
+    this.tglBerikutnya,
+    this.status = 'Belum',
+    this.namaBalita,
+    this.namaImunisasi,
+  });
+
+  factory JadwalImunisasi.fromMap(Map<String, Object?> m) => JadwalImunisasi(
+        idJadwal: m['id_jadwal']?.toString() ?? '',
+        idBalita: m['id_balita']?.toString() ?? '',
+        idImunisasi: m['id_imunisasi']?.toString() ?? '',
+        tglDiberikan: m['tgl_diberikan']?.toString(),
+        tglBerikutnya: m['tgl_berikutnya']?.toString(),
+        status: m['status']?.toString() ?? 'Belum',
+        namaBalita: m['nama_balita']?.toString(),
+        namaImunisasi: m['nama_imunisasi']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_jadwal': idJadwal,
+        'id_balita': idBalita,
+        'id_imunisasi': idImunisasi,
+        'tgl_diberikan': tglDiberikan,
+        'tgl_berikutnya': tglBerikutnya,
+        'status': status,
+      };
+}
+
+class Konsumsi {
+  String idKonsumsi;
+  String tanggal; // yyyy-MM-dd
+  String namaKegiatan;
+  String? pemberianMt;
+  String? rt;
+  String? penanggungJawab;
+  int jumlahBalita;
+  double totalBiaya;
+  String? keterangan;
+
+  Konsumsi({
+    required this.idKonsumsi,
+    required this.tanggal,
+    required this.namaKegiatan,
+    this.pemberianMt,
+    this.rt,
+    this.penanggungJawab,
+    this.jumlahBalita = 0,
+    this.totalBiaya = 0,
+    this.keterangan,
+  });
+
+  factory Konsumsi.fromMap(Map<String, Object?> m) => Konsumsi(
+        idKonsumsi: m['id_konsumsi']?.toString() ?? '',
+        tanggal: m['tanggal']?.toString() ?? '',
+        namaKegiatan: m['nama_kegiatan']?.toString() ?? '',
+        pemberianMt: m['pemberian_mt']?.toString(),
+        rt: m['rt']?.toString(),
+        penanggungJawab: m['penanggung_jawab']?.toString(),
+        jumlahBalita: _keInt(m['jumlah_balita']),
+        totalBiaya: _keDouble(m['total_biaya']),
+        keterangan: m['keterangan']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_konsumsi': idKonsumsi,
+        'tanggal': tanggal,
+        'nama_kegiatan': namaKegiatan,
+        'pemberian_mt': pemberianMt,
+        'rt': rt,
+        'penanggung_jawab': penanggungJawab,
+        'jumlah_balita': jumlahBalita,
+        'total_biaya': totalBiaya,
+        'keterangan': keterangan,
+      };
+}
+
+class UserAkun {
+  int idUser;
+  String username;
+  String passwordHash;
+  String salt;
+  String namaLengkap;
+  String role; // 'Admin' / 'Petugas' / 'Orang Tua'
+  String? idOrtu; // tautan ke data orang_tua, khusus akun Orang Tua
+
+  UserAkun({
+    required this.idUser,
+    required this.username,
+    required this.passwordHash,
+    this.salt = '',
+    required this.namaLengkap,
+    required this.role,
+    this.idOrtu,
+  });
+
+  factory UserAkun.fromMap(Map<String, Object?> m) => UserAkun(
+        idUser: _keInt(m['id_user']),
+        username: m['username']?.toString() ?? '',
+        passwordHash: m['password_hash']?.toString() ?? '',
+        salt: m['salt']?.toString() ?? '',
+        namaLengkap: m['nama_lengkap']?.toString() ?? '',
+        role: m['role']?.toString() ?? '',
+        idOrtu: m['id_ortu']?.toString(),
+      );
+}
+
+class Pengaturan {
+  String? namaPosyandu;
+  String? logoPath;
+  String? alamat;
+  String? noTelepon;
+  String? namaKetua;
+  String? kota;
+
+  Pengaturan({
+    this.namaPosyandu,
+    this.logoPath,
+    this.alamat,
+    this.noTelepon,
+    this.namaKetua,
+    this.kota,
+  });
+
+  factory Pengaturan.fromMap(Map<String, Object?> m) => Pengaturan(
+        namaPosyandu: m['nama_posyandu']?.toString(),
+        logoPath: m['logo_path']?.toString(),
+        alamat: m['alamat']?.toString(),
+        noTelepon: m['no_telepon']?.toString(),
+        namaKetua: m['nama_ketua']?.toString(),
+        kota: m['kota']?.toString(),
+      );
+}
+
+/// Konten buatan kader yang tersinkron ke semua perangkat: materi
+/// edukasi untuk orang tua dan pengumuman posyandu.
+class Konten {
+  String idKonten;
+  String jenis; // 'edukasi' | 'pengumuman'
+  String judul;
+  String? ringkasan;
+  String isi;
+  String? penulis;
+  String? tanggal; // yyyy-MM-dd HH:mm:ss
+
+  Konten({
+    required this.idKonten,
+    required this.jenis,
+    required this.judul,
+    this.ringkasan,
+    required this.isi,
+    this.penulis,
+    this.tanggal,
+  });
+
+  bool get isPengumuman => jenis == 'pengumuman';
+
+  factory Konten.fromMap(Map<String, Object?> m) => Konten(
+        idKonten: m['id_konten']?.toString() ?? '',
+        jenis: m['jenis']?.toString() ?? 'edukasi',
+        judul: m['judul']?.toString() ?? '',
+        ringkasan: m['ringkasan']?.toString(),
+        isi: m['isi']?.toString() ?? '',
+        penulis: m['penulis']?.toString(),
+        tanggal: m['tanggal']?.toString(),
+      );
+
+  Map<String, Object?> toMap() => {
+        'id_konten': idKonten,
+        'jenis': jenis,
+        'judul': judul,
+        'ringkasan': ringkasan,
+        'isi': isi,
+        'penulis': penulis,
+        'tanggal': tanggal,
+      };
+}
