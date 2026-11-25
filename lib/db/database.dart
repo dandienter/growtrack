@@ -130,10 +130,12 @@ class GrowTrackDB {
   }
 
   /// Tabel yang ikut sinkronisasi cloud, memetakan nama tabel ke kolom
-  /// primary key-nya. Tabel users dan sesi sengaja TIDAK ikut: kredensial
-  /// dan sesi tetap lokal per perangkat.
+  /// primary key-nya. Tabel users ikut sejak v1.9.9 dengan kunci
+  /// username (id lokal tiap perangkat berbeda); yang berpindah hanya
+  /// hash kata sandi + salt. Sesi tetap lokal per perangkat.
   static const Map<String, String> tabelSinkron = {
     'orang_tua': 'id_ortu',
+    'users': 'username',
     'balita': 'id_balita',
     'pemeriksaan': 'id_periksa',
     'imunisasi': 'id_imunisasi',
@@ -198,6 +200,19 @@ class GrowTrackDB {
       await db.execute('INSERT INTO sinkron_meta (kunci, nilai) '
           "VALUES ('infra_v1', 'ya')");
     }
+
+    // Sekali saja sejak users ikut sinkron (v1.9.9): antrekan semua
+    // akun yang sudah ada agar terkirim pada sinkronisasi pertama
+    // sesudah pembaruan ini.
+    final sudahUsers = await db.query('sinkron_meta',
+        where: 'kunci = ?', whereArgs: ['infra_v2_users']);
+    if (sudahUsers.isEmpty) {
+      await db.execute('INSERT INTO outbox (tabel, id_baris, waktu) '
+          "SELECT 'users', CAST(username AS TEXT), datetime('now') "
+          'FROM users');
+      await db.execute('INSERT INTO sinkron_meta (kunci, nilai) '
+          "VALUES ('infra_v2_users', 'ya')");
+    }
   }
 
   static Future<int> _hitung(Database db, String tabel) async {
@@ -240,8 +255,8 @@ class GrowTrackDB {
     if (await _hitung(db, 'pengaturan') == 0) {
       await db.rawInsert(
           'INSERT INTO pengaturan (id, nama_posyandu, alamat, no_telepon, nama_ketua, kota) VALUES '
-          "(1, 'Posyandu Beringin DDN', 'Jl. Beringin Raya No. 12, Jakarta Timur 13610', "
-          "'(021) 8091234', 'Hj. Ratna Sari', 'Jakarta')");
+          "(1, 'Posyandu Beringin DDN', '', "
+          "'', '', '')");
     }
 
     if (await _hitung(db, 'imunisasi') == 0) {

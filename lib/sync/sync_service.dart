@@ -40,6 +40,7 @@ class LayananSinkron {
     'konten',
     'imunisasi',
     'orang_tua',
+    'users',
     'balita',
     'pemeriksaan',
     'jadwal_imunisasi',
@@ -79,6 +80,10 @@ class LayananSinkron {
     'konten': [
       'id_konten', 'jenis', 'judul', 'ringkasan', 'isi', 'penulis',
       'tanggal',
+    ],
+    'users': [
+      'username', 'password_hash', 'salt', 'nama_lengkap', 'role',
+      'id_ortu',
     ],
   };
 

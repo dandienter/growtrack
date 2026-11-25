@@ -189,42 +189,18 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
                       ),
                     ),
                     const SizedBox(height: 8),
-                    for (final k in _pengumuman)
-                      Card(
-                        color: const Color(0xFFFFFBEB),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 6),
-                          leading: Container(
-                            width: 44,
-                            height: 44,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFF59E0B).withOpacity(0.15),
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            child: const Icon(Icons.campaign_outlined,
-                                color: Color(0xFFB45309), size: 22),
-                          ),
-                          title: Text(
-                            k.judul,
-                            style: const TextStyle(
-                                fontWeight: FontWeight.w600, fontSize: 14),
-                          ),
-                          subtitle: Text(
-                            k.ringkasan ?? 'Ketuk untuk membaca',
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          trailing: const Icon(Icons.chevron_right),
-                          onTap: () => Navigator.of(context).push(
-                            MaterialPageRoute(
-                                builder: (_) => BacaKontenScreen(konten: k)),
-                          ),
+                    kartuPengumuman(context, _pengumuman.first),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton.icon(
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) => const SemuaPengumumanScreen()),
                         ),
+                        icon: const Icon(Icons.list_alt_outlined, size: 18),
+                        label: Text('Lihat Semua (${_pengumuman.length})'),
                       ),
+                    ),
                   ],
                   const SizedBox(height: 18),
                   const Text(
@@ -1170,6 +1146,102 @@ class _DetailAnakOrtuState extends State<DetailAnakOrtuScreen> {
           ),
         ),
       ],
+    );
+  }
+}
+
+/// Satu kartu pengumuman (dipakai beranda orang tua dan halaman
+/// semua pengumuman).
+Widget kartuPengumuman(BuildContext context, Konten k) {
+  return Card(
+    color: const Color(0xFFFFFBEB),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+    child: ListTile(
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+      leading: Container(
+        width: 44,
+        height: 44,
+        decoration: BoxDecoration(
+          color: const Color(0xFFF59E0B).withOpacity(0.15),
+          borderRadius: BorderRadius.circular(13),
+        ),
+        child: const Icon(Icons.campaign_outlined,
+            color: Color(0xFFB45309), size: 22),
+      ),
+      title: Text(
+        k.judul,
+        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+      ),
+      subtitle: Text(
+        k.ringkasan ?? 'Ketuk untuk membaca',
+        maxLines: 2,
+        overflow: TextOverflow.ellipsis,
+        style: const TextStyle(fontSize: 12),
+      ),
+      trailing: const Icon(Icons.chevron_right),
+      onTap: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (_) => BacaKontenScreen(konten: k)),
+      ),
+    ),
+  );
+}
+
+/// Halaman semua pengumuman: beranda orang tua hanya menampilkan
+/// pengumuman terbaru, sisanya bisa dibaca di sini. Tarik ke bawah
+/// untuk menyinkronkan pengumuman terbaru.
+class SemuaPengumumanScreen extends StatefulWidget {
+  const SemuaPengumumanScreen({super.key});
+
+  @override
+  State<SemuaPengumumanScreen> createState() => _SemuaPengumumanState();
+}
+
+class _SemuaPengumumanState extends State<SemuaPengumumanScreen> {
+  List<Konten> _daftar = [];
+  bool _memuat = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _muat();
+  }
+
+  Future<void> _muat() async {
+    final data = await GrowTrackDB.ambilKonten(jenis: 'pengumuman');
+    if (!mounted) return;
+    setState(() {
+      _daftar = data;
+      _memuat = false;
+    });
+  }
+
+  Future<void> _segarkan() async {
+    await LayananSinkron.sinkronkan();
+    await _muat();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Pengumuman Posyandu')),
+      body: _memuat
+          ? const Center(child: CircularProgressIndicator())
+          : RefreshIndicator(
+              onRefresh: _segarkan,
+              child: _daftar.isEmpty
+                  ? ListView(
+                      children: const [
+                        SizedBox(height: 120),
+                        Center(child: Text('Belum ada pengumuman.')),
+                      ],
+                    )
+                  : ListView(
+                      padding: const EdgeInsets.all(16),
+                      children: [
+                        for (final k in _daftar) kartuPengumuman(context, k),
+                      ],
+                    ),
+            ),
     );
   }
 }
