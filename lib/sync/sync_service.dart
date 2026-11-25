@@ -1,9 +1,12 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 
 import '../db/database.dart';
+import '../session.dart';
 import 'supabase_config.dart';
 
 /// Hasil satu putaran sinkronisasi.
@@ -286,5 +289,53 @@ class LayananSinkron {
     };
     await db.insert(tabel, lokal,
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+}
+
+/// Pemicu sinkronisasi otomatis tanpa klik: berjalan saat aplikasi
+/// dibuka, setiap kali aplikasi kembali ke latar depan (resume), dan
+/// berkala tiap 2 menit selama aplikasi terbuka.
+///
+/// Hanya memanggil [LayananSinkron.sinkronkan] yang sudah ada; guard
+/// tumpang tindih ditangani oleh saklar _berjalan di dalamnya. Tidak
+/// berjalan bila belum ada pengguna yang masuk.
+class SinkronOtomatis with WidgetsBindingObserver {
+  static final SinkronOtomatis _instans = SinkronOtomatis._();
+
+  factory SinkronOtomatis() => _instans;
+
+  SinkronOtomatis._();
+
+  Timer? _timer;
+  bool _aktif = false;
+
+  /// Mulai pemicu otomatis. Aman dipanggil berkali-kali (singleton).
+  void mulai() {
+    if (_aktif) return;
+    _aktif = true;
+    WidgetsBinding.instance.addObserver(this);
+    _timer = Timer.periodic(const Duration(minutes: 2), (_) => _picu());
+    _picu();
+  }
+
+  /// Hentikan pemicu otomatis (mis. saat keluar/logout).
+  void berhenti() {
+    if (!_aktif) return;
+    _aktif = false;
+    WidgetsBinding.instance.removeObserver(this);
+    _timer?.cancel();
+    _timer = null;
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _picu();
+  }
+
+  void _picu() {
+    if (SesiUser.username == null) return;
+    // Fire-and-forget: kegagalan jaringan diabaikan diam-diam,
+    // putaran berikutnya mencoba lagi.
+    LayananSinkron.sinkronkan();
   }
 }

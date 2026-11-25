@@ -104,6 +104,9 @@ class _Skala {
 class KurvaPertumbuhan extends StatefulWidget {
   final String jenisKelamin; // 'L' atau 'P'
   final bool berat; // true = BB/U (kg), false = TB/U (cm)
+
+  /// true = LK/U (cm); mengabaikan [berat]. Tabel WHO hanya 0-60 bulan.
+  final bool lingkarKepala;
   final List<TitikKurva> titik;
 
   const KurvaPertumbuhan({
@@ -111,6 +114,7 @@ class KurvaPertumbuhan extends StatefulWidget {
     required this.jenisKelamin,
     required this.berat,
     required this.titik,
+    this.lingkarKepala = false,
   });
 
   @override
@@ -123,9 +127,11 @@ class _KurvaPertumbuhanState extends State<KurvaPertumbuhan> {
   List<TitikKurva> get _urut =>
       [...widget.titik]..sort((a, b) => a.bulan.compareTo(b.bulan));
 
-  List<List<double>> get _tabel => _parseLms(widget.berat
-      ? (widget.jenisKelamin == 'P' ? kWFA_PEREMPUAN : kWFA_LAKI)
-      : (widget.jenisKelamin == 'P' ? kLHFA_PEREMPUAN : kLHFA_LAKI));
+  List<List<double>> get _tabel => _parseLms(widget.lingkarKepala
+      ? (widget.jenisKelamin == 'P' ? kHCFA_PEREMPUAN : kHCFA_LAKI)
+      : widget.berat
+          ? (widget.jenisKelamin == 'P' ? kWFA_PEREMPUAN : kWFA_LAKI)
+          : (widget.jenisKelamin == 'P' ? kLHFA_PEREMPUAN : kLHFA_LAKI));
 
   void _sentuh(Offset lokal, Size ukuran) {
     final urut = _urut;
@@ -155,8 +161,9 @@ class _KurvaPertumbuhanState extends State<KurvaPertumbuhan> {
     final umur = t.bulan == t.bulan.roundToDouble()
         ? '${t.bulan.toInt()} bulan'
         : '${t.bulan.toStringAsFixed(1)} bulan';
-    final satuan = widget.berat ? 'kg' : 'cm';
-    final label = widget.berat ? 'BB' : 'TB';
+    final satuan = widget.berat && !widget.lingkarKepala ? 'kg' : 'cm';
+    final label =
+        widget.lingkarKepala ? 'LK' : (widget.berat ? 'BB' : 'TB');
     return 'Umur $umur: $label ${t.nilai.toStringAsFixed(1)} $satuan';
   }
 

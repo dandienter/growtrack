@@ -1,1 +1,573 @@
-aW1wb3J0ICdkYXJ0Om1hdGgnIGFzIG1hdGg7CgppbXBvcnQgJy4uL2RhdGEvd2hvX2xtcy5kYXJ0JzsKCi8vLyBQb3J0IHByb3Nlcy9TdGFuZGFyV0hPLmphdmEgKyBwcm9zZXMvUHJvc2VzUGVtZXJpa3NhYW4uamF2YQovLy8gKyBsb2dpa2EgcGVyaGl0dW5nYW4gcGFkYSB0YW1waWxhbi9Gb3JtUGVtZXJpa3NhYW4uamF2YS4KLy8vCi8vLyBTdGFuZGFyIEFudHJvcG9tZXRyaSBXSE8gQ2hpbGQgR3Jvd3RoIFN0YW5kYXJkcyAyMDA2IChLZW1lbmtlcyBSSSwKLy8vIFBNSyBOby4gMiBUYWh1biAyMDIwKS4gWi1TY29yZSBtZXRvZGUgTE1TOiB6ID0gKCh5L00pXkwgLSAxKSAvIChMICogUykuCgovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KLy8gVGFiZWwgTE1TIChwYXJzZSBzdHJpbmcgIkwsTSxTO0wsTSxTOy4uLiIgcGVyc2lzIFN0YW5kYXJXSE8ucGFyc2UpCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoKZmluYWwgTWFwPFN0cmluZywgTGlzdDxMaXN0PGRvdWJsZT4+PiBfY2FjaGVUYWJlbCA9IHt9OwoKTGlzdDxMaXN0PGRvdWJsZT4+IF9wYXJzZShTdHJpbmcgZGF0YSkgewogIHJldHVybiBkYXRhLnNwbGl0KCc7JykubWFwKChiYXJpcykgewogICAgZmluYWwgYyA9IGJhcmlzLnNwbGl0KCcsJyk7CiAgICByZXR1cm4gPGRvdWJsZT5bCiAgICAgIGRvdWJsZS5wYXJzZShjWzBdKSwKICAgICAgZG91YmxlLnBhcnNlKGNbMV0pLAogICAgICBkb3VibGUucGFyc2UoY1syXSksCiAgICBdOwogIH0pLnRvTGlzdCgpOwp9CgpMaXN0PExpc3Q8ZG91YmxlPj4gX3RhYmVsKFN0cmluZyBrdW5jaSwgU3RyaW5nIGRhdGEpID0+CiAgICBfY2FjaGVUYWJlbC5wdXRJZkFic2VudChrdW5jaSwgKCkgPT4gX3BhcnNlKGRhdGEpKTsKCkxpc3Q8TGlzdDxkb3VibGU+PiBfd2ZhKGJvb2wgbGFraSkgPT4KICAgIF90YWJlbChsYWtpID8gJ3dmYUwnIDogJ3dmYVAnLCBsYWtpID8ga1dGQV9MQUtJIDoga1dGQV9QRVJFTVBVQU4pOwoKTGlzdDxMaXN0PGRvdWJsZT4+IF9saGZhKGJvb2wgbGFraSkgPT4KICAgIF90YWJlbChsYWtpID8gJ2xoZmFMJyA6ICdsaGZhUCcsIGxha2kgPyBrTEhGQV9MQUtJIDoga0xIRkFfUEVSRU1QVUFOKTsKCkxpc3Q8TGlzdDxkb3VibGU+PiBfd2ZsKGJvb2wgbGFraSkgPT4KICAgIF90YWJlbChsYWtpID8gJ3dmbEwnIDogJ3dmbFAnLCBsYWtpID8ga1dGTF9MQUtJIDoga1dGTF9QRVJFTVBVQU4pOwoKTGlzdDxMaXN0PGRvdWJsZT4+IF93ZmgoYm9vbCBsYWtpKSA9PgogICAgX3RhYmVsKGxha2kgPyAnd2ZoTCcgOiAnd2ZoUCcsIGxha2kgPyBrV0ZIX0xBS0kgOiBrV0ZIX1BFUkVNUFVBTik7CgovLy8gSW50ZXJwb2xhc2kgbGluZWFyIGFudGFyIHRpdGlrIChwZXJzaXMgU3RhbmRhcldITy5pbnRlcnAsIHBlbmplcGl0YW4gdWp1bmcpLgpMaXN0PGRvdWJsZT4gX2ludGVycChMaXN0PExpc3Q8ZG91YmxlPj4gdCwgZG91YmxlIHgpIHsKICBmaW5hbCBuID0gdC5sZW5ndGggLSAxOwogIGlmICh4IDw9IDApIHJldHVybiB0WzBdOwogIGlmICh4ID49IG4pIHJldHVybiB0W25dOwogIGZpbmFsIGkgPSB4LmZsb29yKCk7CiAgZmluYWwgZiA9IHggLSBpOwogIHJldHVybiA8ZG91YmxlPlsKICAgIHRbaV1bMF0gKyBmICogKHRbaSArIDFdWzBdIC0gdFtpXVswXSksCiAgICB0W2ldWzFdICsgZiAqICh0W2kgKyAxXVsxXSAtIHRbaV1bMV0pLAogICAgdFtpXVsyXSArIGYgKiAodFtpICsgMV1bMl0gLSB0W2ldWzJdKSwKICBdOwp9CgovLy8gSW52ZXJzIExNUzogbmlsYWkgcGVuZ3VrdXJhbiBwYWRhIFotU2NvcmUgdGVydGVudHUgKGRpcGFrYWkgcGVueWVzdWFpYW4gZWtvcikuCmRvdWJsZSBfbmlsYWlQYWRhWihkb3VibGUgeiwgZG91YmxlIGwsIGRvdWJsZSBtLCBkb3VibGUgcykgewogIGlmIChtIDw9IDAgfHwgcyA8PSAwKSByZXR1cm4gZG91YmxlLm5hbjsKICBpZiAobC5hYnMoKSA8IDFlLTkpIHJldHVybiBtICogbWF0aC5leHAocyAqIHopOwogIGZpbmFsIGRhc2FyID0gMSArIGwgKiBzICogejsKICBpZiAoZGFzYXIgPD0gMCkgcmV0dXJuIGRvdWJsZS5uYW47CiAgcmV0dXJuIG0gKiBtYXRoLnBvdyhkYXNhciwgMSAvIGwpLnRvRG91YmxlKCk7Cn0KCi8vLyBSdW11cyBaLVNjb3JlIExNUyBXSE8sIGxlbmdrYXAgZGVuZ2FuOgovLy8gLSBjYWJhbmcgTCA9IDA6IHogPSBsbih5L00pIC8gUyAobWVuZ2hpbmRhcmkgcGVtYmFnaWFuIGRlbmdhbiBub2wpCi8vLyAtIHBlbnllc3VhaWFuIGVrb3IgV0hPIHVudHVrIHx6fCA+IDMgU0Q6IHogZGloaXR1bmcgbGluZWFyIGRhcmkgamFyYWsKLy8vICAgbmlsYWkgU0QyIGRhbiBTRDMgKHJlc3RyaWN0ZWQgei1zY29yZSBhbGEgV0hPIEFudGhybykgYWdhciBuaWxhaQovLy8gICBla3N0cmVtIHRpZGFrIHRlcmtvbXByZXNpIG9sZWgga3VydmEgTE1TLgovLy8gSGFzaWwgYWtoaXIgZGlqZXBpdCBrZSByZW50YW5nIC02Li42Lgpkb3VibGUgekxNUyhkb3VibGUgeSwgZG91YmxlIGwsIGRvdWJsZSBtLCBkb3VibGUgcykgewogIGlmIChtIDw9IDAgfHwgcyA8PSAwIHx8IHkgPD0gMCkgcmV0dXJuIGRvdWJsZS5uYW47CiAgZG91YmxlIHo7CiAgaWYgKGwuYWJzKCkgPCAxZS05KSB7CiAgICB6ID0gbWF0aC5sb2coeSAvIG0pIC8gczsKICB9IGVsc2UgewogICAgeiA9IChtYXRoLnBvdyh5IC8gbSwgbCkudG9Eb3VibGUoKSAtIDEuMCkgLyAobCAqIHMpOwogIH0KICBpZiAoeiA+IDMuMCkgewogICAgZmluYWwgc2QzID0gX25pbGFpUGFkYVooMy4wLCBsLCBtLCBzKTsKICAgIGZpbmFsIHNkMiA9IF9uaWxhaVBhZGFaKDIuMCwgbCwgbSwgcyk7CiAgICBpZiAoIXNkMy5pc05hTiAmJiAhc2QyLmlzTmFOICYmIHNkMyA+IHNkMikgewogICAgICB6ID0gMy4wICsgKHkgLSBzZDMpIC8gKHNkMyAtIHNkMik7CiAgICB9CiAgfSBlbHNlIGlmICh6IDwgLTMuMCkgewogICAgZmluYWwgc2QzID0gX25pbGFpUGFkYVooLTMuMCwgbCwgbSwgcyk7CiAgICBmaW5hbCBzZDIgPSBfbmlsYWlQYWRhWigtMi4wLCBsLCBtLCBzKTsKICAgIGlmICghc2QzLmlzTmFOICYmICFzZDIuaXNOYU4gJiYgc2QyID4gc2QzKSB7CiAgICAgIHogPSAtMy4wICsgKHkgLSBzZDMpIC8gKHNkMiAtIHNkMyk7CiAgICB9CiAgfQogIGlmICh6ID4gNi4wKSByZXR1cm4gNi4wOwogIGlmICh6IDwgLTYuMCkgcmV0dXJuIC02LjA7CiAgcmV0dXJuIHo7Cn0KCi8vLyBaLVNjb3JlIEJCL1UuIHVtdXJCdWxhbiBib2xlaCBkZXNpbWFsLgpkb3VibGUgekJCVShkb3VibGUgYmJLZywgZG91YmxlIHVtdXJCdWxhbiwgYm9vbCBsYWtpKSB7CiAgZmluYWwgbG1zID0gX2ludGVycChfd2ZhKGxha2kpLCB1bXVyQnVsYW4pOwogIHJldHVybiB6TE1TKGJiS2csIGxtc1swXSwgbG1zWzFdLCBsbXNbMl0pOwp9CgovLy8gWi1TY29yZSBUQi9VIChhdGF1IFBCL1UpLiB1bXVyQnVsYW4gYm9sZWggZGVzaW1hbC4KZG91YmxlIHpUQlUoZG91YmxlIHRiQ20sIGRvdWJsZSB1bXVyQnVsYW4sIGJvb2wgbGFraSkgewogIGZpbmFsIGxtcyA9IF9pbnRlcnAoX2xoZmEobGFraSksIHVtdXJCdWxhbik7CiAgcmV0dXJuIHpMTVModGJDbSwgbG1zWzBdLCBsbXNbMV0sIGxtc1syXSk7Cn0KCi8vLyBaLVNjb3JlIEJCL1RCIChhdGF1IEJCL1BCKS4KLy8vIHVtdXIgPCAyNCBibG4gbWVtYWthaSB0YWJlbCBXRkwgZGVuZ2FuIHggPSAodGIgLSA0NSkgLyAwLjU7Ci8vLyB1bXVyID49IDI0IGJsbiBtZW1ha2FpIHRhYmVsIFdGSCBkZW5nYW4geCA9ICh0YiAtIDY1KSAvIDAuNS4KZG91YmxlIHpCQlRCKGRvdWJsZSBiYktnLCBkb3VibGUgdGJDbSwgZG91YmxlIHVtdXJCdWxhbiwgYm9vbCBsYWtpKSB7CiAgZmluYWwgTGlzdDxMaXN0PGRvdWJsZT4+IHQ7CiAgZmluYWwgZG91YmxlIHg7CiAgaWYgKHVtdXJCdWxhbiA8IDI0KSB7CiAgICB0ID0gX3dmbChsYWtpKTsKICAgIHggPSAodGJDbSAtIDQ1LjApIC8gMC41OwogIH0gZWxzZSB7CiAgICB0ID0gX3dmaChsYWtpKTsKICAgIHggPSAodGJDbSAtIDY1LjApIC8gMC41OwogIH0KICBmaW5hbCBsbXMgPSBfaW50ZXJwKHQsIHgpOwogIHJldHVybiB6TE1TKGJiS2csIGxtc1swXSwgbG1zWzFdLCBsbXNbMl0pOwp9Cgpib29sIGlzTGFraShTdHJpbmc/IGprKSA9PgogICAgamsgIT0gbnVsbCAmJiAoamsudG9VcHBlckNhc2UoKSA9PSAnTCcgfHwgamsudG9Mb3dlckNhc2UoKS5zdGFydHNXaXRoKCdsYWtpJykpOwoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIFdITyBSZWZlcmVuY2UgMjAwNyAodXNpYSA2MS0yMjggYnVsYW47IEJCL1UgaGFueWEgNjEtMTIwIGJ1bGFuKS4KLy8gSW5kZWtzIHRhYmVsIDAgPSB1bXVyIDYxIGJ1bGFuLgovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCkxpc3Q8TGlzdDxkb3VibGU+PiBfaGZhMDcoYm9vbCBsYWtpKSA9PgogICAgX3RhYmVsKGxha2kgPyAnaGZhMDdMJyA6ICdoZmEwN1AnLCBsYWtpID8ga0hGQTA3X0xBS0kgOiBrSEZBMDdfUEVSRU1QVUFOKTsKCkxpc3Q8TGlzdDxkb3VibGU+PiBfYmZhMDcoYm9vbCBsYWtpKSA9PgogICAgX3RhYmVsKGxha2kgPyAnYmZhMDdMJyA6ICdiZmEwN1AnLCBsYWtpID8ga0JGQTA3X0xBS0kgOiBrQkZBMDdfUEVSRU1QVUFOKTsKCkxpc3Q8TGlzdDxkb3VibGU+PiBfd2ZhMDcoYm9vbCBsYWtpKSA9PgogICAgX3RhYmVsKGxha2kgPyAnd2ZhMDdMJyA6ICd3ZmEwN1AnLCBsYWtpID8ga1dGQTA3X0xBS0kgOiBrV0ZBMDdfUEVSRU1QVUFOKTsKCi8vLyBaLVNjb3JlIFRCL1UgbWVudXJ1dCBXSE8gUmVmZXJlbmNlIDIwMDcgKDYxLTIyOCBidWxhbikuCmRvdWJsZSB6VEJVMjAwNyhkb3VibGUgdGJDbSwgZG91YmxlIHVtdXJCdWxhbiwgYm9vbCBsYWtpKSB7CiAgaWYgKHVtdXJCdWxhbiA8IDYxIHx8IHVtdXJCdWxhbiA+IDIyOCkgcmV0dXJuIGRvdWJsZS5uYW47CiAgZmluYWwgbG1zID0gX2ludGVycChfaGZhMDcobGFraSksIHVtdXJCdWxhbiAtIDYxKTsKICByZXR1cm4gekxNUyh0YkNtLCBsbXNbMF0sIGxtc1sxXSwgbG1zWzJdKTsKfQoKLy8vIFotU2NvcmUgQkIvVSBtZW51cnV0IFdITyBSZWZlcmVuY2UgMjAwNyAoNjEtMTIwIGJ1bGFuIHNhamEpLgpkb3VibGUgekJCVTIwMDcoZG91YmxlIGJiS2csIGRvdWJsZSB1bXVyQnVsYW4sIGJvb2wgbGFraSkgewogIGlmICh1bXVyQnVsYW4gPCA2MSB8fCB1bXVyQnVsYW4gPiAxMjApIHJldHVybiBkb3VibGUubmFuOwogIGZpbmFsIGxtcyA9IF9pbnRlcnAoX3dmYTA3KGxha2kpLCB1bXVyQnVsYW4gLSA2MSk7CiAgcmV0dXJuIHpMTVMoYmJLZywgbG1zWzBdLCBsbXNbMV0sIGxtc1syXSk7Cn0KCi8vLyBJbmRla3MgTWFzc2EgVHVidWg6IEJCIChrZykgLyBUQiAobSkga3VhZHJhdC4KZG91YmxlIGltdChkb3VibGUgYmJLZywgZG91YmxlIHRiQ20pIHsKICBmaW5hbCBtID0gdGJDbSAvIDEwMC4wOwogIGlmIChtIDw9IDApIHJldHVybiBkb3VibGUubmFuOwogIHJldHVybiBiYktnIC8gKG0gKiBtKTsKfQoKLy8vIFotU2NvcmUgSU1UL1UgbWVudXJ1dCBXSE8gUmVmZXJlbmNlIDIwMDcgKDYxLTIyOCBidWxhbikuCmRvdWJsZSB6SU1UVShkb3VibGUgYmJLZywgZG91YmxlIHRiQ20sIGRvdWJsZSB1bXVyQnVsYW4sIGJvb2wgbGFraSkgewogIGlmICh1bXVyQnVsYW4gPCA2MSB8fCB1bXVyQnVsYW4gPiAyMjgpIHJldHVybiBkb3VibGUubmFuOwogIGZpbmFsIG5pbGFpSW10ID0gaW10KGJiS2csIHRiQ20pOwogIGlmIChuaWxhaUltdC5pc05hTikgcmV0dXJuIGRvdWJsZS5uYW47CiAgZmluYWwgbG1zID0gX2ludGVycChfYmZhMDcobGFraSksIHVtdXJCdWxhbiAtIDYxKTsKICByZXR1cm4gekxNUyhuaWxhaUltdCwgbG1zWzBdLCBsbXNbMV0sIGxtc1syXSk7Cn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBVbXVyICYga29yZWtzaSB0aW5nZ2kgKEZvcm1QZW1lcmlrc2Fhbi5rYWxrdWxhc2lPdG9tYXRpcykKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgovLy8gVW11ciBkYWxhbSBidWxhbiBwZXJzaXMgY2FyYSBKYXZhOiBzZWxpc2loIG1pbGlkZXRpayBkaWJhZ2kKLy8vICgxMDAwKjYwKjYwKjI0KjMwLjQ0KSwgZGlidWxhdGthbiB0cnVuYyBrZSBpbnQsIG1pbmltdW0gMC4KaW50IGhpdHVuZ1VtdXJCdWxhbihEYXRlVGltZSB0Z2xMYWhpciwgRGF0ZVRpbWUgdGdsUGVyaWtzYSkgewogIGZpbmFsIGRpZmZNcyA9CiAgICAgIHRnbFBlcmlrc2EubWlsbGlzZWNvbmRzU2luY2VFcG9jaCAtIHRnbExhaGlyLm1pbGxpc2Vjb25kc1NpbmNlRXBvY2g7CiAgdmFyIHVtdXIgPSAoZGlmZk1zIC8gKDEwMDAgKiA2MCAqIDYwICogMjQgKiAzMC40NCkpLnRydW5jYXRlKCk7CiAgaWYgKHVtdXIgPCAwKSB1bXVyID0gMDsKICByZXR1cm4gdW11cjsKfQoKY2xhc3MgS29yZWtzaVRpbmdnaSB7CiAgZmluYWwgZG91YmxlIHRpbmdnaUtvcmVrc2k7CiAgZmluYWwgU3RyaW5nIGNhdGF0YW47IC8vIG1pcy4gIiAoKzAuNyBjbSBrcm4gPDI0IGJsbikiIGF0YXUgIiIKICBjb25zdCBLb3Jla3NpVGluZ2dpKHRoaXMudGluZ2dpS29yZWtzaSwgdGhpcy5jYXRhdGFuKTsKfQoKLy8vIEtvcmVrc2kgMC43IGNtIGJlcmRhc2Fya2FuIHVtdXIgJiBwb3Npc2kgdWt1ciAoYXR1cmFuIFdITyBwYWRhIGRlc2t0b3ApLgpLb3Jla3NpVGluZ2dpIGtvcmVrc2lUaW5nZ2koZG91YmxlIHRpbmdnaSwgaW50IHVtdXJCdWxhbiwgU3RyaW5nIHBvc2lzaSkgewogIGlmICh1bXVyQnVsYW4gPCAyNCAmJiBwb3Npc2kgPT0gJ0JlcmRpcmknKSB7CiAgICByZXR1cm4gS29yZWtzaVRpbmdnaSh0aW5nZ2kgKyAwLjcsICcgKCswLjcgY20ga3JuIDwyNCBibG4pJyk7CiAgfQogIGlmICh1bXVyQnVsYW4gPj0gMjQgJiYgcG9zaXNpID09ICdUZWxlbnRhbmcnKSB7CiAgICByZXR1cm4gS29yZWtzaVRpbmdnaSh0aW5nZ2kgLSAwLjcsICcgKC0wLjcgY20ga3JuID49MjQgYmxuKScpOwogIH0KICByZXR1cm4gS29yZWtzaVRpbmdnaSh0aW5nZ2ksICcnKTsKfQoKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCi8vIEtsYXNpZmlrYXNpIEtlbWVua2VzIChQcm9zZXNQZW1lcmlrc2FhbikKLy8gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgpTdHJpbmcgdGVudHVrYW5CQlUoZG91YmxlIHopIHsKICBpZiAoei5pc05hTikgcmV0dXJuICctJzsKICBpZiAoeiA8IC0zLjApIHJldHVybiAnU2FuZ2F0IEt1cmFuZyc7CiAgaWYgKHogPCAtMi4wKSByZXR1cm4gJ0t1cmFuZyc7CiAgaWYgKHogPD0gMS4wKSByZXR1cm4gJ0JlcmF0IEJhZGFuIE5vcm1hbCc7CiAgcmV0dXJuICdSaXNpa28gQmVyYXQgQmFkYW4gTGViaWgnOwp9CgpTdHJpbmcgdGVudHVrYW5UQlUoZG91YmxlIHopIHsKICBpZiAoei5pc05hTikgcmV0dXJuICctJzsKICBpZiAoeiA8IC0zLjApIHJldHVybiAnU2FuZ2F0IFBlbmRlayc7CiAgaWYgKHogPCAtMi4wKSByZXR1cm4gJ1BlbmRlayc7CiAgaWYgKHogPD0gMy4wKSByZXR1cm4gJ1RpbmdnaSBOb3JtYWwnOwogIHJldHVybiAnVGluZ2dpJzsKfQoKU3RyaW5nIHRlbnR1a2FuQkJUQihkb3VibGUgeikgewogIGlmICh6LmlzTmFOKSByZXR1cm4gJy0nOwogIGlmICh6IDwgLTMuMCkgcmV0dXJuICdHaXppIEJ1cnVrJzsKICBpZiAoeiA8IC0yLjApIHJldHVybiAnR2l6aSBLdXJhbmcnOwogIGlmICh6IDw9IDEuMCkgcmV0dXJuICdHaXppIEJhaWsnOwogIGlmICh6IDw9IDIuMCkgcmV0dXJuICdCZXJpc2lrbyBHaXppIExlYmloJzsKICBpZiAoeiA8PSAzLjApIHJldHVybiAnR2l6aSBMZWJpaCc7CiAgcmV0dXJuICdPYmVzaXRhcyc7Cn0KCi8vLyBLbGFzaWZpa2FzaSBJTVQvVSB1c2lhIDUtMTggdGFodW4gbWVudXJ1dCBQZXJtZW5rZXMgTm8uIDIgVGFodW4gMjAyMC4KU3RyaW5nIHRlbnR1a2FuSU1UVShkb3VibGUgeikgewogIGlmICh6LmlzTmFOKSByZXR1cm4gJy0nOwogIGlmICh6IDwgLTMuMCkgcmV0dXJuICdHaXppIEJ1cnVrJzsKICBpZiAoeiA8IC0yLjApIHJldHVybiAnR2l6aSBLdXJhbmcnOwogIGlmICh6IDw9IDEuMCkgcmV0dXJuICdHaXppIEJhaWsnOwogIGlmICh6IDw9IDIuMCkgcmV0dXJuICdHaXppIExlYmloJzsKICByZXR1cm4gJ09iZXNpdGFzJzsKfQoKU3RyaW5nIF9mbXQoZG91YmxlIHopID0+IHouaXNOYU4gPyAnLScgOiB6LnRvU3RyaW5nQXNGaXhlZCgyKTsKCi8vLyBIYXNpbCBsZW5na2FwIHBlbmlsYWlhbiBzdGF0dXMgZ2l6aSAocGFkYW5hbiBoaXR1bmdTdGF0dXNHaXppRGV0YWlsKS4KY2xhc3MgSGFzaWxHaXppIHsKICBmaW5hbCBkb3VibGUgekJCVTsKICBmaW5hbCBkb3VibGUgelRCVTsKICBmaW5hbCBkb3VibGUgekJCVEI7CgogIC8vLyBaLVNjb3JlIElNVC9VIChXSE8gMjAwNyk7IE5hTiB1bnR1ayBhbmFrIHVzaWEgMC02MCBidWxhbi4KICBmaW5hbCBkb3VibGUgeklNVFU7CiAgZmluYWwgU3RyaW5nIHN0YXR1c0JCVTsKICBmaW5hbCBTdHJpbmcgc3RhdHVzVEJVOwogIGZpbmFsIFN0cmluZyBzdGF0dXNCQlRCOwoKICAvLy8gS2F0ZWdvcmkgSU1UL1UgKFdITyAyMDA3KTsgJy0nIHVudHVrIGFuYWsgdXNpYSAwLTYwIGJ1bGFuLgogIGZpbmFsIFN0cmluZyBzdGF0dXNJTVRVOwogIGZpbmFsIFN0cmluZyBzdGF0dXNVdGFtYTsKCiAgLy8vIEJsb2sgdGVrcyAiW0FVVE9dIEV2YWx1YXNpIEFudHJvcG9tZXRyaSBXSE8gMjAwNiAoS2VtZW5rZXMpOiAuLi4iCiAgZmluYWwgU3RyaW5nIGRldGFpbDsKCiAgY29uc3QgSGFzaWxHaXppKHsKICAgIHJlcXVpcmVkIHRoaXMuekJCVSwKICAgIHJlcXVpcmVkIHRoaXMuelRCVSwKICAgIHJlcXVpcmVkIHRoaXMuekJCVEIsCiAgICB0aGlzLnpJTVRVID0gZG91YmxlLm5hbiwKICAgIHJlcXVpcmVkIHRoaXMuc3RhdHVzQkJVLAogICAgcmVxdWlyZWQgdGhpcy5zdGF0dXNUQlUsCiAgICByZXF1aXJlZCB0aGlzLnN0YXR1c0JCVEIsCiAgICB0aGlzLnN0YXR1c0lNVFUgPSAnLScsCiAgICByZXF1aXJlZCB0aGlzLnN0YXR1c1V0YW1hLAogICAgcmVxdWlyZWQgdGhpcy5kZXRhaWwsCiAgfSk7Cn0KCi8vLyBQZW5pbGFpYW4gYW5hayB1c2lhIGxlYmloIGRhcmkgNjAgYnVsYW4gbWVtYWthaSBXSE8gUmVmZXJlbmNlIDIwMDcKLy8vIHNlc3VhaSBQZXJtZW5rZXMgTm8uIDIgVGFodW4gMjAyMDogaW5kZWtzIHV0YW1hIElNVC9VLCBkaWRhbXBpbmdpIFRCL1UKLy8vIChwZW1hbnRhdWFuIHN0dW50aW5nKSBkYW4gQkIvVSAoaGFueWEgc2FtcGFpIDEyMCBidWxhbikuCkhhc2lsR2l6aSBfaGl0dW5nU3RhdHVzR2l6aTIwMDcoCiAgICBkb3VibGUgYmIsIGRvdWJsZSB0YkNtLCBpbnQgdW11ckJ1bGFuLCBTdHJpbmc/IGprKSB7CiAgZmluYWwgbGFraSA9IGlzTGFraShqayk7CiAgaWYgKHVtdXJCdWxhbiA+IDIyOCkgewogICAgZmluYWwgZGV0YWlsID0gU3RyaW5nQnVmZmVyKCkKICAgICAgLi53cml0ZWxuKCdbQVVUT10gRXZhbHVhc2kgQW50cm9wb21ldHJpIFdITyBSZWZlcmVuY2UgMjAwNyAoS2VtZW5rZXMpOicpCiAgICAgIC4ud3JpdGVsbignLSBVc2lhIEFuYWs6ICR1bXVyQnVsYW4gQnVsYW4nKQogICAgICAuLndyaXRlbG4oJy0gRGkgbHVhciByZW50YW5nIHN0YW5kYXIgNjEtMjI4IGJ1bGFuICg1LTE4IHRhaHVuKS4nKTsKICAgIHJldHVybiBIYXNpbEdpemkoCiAgICAgIHpCQlU6IGRvdWJsZS5uYW4sCiAgICAgIHpUQlU6IGRvdWJsZS5uYW4sCiAgICAgIHpCQlRCOiBkb3VibGUubmFuLAogICAgICBzdGF0dXNCQlU6ICctJywKICAgICAgc3RhdHVzVEJVOiAnLScsCiAgICAgIHN0YXR1c0JCVEI6ICctJywKICAgICAgc3RhdHVzVXRhbWE6ICdEaSBMdWFyIFJlbnRhbmcgVXNpYSBTdGFuZGFyJywKICAgICAgZGV0YWlsOiBkZXRhaWwudG9TdHJpbmcoKSwKICAgICk7CiAgfQogIGZpbmFsIHpCYnUgPSB6QkJVMjAwNyhiYiwgdW11ckJ1bGFuLnRvRG91YmxlKCksIGxha2kpOwogIGZpbmFsIHpUYnUgPSB6VEJVMjAwNyh0YkNtLCB1bXVyQnVsYW4udG9Eb3VibGUoKSwgbGFraSk7CiAgZmluYWwgekltdHUgPSB6SU1UVShiYiwgdGJDbSwgdW11ckJ1bGFuLnRvRG91YmxlKCksIGxha2kpOwoKICBmaW5hbCBzdGF0dXNCQlUgPSB0ZW50dWthbkJCVSh6QmJ1KTsKICBmaW5hbCBzdGF0dXNUQlUgPSB0ZW50dWthblRCVSh6VGJ1KTsKICBmaW5hbCBzdGF0dXNJTVRVID0gdGVudHVrYW5JTVRVKHpJbXR1KTsKCiAgLy8gRmxhZyBwbGF1c2liaWxpdGFzIFdITyBBbnRocm9QbHVzOiBCQi9VIGRpIGx1YXIgLTYuLis1LAogIC8vIFRCL1UgZGkgbHVhciAtNi4uKzYsIElNVC9VIGRpIGx1YXIgLTUuLis1LgogIGZpbmFsIGJidUJlcmxha3UgPSB1bXVyQnVsYW4gPD0gMTIwOwogIGZpbmFsIGFub21hbGkgPSAoYmJ1QmVybGFrdSAmJiAoekJidS5pc05hTiB8fCB6QmJ1IDwgLTYgfHwgekJidSA+IDUpKSB8fAogICAgICB6VGJ1LmlzTmFOIHx8CiAgICAgIHpUYnUgPCAtNiB8fAogICAgICB6VGJ1ID4gNiB8fAogICAgICB6SW10dS5pc05hTiB8fAogICAgICB6SW10dSA8IC01IHx8CiAgICAgIHpJbXR1ID4gNTsKCiAgZmluYWwgU3RyaW5nIHN0YXR1c1V0YW1hOwogIGlmIChhbm9tYWxpKSB7CiAgICBzdGF0dXNVdGFtYSA9ICdEYXRhIEFub21hbGkgKENlayBVbGFuZyBJbnB1dCEpJzsKICB9IGVsc2UgewogICAgZmluYWwgaXNTdHVudGVkID0gc3RhdHVzVEJVLmNvbnRhaW5zKCdQZW5kZWsnKTsKICAgIGlmIChpc1N0dW50ZWQgJiYgc3RhdHVzSU1UVS5jb250YWlucygnQnVydWsnKSkgewogICAgICBzdGF0dXNVdGFtYSA9ICdHaXppIEJ1cnVrICYgU3R1bnRpbmcnOwogICAgfSBlbHNlIGlmIChpc1N0dW50ZWQgJiYgc3RhdHVzSU1UVS5jb250YWlucygnS3VyYW5nJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnR2l6aSBLdXJhbmcgJiBTdHVudGluZyc7CiAgICB9IGVsc2UgaWYgKGlzU3R1bnRlZCAmJiBzdGF0dXNJTVRVLmNvbnRhaW5zKCdPYmVzaXRhcycpKSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ1N0dW50aW5nICYgT2Jlc2l0YXMnOwogICAgfSBlbHNlIGlmIChpc1N0dW50ZWQpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnU3R1bnRpbmcnOwogICAgfSBlbHNlIGlmIChzdGF0dXNJTVRVLmNvbnRhaW5zKCdCdXJ1aycpKSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ0dpemkgQnVydWsnOwogICAgfSBlbHNlIGlmIChzdGF0dXNJTVRVLmNvbnRhaW5zKCdLdXJhbmcnKSkgewogICAgICBzdGF0dXNVdGFtYSA9ICdHaXppIEt1cmFuZyc7CiAgICB9IGVsc2UgaWYgKHN0YXR1c0lNVFUuY29udGFpbnMoJ09iZXNpdGFzJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnT2Jlc2l0YXMnOwogICAgfSBlbHNlIGlmIChzdGF0dXNJTVRVLmNvbnRhaW5zKCdMZWJpaCcpKSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ0dpemkgTGViaWgnOwogICAgfSBlbHNlIGlmIChiYnVCZXJsYWt1ICYmIHN0YXR1c0JCVS5jb250YWlucygnS3VyYW5nJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnQkIgS3VyYW5nJzsKICAgIH0gZWxzZSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ05vcm1hbCAvIEdpemkgQmFpayc7CiAgICB9CiAgfQoKICBmaW5hbCBkZXRhaWwgPSBTdHJpbmdCdWZmZXIoKQogICAgLi53cml0ZWxuKCdbQVVUT10gRXZhbHVhc2kgQW50cm9wb21ldHJpIFdITyBSZWZlcmVuY2UgMjAwNyAoS2VtZW5rZXMpOicpCiAgICAuLndyaXRlbG4oJy0gVXNpYSBBbmFrOiAkdW11ckJ1bGFuIEJ1bGFuJyk7CiAgaWYgKGJidUJlcmxha3UpIHsKICAgIGRldGFpbC53cml0ZWxuKCctIEJCL1UgKFotU2NvcmU6ICR7X2ZtdCh6QmJ1KX0pOiAkc3RhdHVzQkJVJyk7CiAgfSBlbHNlIHsKICAgIGRldGFpbC53cml0ZWxuKCctIEJCL1U6IC0gKGhhbnlhIHNhbXBhaSB1c2lhIDEyMCBidWxhbiknKTsKICB9CiAgZGV0YWlsCiAgICAuLndyaXRlbG4oJy0gVEIvVSAoWi1TY29yZTogJHtfZm10KHpUYnUpfSk6ICRzdGF0dXNUQlUnKQogICAgLi53cml0ZWxuKCctIElNVC9VIChJTVQ6ICR7aW10KGJiLCB0YkNtKS50b1N0cmluZ0FzRml4ZWQoMil9LCAnCiAgICAgICAgJ1otU2NvcmU6ICR7X2ZtdCh6SW10dSl9KTogJHN0YXR1c0lNVFUnKTsKCiAgcmV0dXJuIEhhc2lsR2l6aSgKICAgIHpCQlU6IHpCYnUsCiAgICB6VEJVOiB6VGJ1LAogICAgekJCVEI6IGRvdWJsZS5uYW4sCiAgICB6SU1UVTogekltdHUsCiAgICBzdGF0dXNCQlU6IHN0YXR1c0JCVSwKICAgIHN0YXR1c1RCVTogc3RhdHVzVEJVLAogICAgc3RhdHVzQkJUQjogJy0nLAogICAgc3RhdHVzSU1UVTogc3RhdHVzSU1UVSwKICAgIHN0YXR1c1V0YW1hOiBzdGF0dXNVdGFtYSwKICAgIGRldGFpbDogZGV0YWlsLnRvU3RyaW5nKCksCiAgKTsKfQoKLy8vIE1lbmdoaXR1bmcga2V0aWdhIFotU2NvcmUgbWVtYWthaSB0aW5nZ2kgeWFuZyBTVURBSCBkaWtvcmVrc2kgcG9zaXNpIHVrdXIuCi8vLyBVbXVyIGxlYmloIGRhcmkgNjAgYnVsYW4gb3RvbWF0aXMgbWVtYWthaSBXSE8gUmVmZXJlbmNlIDIwMDcuCkhhc2lsR2l6aSBoaXR1bmdTdGF0dXNHaXppRGV0YWlsKAogICAgZG91YmxlIGJiLCBkb3VibGUgdGJDbSwgaW50IHVtdXJCdWxhbiwgU3RyaW5nPyBqaykgewogIGlmICh1bXVyQnVsYW4gPiA2MCkgewogICAgcmV0dXJuIF9oaXR1bmdTdGF0dXNHaXppMjAwNyhiYiwgdGJDbSwgdW11ckJ1bGFuLCBqayk7CiAgfQogIGZpbmFsIGxha2kgPSBpc0xha2koamspOwogIGZpbmFsIHpCYnUgPSB6QkJVKGJiLCB1bXVyQnVsYW4udG9Eb3VibGUoKSwgbGFraSk7CiAgZmluYWwgelRidSA9IHpUQlUodGJDbSwgdW11ckJ1bGFuLnRvRG91YmxlKCksIGxha2kpOwogIGZpbmFsIHpCYnRiID0gekJCVEIoYmIsIHRiQ20sIHVtdXJCdWxhbi50b0RvdWJsZSgpLCBsYWtpKTsKCiAgZmluYWwgc3RhdHVzQkJVID0gdGVudHVrYW5CQlUoekJidSk7CiAgZmluYWwgc3RhdHVzVEJVID0gdGVudHVrYW5UQlUoelRidSk7CiAgZmluYWwgc3RhdHVzQkJUQiA9IHRlbnR1a2FuQkJUQih6QmJ0Yik7CgogIGZpbmFsIFN0cmluZyBzdGF0dXNVdGFtYTsKICAvLyBTTUFSVCBERVRFQ1RPUjogZmxhZyBXSE8gdW50dWsga2VtdW5na2luYW4ga2VzYWxhaGFuIGlucHV0CiAgZmluYWwgYW5vbWFsaUJCVSA9IHpCYnUgPCAtNiB8fCB6QmJ1ID4gNTsKICBmaW5hbCBhbm9tYWxpVEJVID0gelRidSA8IC02IHx8IHpUYnUgPiA2OwogIGZpbmFsIGFub21hbGlCQlRCID0gekJidGIgPCAtNSB8fCB6QmJ0YiA+IDU7CiAgaWYgKHpCYnUuaXNOYU4gfHwgelRidS5pc05hTiB8fCB6QmJ0Yi5pc05hTiB8fAogICAgICBhbm9tYWxpQkJVIHx8IGFub21hbGlUQlUgfHwgYW5vbWFsaUJCVEIpIHsKICAgIHN0YXR1c1V0YW1hID0gJ0RhdGEgQW5vbWFsaSAoQ2VrIFVsYW5nIElucHV0ISknOwogIH0gZWxzZSB7CiAgICBmaW5hbCBpc1N0dW50ZWQgPSBzdGF0dXNUQlUuY29udGFpbnMoJ1BlbmRlaycpOwogICAgaWYgKGlzU3R1bnRlZCAmJiBzdGF0dXNCQlRCLmNvbnRhaW5zKCdCdXJ1aycpKSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ0dpemkgQnVydWsgJiBTdHVudGluZyc7CiAgICB9IGVsc2UgaWYgKGlzU3R1bnRlZCAmJiBzdGF0dXNCQlRCLmNvbnRhaW5zKCdLdXJhbmcnKSkgewogICAgICBzdGF0dXNVdGFtYSA9ICdHaXppIEt1cmFuZyAmIFN0dW50aW5nJzsKICAgIH0gZWxzZSBpZiAoaXNTdHVudGVkICYmIHN0YXR1c0JCVEIuY29udGFpbnMoJ09iZXNpdGFzJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnU3R1bnRpbmcgJiBPYmVzaXRhcyc7CiAgICB9IGVsc2UgaWYgKGlzU3R1bnRlZCkgewogICAgICBzdGF0dXNVdGFtYSA9ICdTdHVudGluZyc7CiAgICB9IGVsc2UgaWYgKHN0YXR1c0JCVEIuY29udGFpbnMoJ0J1cnVrJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnR2l6aSBCdXJ1ayc7CiAgICB9IGVsc2UgaWYgKHN0YXR1c0JCVEIuY29udGFpbnMoJ0t1cmFuZycpKSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ0dpemkgS3VyYW5nJzsKICAgIH0gZWxzZSBpZiAoc3RhdHVzQkJUQi5jb250YWlucygnT2Jlc2l0YXMnKSkgewogICAgICBzdGF0dXNVdGFtYSA9ICdPYmVzaXRhcyc7CiAgICB9IGVsc2UgaWYgKHN0YXR1c0JCVEIuY29udGFpbnMoJ0xlYmloJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnQmVyaXNpa28gR2l6aSBMZWJpaCc7CiAgICB9IGVsc2UgaWYgKHN0YXR1c0JCVS5jb250YWlucygnS3VyYW5nJykpIHsKICAgICAgc3RhdHVzVXRhbWEgPSAnQkIgS3VyYW5nJzsKICAgIH0gZWxzZSB7CiAgICAgIHN0YXR1c1V0YW1hID0gJ05vcm1hbCAvIEdpemkgQmFpayc7CiAgICB9CiAgfQoKICBmaW5hbCBkZXRhaWwgPSBTdHJpbmdCdWZmZXIoKQogICAgLi53cml0ZWxuKCdbQVVUT10gRXZhbHVhc2kgQW50cm9wb21ldHJpIFdITyAyMDA2IChLZW1lbmtlcyk6JykKICAgIC4ud3JpdGVsbignLSBVc2lhIEFuYWs6ICR1bXVyQnVsYW4gQnVsYW4nKQogICAgLi53cml0ZWxuKCctIEJCL1UgKFotU2NvcmU6ICR7X2ZtdCh6QmJ1KX0pOiAkc3RhdHVzQkJVJykKICAgIC4ud3JpdGVsbignLSBUQi9VIChaLVNjb3JlOiAke19mbXQoelRidSl9KTogJHN0YXR1c1RCVScpCiAgICAuLndyaXRlbG4oJy0gQkIvVEIgKFotU2NvcmU6ICR7X2ZtdCh6QmJ0Yil9KTogJHN0YXR1c0JCVEInKTsKCiAgcmV0dXJuIEhhc2lsR2l6aSgKICAgIHpCQlU6IHpCYnUsCiAgICB6VEJVOiB6VGJ1LAogICAgekJCVEI6IHpCYnRiLAogICAgc3RhdHVzQkJVOiBzdGF0dXNCQlUsCiAgICBzdGF0dXNUQlU6IHN0YXR1c1RCVSwKICAgIHN0YXR1c0JCVEI6IHN0YXR1c0JCVEIsCiAgICBzdGF0dXNVdGFtYTogc3RhdHVzVXRhbWEsCiAgICBkZXRhaWw6IGRldGFpbC50b1N0cmluZygpLAogICk7Cn0KCi8vLyBNZW55dXN1biBjYXRhdGFuX2JpZGFuIGxlbmdrYXAgcGVyc2lzIGZvcm1hdCBGb3JtUGVtZXJpa3NhYW46Ci8vLyBibG9rIFtBVVRPXSArIGJsb2sgW0RBVEEgVEFNQkFIQU4gUE9TWUFORFVdICsgY2F0YXRhbiBtYW51YWwuClN0cmluZyBiYW5ndW5DYXRhdGFuQmlkYW4oewogIHJlcXVpcmVkIEhhc2lsR2l6aSBoYXNpbCwKICByZXF1aXJlZCBpbnQgdW11ckJ1bGFuLAogIHJlcXVpcmVkIFN0cmluZyBwb3Npc2lVa3VyLAogIHJlcXVpcmVkIFN0cmluZyBub3RlS29yZWtzaSwKICByZXF1aXJlZCBTdHJpbmcgYXNpLCAvLyAnLSBQaWxpaCAtJyAvICdZYScgLyAnVGlkYWsnCiAgcmVxdWlyZWQgU3RyaW5nIHZpdEEsIC8vICctIFBpbGloIC0nIC8gJ0JpcnUnIC8gJ01lcmFoJyAvICdUaWRhaycKICByZXF1aXJlZCBTdHJpbmcgY2FjaW5nLCAvLyAnLSBQaWxpaCAtJyAvICdZYScgLyAnVGlkYWsnCiAgcmVxdWlyZWQgU3RyaW5nIG5hbWFJbXVuaXNhc2ksIC8vIG5hbWEgdmFrc2luIGF0YXUgJy0nCiAgcmVxdWlyZWQgU3RyaW5nIGNhdGF0YW5NYW51YWwsCn0pIHsKICBmaW5hbCBhc2lUZWtzID0gdW11ckJ1bGFuID4gNgogICAgICA/ICdUaWRhayBXYWppYiAoPjYgQmxuKScKICAgICAgOiAoYXNpICE9ICctIFBpbGloIC0nID8gYXNpIDogJy0nKTsKICBmaW5hbCBkYXRhUG9zeWFuZHUgPSAnXG5bREFUQSBUQU1CQUhBTiBQT1NZQU5EVV1cbicKICAgICAgJy0gUG9zaXNpIFVrdXI6ICRwb3Npc2lVa3VyJG5vdGVLb3Jla3NpXG4nCiAgICAgICctIEFTSSBFa3NrbHVzaWY6ICRhc2lUZWtzXG4nCiAgICAgICctIEthcHN1bCBWaXQgQTogJHt2aXRBICE9ICctIFBpbGloIC0nID8gdml0QSA6ICctJ31cbicKICAgICAgJy0gT2JhdCBDYWNpbmc6ICR7Y2FjaW5nICE9ICctIFBpbGloIC0nID8gY2FjaW5nIDogJy0nfVxuJwogICAgICAnLSBJbXVuaXNhc2kgRGliZXJpa2FuOiAkbmFtYUltdW5pc2FzaVxuJzsKICByZXR1cm4gJyR7aGFzaWwuZGV0YWlsfSRkYXRhUG9zeWFuZHVcblxuLS0tIENhdGF0YW4gTWFudWFsIC0tLVxuJGNhdGF0YW5NYW51YWwnOwp9CgovLy8gUGVuYW5kYSBwZW1pc2FoIGNhdGF0YW4gbWFudWFsIGRpIGRhbGFtIGNhdGF0YW5fYmlkYW4uCmNvbnN0IFN0cmluZyBrUGVtaXNhaE1hbnVhbCA9ICctLS0gQ2F0YXRhbiBNYW51YWwgLS0tJzsKCi8vLyBNZW5nYW1iaWwgaXNpIGNhdGF0YW4gbWFudWFsIGRhcmkgY2F0YXRhbl9iaWRhbiB0ZXJzaW1wYW4uClN0cmluZyBhbWJpbENhdGF0YW5NYW51YWwoU3RyaW5nPyBjYXRhdGFuKSB7CiAgaWYgKGNhdGF0YW4gPT0gbnVsbCkgcmV0dXJuICcnOwogIGZpbmFsIGlkeCA9IGNhdGF0YW4uaW5kZXhPZihrUGVtaXNhaE1hbnVhbCk7CiAgaWYgKGlkeCA9PSAtMSkgewogICAgLy8gQ2F0YXRhbiBsYW1hIHRhbnBhIGJsb2sgb3RvbWF0aXM6IHNlbHVydWhueWEgZGlhbmdnYXAgbWFudWFsCiAgICBpZiAoIWNhdGF0YW4uY29udGFpbnMoJ1tBVVRPXScpKSByZXR1cm4gY2F0YXRhbi50cmltKCk7CiAgICByZXR1cm4gJyc7CiAgfQogIHZhciBzaXNhID0gY2F0YXRhbi5zdWJzdHJpbmcoaWR4ICsga1BlbWlzYWhNYW51YWwubGVuZ3RoKTsKICBzaXNhID0gc2lzYS5yZXBsYWNlRmlyc3QoUmVnRXhwKHInXlxzKycpLCAnJyk7CiAgcmV0dXJuIHNpc2EudHJpbVJpZ2h0KCk7Cn0KCi8vIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQovLyBBdHVyYW4ga29sb20gdGFtYmFoYW4gcGVtZXJpa3NhYW4gYmVyZGFzYXJrYW4gdW11ciAoRm9ybVBlbWVyaWtzYWFuKQovLyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KCi8vLyBBU0kgRWtza2x1c2lmIGhhbnlhIGFrdGlmIHVudHVrIHVtdXIgPD0gNiBidWxhbi4KYm9vbCBhc2lBa3RpZihpbnQgdW11ckJ1bGFuKSA9PiB1bXVyQnVsYW4gPD0gNjsKCi8vLyBQaWxpaGFuIGthcHN1bCBWaXRhbWluIEEgbWVudXJ1dCBrZWxvbXBvayB1bXVyLgpMaXN0PFN0cmluZz4gb3BzaVZpdEEoaW50IHVtdXJCdWxhbikgewogIGlmICh1bXVyQnVsYW4gPCA2KSByZXR1cm4gY29uc3QgWydUaWRhayddOwogIGlmICh1bXVyQnVsYW4gPD0gMTEpIHJldHVybiBjb25zdCBbJy0gUGlsaWggLScsICdCaXJ1JywgJ1RpZGFrJ107CiAgaWYgKHVtdXJCdWxhbiA8PSA1OSkgcmV0dXJuIGNvbnN0IFsnLSBQaWxpaCAtJywgJ01lcmFoJywgJ1RpZGFrJ107CiAgcmV0dXJuIGNvbnN0IFsnVGlkYWsnXTsKfQoKLy8vIEthcHN1bCBWaXRhbWluIEEgZGFwYXQgZGlwaWxpaCBwYWRhIHVtdXIgNi01OSBidWxhbi4KYm9vbCB2aXRBQWt0aWYoaW50IHVtdXJCdWxhbikgPT4gdW11ckJ1bGFuID49IDYgJiYgdW11ckJ1bGFuIDw9IDU5OwoKLy8vIE9iYXQgY2FjaW5nIGhhbnlhIGFrdGlmIHVudHVrIHVtdXIgMTItNTkgYnVsYW4uCmJvb2wgY2FjaW5nQWt0aWYoaW50IHVtdXJCdWxhbikgPT4gdW11ckJ1bGFuID49IDEyICYmIHVtdXJCdWxhbiA8PSA1OTsKCi8vLyBCdWxhbiBwZW1iZXJpYW4gVml0YW1pbiBBIG1hc3NhbCAoRmVicnVhcmkgJiBBZ3VzdHVzKS4KYm9vbCBidWxhblZpdEEoaW50IGJ1bGFuKSA9PiBidWxhbiA9PSAyIHx8IGJ1bGFuID09IDg7Cg==
+import 'dart:math' as math;
+
+import '../data/who_lms.dart';
+
+/// Port proses/StandarWHO.java + proses/ProsesPemeriksaan.java
+/// + logika perhitungan pada tampilan/FormPemeriksaan.java.
+///
+/// Standar Antropometri WHO Child Growth Standards 2006 (Kemenkes RI,
+/// PMK No. 2 Tahun 2020). Z-Score metode LMS: z = ((y/M)^L - 1) / (L * S).
+
+// ---------------------------------------------------------------------------
+// Tabel LMS (parse string "L,M,S;L,M,S;..." persis StandarWHO.parse)
+// ---------------------------------------------------------------------------
+
+final Map<String, List<List<double>>> _cacheTabel = {};
+
+List<List<double>> _parse(String data) {
+  return data.split(';').map((baris) {
+    final c = baris.split(',');
+    return <double>[
+      double.parse(c[0]),
+      double.parse(c[1]),
+      double.parse(c[2]),
+    ];
+  }).toList();
+}
+
+List<List<double>> _tabel(String kunci, String data) =>
+    _cacheTabel.putIfAbsent(kunci, () => _parse(data));
+
+List<List<double>> _wfa(bool laki) =>
+    _tabel(laki ? 'wfaL' : 'wfaP', laki ? kWFA_LAKI : kWFA_PEREMPUAN);
+
+List<List<double>> _lhfa(bool laki) =>
+    _tabel(laki ? 'lhfaL' : 'lhfaP', laki ? kLHFA_LAKI : kLHFA_PEREMPUAN);
+
+List<List<double>> _wfl(bool laki) =>
+    _tabel(laki ? 'wflL' : 'wflP', laki ? kWFL_LAKI : kWFL_PEREMPUAN);
+
+List<List<double>> _wfh(bool laki) =>
+    _tabel(laki ? 'wfhL' : 'wfhP', laki ? kWFH_LAKI : kWFH_PEREMPUAN);
+
+List<List<double>> _hcfa(bool laki) =>
+    _tabel(laki ? 'hcfaL' : 'hcfaP', laki ? kHCFA_LAKI : kHCFA_PEREMPUAN);
+
+/// Interpolasi linear antar titik (persis StandarWHO.interp, penjepitan ujung).
+List<double> _interp(List<List<double>> t, double x) {
+  final n = t.length - 1;
+  if (x <= 0) return t[0];
+  if (x >= n) return t[n];
+  final i = x.floor();
+  final f = x - i;
+  return <double>[
+    t[i][0] + f * (t[i + 1][0] - t[i][0]),
+    t[i][1] + f * (t[i + 1][1] - t[i][1]),
+    t[i][2] + f * (t[i + 1][2] - t[i][2]),
+  ];
+}
+
+/// Invers LMS: nilai pengukuran pada Z-Score tertentu (dipakai penyesuaian ekor).
+double _nilaiPadaZ(double z, double l, double m, double s) {
+  if (m <= 0 || s <= 0) return double.nan;
+  if (l.abs() < 1e-9) return m * math.exp(s * z);
+  final dasar = 1 + l * s * z;
+  if (dasar <= 0) return double.nan;
+  return m * math.pow(dasar, 1 / l).toDouble();
+}
+
+/// Rumus Z-Score LMS WHO, lengkap dengan:
+/// - cabang L = 0: z = ln(y/M) / S (menghindari pembagian dengan nol)
+/// - penyesuaian ekor WHO untuk |z| > 3 SD: z dihitung linear dari jarak
+///   nilai SD2 dan SD3 (restricted z-score ala WHO Anthro) agar nilai
+///   ekstrem tidak terkompresi oleh kurva LMS.
+/// Hasil akhir dijepit ke rentang -6..6.
+double zLMS(double y, double l, double m, double s) {
+  if (m <= 0 || s <= 0 || y <= 0) return double.nan;
+  double z;
+  if (l.abs() < 1e-9) {
+    z = math.log(y / m) / s;
+  } else {
+    z = (math.pow(y / m, l).toDouble() - 1.0) / (l * s);
+  }
+  if (z > 3.0) {
+    final sd3 = _nilaiPadaZ(3.0, l, m, s);
+    final sd2 = _nilaiPadaZ(2.0, l, m, s);
+    if (!sd3.isNaN && !sd2.isNaN && sd3 > sd2) {
+      z = 3.0 + (y - sd3) / (sd3 - sd2);
+    }
+  } else if (z < -3.0) {
+    final sd3 = _nilaiPadaZ(-3.0, l, m, s);
+    final sd2 = _nilaiPadaZ(-2.0, l, m, s);
+    if (!sd3.isNaN && !sd2.isNaN && sd2 > sd3) {
+      z = -3.0 + (y - sd3) / (sd2 - sd3);
+    }
+  }
+  if (z > 6.0) return 6.0;
+  if (z < -6.0) return -6.0;
+  return z;
+}
+
+/// Z-Score BB/U. umurBulan boleh desimal.
+double zBBU(double bbKg, double umurBulan, bool laki) {
+  final lms = _interp(_wfa(laki), umurBulan);
+  return zLMS(bbKg, lms[0], lms[1], lms[2]);
+}
+
+/// Z-Score TB/U (atau PB/U). umurBulan boleh desimal.
+double zTBU(double tbCm, double umurBulan, bool laki) {
+  final lms = _interp(_lhfa(laki), umurBulan);
+  return zLMS(tbCm, lms[0], lms[1], lms[2]);
+}
+
+/// Z-Score BB/TB (atau BB/PB).
+/// umur < 24 bln memakai tabel WFL dengan x = (tb - 45) / 0.5;
+/// umur >= 24 bln memakai tabel WFH dengan x = (tb - 65) / 0.5.
+double zBBTB(double bbKg, double tbCm, double umurBulan, bool laki) {
+  final List<List<double>> t;
+  final double x;
+  if (umurBulan < 24) {
+    t = _wfl(laki);
+    x = (tbCm - 45.0) / 0.5;
+  } else {
+    t = _wfh(laki);
+    x = (tbCm - 65.0) / 0.5;
+  }
+  final lms = _interp(t, x);
+  return zLMS(bbKg, lms[0], lms[1], lms[2]);
+}
+
+/// Z-Score LK/U (Lingkar Kepala menurut Umur), WHO 2006.
+/// Tabel hanya tersedia untuk umur 0-60 bulan; di luar itu NaN.
+double zLKU(double lkCm, double umurBulan, bool laki) {
+  if (umurBulan < 0 || umurBulan > 60) return double.nan;
+  final lms = _interp(_hcfa(laki), umurBulan);
+  return zLMS(lkCm, lms[0], lms[1], lms[2]);
+}
+
+/// Median WHO (nilai M hasil interpolasi) untuk tampilan detail indikator.
+double medianBBU(double umurBulan, bool laki) =>
+    _interp(_wfa(laki), umurBulan)[1];
+
+/// Median WHO TB/U untuk tampilan detail indikator.
+double medianTBU(double umurBulan, bool laki) =>
+    _interp(_lhfa(laki), umurBulan)[1];
+
+/// Median WHO BB/TB untuk tampilan detail indikator
+/// (pemilihan tabel WFL/WFH sama seperti zBBTB).
+double medianBBTB(double tbCm, double umurBulan, bool laki) {
+  if (umurBulan < 24) {
+    return _interp(_wfl(laki), (tbCm - 45.0) / 0.5)[1];
+  }
+  return _interp(_wfh(laki), (tbCm - 65.0) / 0.5)[1];
+}
+
+/// Median WHO LK/U; NaN di luar umur 0-60 bulan.
+double medianLKU(double umurBulan, bool laki) {
+  if (umurBulan < 0 || umurBulan > 60) return double.nan;
+  return _interp(_hcfa(laki), umurBulan)[1];
+}
+
+bool isLaki(String? jk) =>
+    jk != null && (jk.toUpperCase() == 'L' || jk.toLowerCase().startsWith('laki'));
+
+// ---------------------------------------------------------------------------
+// WHO Reference 2007 (usia 61-228 bulan; BB/U hanya 61-120 bulan).
+// Indeks tabel 0 = umur 61 bulan.
+// ---------------------------------------------------------------------------
+
+List<List<double>> _hfa07(bool laki) =>
+    _tabel(laki ? 'hfa07L' : 'hfa07P', laki ? kHFA07_LAKI : kHFA07_PEREMPUAN);
+
+List<List<double>> _bfa07(bool laki) =>
+    _tabel(laki ? 'bfa07L' : 'bfa07P', laki ? kBFA07_LAKI : kBFA07_PEREMPUAN);
+
+List<List<double>> _wfa07(bool laki) =>
+    _tabel(laki ? 'wfa07L' : 'wfa07P', laki ? kWFA07_LAKI : kWFA07_PEREMPUAN);
+
+/// Z-Score TB/U menurut WHO Reference 2007 (61-228 bulan).
+double zTBU2007(double tbCm, double umurBulan, bool laki) {
+  if (umurBulan < 61 || umurBulan > 228) return double.nan;
+  final lms = _interp(_hfa07(laki), umurBulan - 61);
+  return zLMS(tbCm, lms[0], lms[1], lms[2]);
+}
+
+/// Z-Score BB/U menurut WHO Reference 2007 (61-120 bulan saja).
+double zBBU2007(double bbKg, double umurBulan, bool laki) {
+  if (umurBulan < 61 || umurBulan > 120) return double.nan;
+  final lms = _interp(_wfa07(laki), umurBulan - 61);
+  return zLMS(bbKg, lms[0], lms[1], lms[2]);
+}
+
+/// Indeks Massa Tubuh: BB (kg) / TB (m) kuadrat.
+double imt(double bbKg, double tbCm) {
+  final m = tbCm / 100.0;
+  if (m <= 0) return double.nan;
+  return bbKg / (m * m);
+}
+
+/// Z-Score IMT/U menurut WHO Reference 2007 (61-228 bulan).
+double zIMTU(double bbKg, double tbCm, double umurBulan, bool laki) {
+  if (umurBulan < 61 || umurBulan > 228) return double.nan;
+  final nilaiImt = imt(bbKg, tbCm);
+  if (nilaiImt.isNaN) return double.nan;
+  final lms = _interp(_bfa07(laki), umurBulan - 61);
+  return zLMS(nilaiImt, lms[0], lms[1], lms[2]);
+}
+
+// ---------------------------------------------------------------------------
+// Umur & koreksi tinggi (FormPemeriksaan.kalkulasiOtomatis)
+// ---------------------------------------------------------------------------
+
+/// Umur dalam bulan persis cara Java: selisih milidetik dibagi
+/// (1000*60*60*24*30.44), dibulatkan trunc ke int, minimum 0.
+int hitungUmurBulan(DateTime tglLahir, DateTime tglPeriksa) {
+  final diffMs =
+      tglPeriksa.millisecondsSinceEpoch - tglLahir.millisecondsSinceEpoch;
+  var umur = (diffMs / (1000 * 60 * 60 * 24 * 30.44)).truncate();
+  if (umur < 0) umur = 0;
+  return umur;
+}
+
+class KoreksiTinggi {
+  final double tinggiKoreksi;
+  final String catatan; // mis. " (+0.7 cm krn <24 bln)" atau ""
+  const KoreksiTinggi(this.tinggiKoreksi, this.catatan);
+}
+
+/// Koreksi 0.7 cm berdasarkan umur & posisi ukur (aturan WHO pada desktop).
+KoreksiTinggi koreksiTinggi(double tinggi, int umurBulan, String posisi) {
+  if (umurBulan < 24 && posisi == 'Berdiri') {
+    return KoreksiTinggi(tinggi + 0.7, ' (+0.7 cm krn <24 bln)');
+  }
+  if (umurBulan >= 24 && posisi == 'Telentang') {
+    return KoreksiTinggi(tinggi - 0.7, ' (-0.7 cm krn >=24 bln)');
+  }
+  return KoreksiTinggi(tinggi, '');
+}
+
+// ---------------------------------------------------------------------------
+// Klasifikasi Kemenkes (ProsesPemeriksaan)
+// ---------------------------------------------------------------------------
+
+String tentukanBBU(double z) {
+  if (z.isNaN) return '-';
+  if (z < -3.0) return 'Sangat Kurang';
+  if (z < -2.0) return 'Kurang';
+  if (z <= 1.0) return 'Berat Badan Normal';
+  return 'Risiko Berat Badan Lebih';
+}
+
+String tentukanTBU(double z) {
+  if (z.isNaN) return '-';
+  if (z < -3.0) return 'Sangat Pendek';
+  if (z < -2.0) return 'Pendek';
+  if (z <= 3.0) return 'Tinggi Normal';
+  return 'Tinggi';
+}
+
+String tentukanBBTB(double z) {
+  if (z.isNaN) return '-';
+  if (z < -3.0) return 'Gizi Buruk';
+  if (z < -2.0) return 'Gizi Kurang';
+  if (z <= 1.0) return 'Gizi Baik';
+  if (z <= 2.0) return 'Berisiko Gizi Lebih';
+  if (z <= 3.0) return 'Gizi Lebih';
+  return 'Obesitas';
+}
+
+/// Klasifikasi LK/U menurut Permenkes No. 2 Tahun 2020:
+/// < -2 SD di bawah normal, -2 s.d. +2 SD normal, > +2 SD di atas normal.
+String tentukanLKU(double z) {
+  if (z.isNaN) return '-';
+  if (z < -2.0) return 'Di Bawah Normal';
+  if (z <= 2.0) return 'Normal';
+  return 'Di Atas Normal';
+}
+
+/// Klasifikasi IMT/U usia 5-18 tahun menurut Permenkes No. 2 Tahun 2020.
+String tentukanIMTU(double z) {
+  if (z.isNaN) return '-';
+  if (z < -3.0) return 'Gizi Buruk';
+  if (z < -2.0) return 'Gizi Kurang';
+  if (z <= 1.0) return 'Gizi Baik';
+  if (z <= 2.0) return 'Gizi Lebih';
+  return 'Obesitas';
+}
+
+String _fmt(double z) => z.isNaN ? '-' : z.toStringAsFixed(2);
+
+/// Hasil lengkap penilaian status gizi (padanan hitungStatusGiziDetail).
+class HasilGizi {
+  final double zBBU;
+  final double zTBU;
+  final double zBBTB;
+
+  /// Z-Score IMT/U (WHO 2007); NaN untuk anak usia 0-60 bulan.
+  final double zIMTU;
+
+  /// Z-Score LK/U (WHO 2006); NaN bila LK tidak diukur atau umur > 60 bulan.
+  /// Dihitung on-the-fly, tidak disimpan sebagai kolom database.
+  final double zLKU;
+  final String statusBBU;
+  final String statusTBU;
+  final String statusBBTB;
+
+  /// Kategori IMT/U (WHO 2007); '-' untuk anak usia 0-60 bulan.
+  final String statusIMTU;
+
+  /// Kategori LK/U; '-' bila LK tidak diukur atau umur > 60 bulan.
+  final String statusLKU;
+  final String statusUtama;
+
+  /// Blok teks "[AUTO] Evaluasi Antropometri WHO 2006 (Kemenkes): ..."
+  final String detail;
+
+  const HasilGizi({
+    required this.zBBU,
+    required this.zTBU,
+    required this.zBBTB,
+    this.zIMTU = double.nan,
+    this.zLKU = double.nan,
+    required this.statusBBU,
+    required this.statusTBU,
+    required this.statusBBTB,
+    this.statusIMTU = '-',
+    this.statusLKU = '-',
+    required this.statusUtama,
+    required this.detail,
+  });
+}
+
+/// Penilaian anak usia lebih dari 60 bulan memakai WHO Reference 2007
+/// sesuai Permenkes No. 2 Tahun 2020: indeks utama IMT/U, didampingi TB/U
+/// (pemantauan stunting) dan BB/U (hanya sampai 120 bulan).
+HasilGizi _hitungStatusGizi2007(
+    double bb, double tbCm, int umurBulan, String? jk) {
+  final laki = isLaki(jk);
+  if (umurBulan > 228) {
+    final detail = StringBuffer()
+      ..writeln('[AUTO] Evaluasi Antropometri WHO Reference 2007 (Kemenkes):')
+      ..writeln('- Usia Anak: $umurBulan Bulan')
+      ..writeln('- LK/U: - (hanya sampai usia 60 bulan)')
+      ..writeln('- Di luar rentang standar 61-228 bulan (5-18 tahun).');
+    return HasilGizi(
+      zBBU: double.nan,
+      zTBU: double.nan,
+      zBBTB: double.nan,
+      statusBBU: '-',
+      statusTBU: '-',
+      statusBBTB: '-',
+      statusUtama: 'Di Luar Rentang Usia Standar',
+      detail: detail.toString(),
+    );
+  }
+  final zBbu = zBBU2007(bb, umurBulan.toDouble(), laki);
+  final zTbu = zTBU2007(tbCm, umurBulan.toDouble(), laki);
+  final zImtu = zIMTU(bb, tbCm, umurBulan.toDouble(), laki);
+
+  final statusBBU = tentukanBBU(zBbu);
+  final statusTBU = tentukanTBU(zTbu);
+  final statusIMTU = tentukanIMTU(zImtu);
+
+  // Flag plausibilitas WHO AnthroPlus: BB/U di luar -6..+5,
+  // TB/U di luar -6..+6, IMT/U di luar -5..+5.
+  final bbuBerlaku = umurBulan <= 120;
+  final anomali = (bbuBerlaku && (zBbu.isNaN || zBbu < -6 || zBbu > 5)) ||
+      zTbu.isNaN ||
+      zTbu < -6 ||
+      zTbu > 6 ||
+      zImtu.isNaN ||
+      zImtu < -5 ||
+      zImtu > 5;
+
+  final String statusUtama;
+  if (anomali) {
+    statusUtama = 'Data Anomali (Cek Ulang Input!)';
+  } else {
+    final isStunted = statusTBU.contains('Pendek');
+    if (isStunted && statusIMTU.contains('Buruk')) {
+      statusUtama = 'Gizi Buruk & Stunting';
+    } else if (isStunted && statusIMTU.contains('Kurang')) {
+      statusUtama = 'Gizi Kurang & Stunting';
+    } else if (isStunted && statusIMTU.contains('Obesitas')) {
+      statusUtama = 'Stunting & Obesitas';
+    } else if (isStunted) {
+      statusUtama = 'Stunting';
+    } else if (statusIMTU.contains('Buruk')) {
+      statusUtama = 'Gizi Buruk';
+    } else if (statusIMTU.contains('Kurang')) {
+      statusUtama = 'Gizi Kurang';
+    } else if (statusIMTU.contains('Obesitas')) {
+      statusUtama = 'Obesitas';
+    } else if (statusIMTU.contains('Lebih')) {
+      statusUtama = 'Gizi Lebih';
+    } else if (bbuBerlaku && statusBBU.contains('Kurang')) {
+      statusUtama = 'BB Kurang';
+    } else {
+      statusUtama = 'Normal / Gizi Baik';
+    }
+  }
+
+  final detail = StringBuffer()
+    ..writeln('[AUTO] Evaluasi Antropometri WHO Reference 2007 (Kemenkes):')
+    ..writeln('- Usia Anak: $umurBulan Bulan');
+  if (bbuBerlaku) {
+    detail.writeln('- BB/U (Z-Score: ${_fmt(zBbu)}): $statusBBU');
+  } else {
+    detail.writeln('- BB/U: - (hanya sampai usia 120 bulan)');
+  }
+  detail
+    ..writeln('- TB/U (Z-Score: ${_fmt(zTbu)}): $statusTBU')
+    ..writeln('- IMT/U (IMT: ${imt(bb, tbCm).toStringAsFixed(2)}, '
+        'Z-Score: ${_fmt(zImtu)}): $statusIMTU')
+    ..writeln('- LK/U: - (hanya sampai usia 60 bulan)');
+
+  return HasilGizi(
+    zBBU: zBbu,
+    zTBU: zTbu,
+    zBBTB: double.nan,
+    zIMTU: zImtu,
+    statusBBU: statusBBU,
+    statusTBU: statusTBU,
+    statusBBTB: '-',
+    statusIMTU: statusIMTU,
+    statusUtama: statusUtama,
+    detail: detail.toString(),
+  );
+}
+
+/// Menghitung ketiga Z-Score memakai tinggi yang SUDAH dikoreksi posisi ukur.
+/// Umur lebih dari 60 bulan otomatis memakai WHO Reference 2007.
+/// [lingkarKepala] (cm) opsional: bila > 0 dan umur <= 60 bulan, Z-Score
+/// LK/U ikut dihitung untuk baris LK/U pada catatan [AUTO]; status utama
+/// tidak dipengaruhi oleh LK/U.
+HasilGizi hitungStatusGiziDetail(double bb, double tbCm, int umurBulan,
+    String? jk,
+    {double lingkarKepala = 0}) {
+  if (umurBulan > 60) {
+    return _hitungStatusGizi2007(bb, tbCm, umurBulan, jk);
+  }
+  final laki = isLaki(jk);
+  final zBbu = zBBU(bb, umurBulan.toDouble(), laki);
+  final zTbu = zTBU(tbCm, umurBulan.toDouble(), laki);
+  final zBbtb = zBBTB(bb, tbCm, umurBulan.toDouble(), laki);
+  final zLku = lingkarKepala > 0
+      ? zLKU(lingkarKepala, umurBulan.toDouble(), laki)
+      : double.nan;
+  final statusLKU = tentukanLKU(zLku);
+
+  final statusBBU = tentukanBBU(zBbu);
+  final statusTBU = tentukanTBU(zTbu);
+  final statusBBTB = tentukanBBTB(zBbtb);
+
+  final String statusUtama;
+  // SMART DETECTOR: flag WHO untuk kemungkinan kesalahan input
+  final anomaliBBU = zBbu < -6 || zBbu > 5;
+  final anomaliTBU = zTbu < -6 || zTbu > 6;
+  final anomaliBBTB = zBbtb < -5 || zBbtb > 5;
+  if (zBbu.isNaN || zTbu.isNaN || zBbtb.isNaN ||
+      anomaliBBU || anomaliTBU || anomaliBBTB) {
+    statusUtama = 'Data Anomali (Cek Ulang Input!)';
+  } else {
+    final isStunted = statusTBU.contains('Pendek');
+    if (isStunted && statusBBTB.contains('Buruk')) {
+      statusUtama = 'Gizi Buruk & Stunting';
+    } else if (isStunted && statusBBTB.contains('Kurang')) {
+      statusUtama = 'Gizi Kurang & Stunting';
+    } else if (isStunted && statusBBTB.contains('Obesitas')) {
+      statusUtama = 'Stunting & Obesitas';
+    } else if (isStunted) {
+      statusUtama = 'Stunting';
+    } else if (statusBBTB.contains('Buruk')) {
+      statusUtama = 'Gizi Buruk';
+    } else if (statusBBTB.contains('Kurang')) {
+      statusUtama = 'Gizi Kurang';
+    } else if (statusBBTB.contains('Obesitas')) {
+      statusUtama = 'Obesitas';
+    } else if (statusBBTB.contains('Lebih')) {
+      statusUtama = 'Berisiko Gizi Lebih';
+    } else if (statusBBU.contains('Kurang')) {
+      statusUtama = 'BB Kurang';
+    } else {
+      statusUtama = 'Normal / Gizi Baik';
+    }
+  }
+
+  final detail = StringBuffer()
+    ..writeln('[AUTO] Evaluasi Antropometri WHO 2006 (Kemenkes):')
+    ..writeln('- Usia Anak: $umurBulan Bulan')
+    ..writeln('- BB/U (Z-Score: ${_fmt(zBbu)}): $statusBBU')
+    ..writeln('- TB/U (Z-Score: ${_fmt(zTbu)}): $statusTBU')
+    ..writeln('- BB/TB (Z-Score: ${_fmt(zBbtb)}): $statusBBTB')
+    ..writeln('- LK/U (Z-Score: ${_fmt(zLku)}): $statusLKU');
+
+  return HasilGizi(
+    zBBU: zBbu,
+    zTBU: zTbu,
+    zBBTB: zBbtb,
+    zLKU: zLku,
+    statusBBU: statusBBU,
+    statusTBU: statusTBU,
+    statusBBTB: statusBBTB,
+    statusLKU: statusLKU,
+    statusUtama: statusUtama,
+    detail: detail.toString(),
+  );
+}
+
+/// Menyusun catatan_bidan lengkap persis format FormPemeriksaan:
+/// blok [AUTO] + blok [DATA TAMBAHAN POSYANDU] + catatan manual.
+String bangunCatatanBidan({
+  required HasilGizi hasil,
+  required int umurBulan,
+  required String posisiUkur,
+  required String noteKoreksi,
+  required String asi, // '- Pilih -' / 'Ya' / 'Tidak'
+  required String vitA, // '- Pilih -' / 'Biru' / 'Merah' / 'Tidak'
+  required String cacing, // '- Pilih -' / 'Ya' / 'Tidak'
+  required String namaImunisasi, // nama vaksin atau '-'
+  required String catatanManual,
+}) {
+  final asiTeks = umurBulan > 6
+      ? 'Tidak Wajib (>6 Bln)'
+      : (asi != '- Pilih -' ? asi : '-');
+  final dataPosyandu = '\n[DATA TAMBAHAN POSYANDU]\n'
+      '- Posisi Ukur: $posisiUkur$noteKoreksi\n'
+      '- ASI Eksklusif: $asiTeks\n'
+      '- Kapsul Vit A: ${vitA != '- Pilih -' ? vitA : '-'}\n'
+      '- Obat Cacing: ${cacing != '- Pilih -' ? cacing : '-'}\n'
+      '- Imunisasi Diberikan: $namaImunisasi\n';
+  return '${hasil.detail}$dataPosyandu\n\n--- Catatan Manual ---\n$catatanManual';
+}
+
+/// Penanda pemisah catatan manual di dalam catatan_bidan.
+const String kPemisahManual = '--- Catatan Manual ---';
+
+/// Mengambil isi catatan manual dari catatan_bidan tersimpan.
+String ambilCatatanManual(String? catatan) {
+  if (catatan == null) return '';
+  final idx = catatan.indexOf(kPemisahManual);
+  if (idx == -1) {
+    // Catatan lama tanpa blok otomatis: seluruhnya dianggap manual
+    if (!catatan.contains('[AUTO]')) return catatan.trim();
+    return '';
+  }
+  var sisa = catatan.substring(idx + kPemisahManual.length);
+  sisa = sisa.replaceFirst(RegExp(r'^\s+'), '');
+  return sisa.trimRight();
+}
+
+// ---------------------------------------------------------------------------
+// Aturan kolom tambahan pemeriksaan berdasarkan umur (FormPemeriksaan)
+// ---------------------------------------------------------------------------
+
+/// ASI Eksklusif hanya aktif untuk umur <= 6 bulan.
+bool asiAktif(int umurBulan) => umurBulan <= 6;
+
+/// Pilihan kapsul Vitamin A menurut kelompok umur.
+List<String> opsiVitA(int umurBulan) {
+  if (umurBulan < 6) return const ['Tidak'];
+  if (umurBulan <= 11) return const ['- Pilih -', 'Biru', 'Tidak'];
+  if (umurBulan <= 59) return const ['- Pilih -', 'Merah', 'Tidak'];
+  return const ['Tidak'];
+}
+
+/// Kapsul Vitamin A dapat dipilih pada umur 6-59 bulan.
+bool vitAAktif(int umurBulan) => umurBulan >= 6 && umurBulan <= 59;
+
+/// Obat cacing hanya aktif untuk umur 12-59 bulan.
+bool cacingAktif(int umurBulan) => umurBulan >= 12 && umurBulan <= 59;
+
+/// Bulan pemberian Vitamin A massal (Februari & Agustus).
+bool bulanVitA(int bulan) => bulan == 2 || bulan == 8;

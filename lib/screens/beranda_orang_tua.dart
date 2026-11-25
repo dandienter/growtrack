@@ -10,6 +10,7 @@ import '../session.dart';
 import '../sync/sync_service.dart';
 import '../sync/update_service.dart';
 import '../widgets.dart';
+import 'detail_antropometri.dart';
 import 'edukasi.dart';
 import 'info.dart';
 import 'laporan.dart';
@@ -74,6 +75,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   void initState() {
     super.initState();
     LayananSinkron.sinkronkan();
+    SinkronOtomatis().mulai();
     LayananNotifikasi.jadwalkanUlang();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) LayananUpdate.cekOtomatis(context);
@@ -120,6 +122,7 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
   }
 
   Future<void> _keluar() async {
+    SinkronOtomatis().berhenti();
     await GrowTrackDB.hapusSesiLogin();
     SesiUser.logout();
     if (!mounted) return;
@@ -312,7 +315,12 @@ class _BerandaOrangTuaState extends State<BerandaOrangTuaScreen> {
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
         onTap: () => Navigator.of(context).push(
-          MaterialPageRoute(builder: (_) => DetailAnakOrtuScreen(balita: b)),
+          MaterialPageRoute(
+            builder: (_) => DetailAntropometriScreen(
+              balita: b,
+              pembangunDetailLengkap: () => DetailAnakOrtuScreen(balita: b),
+            ),
+          ),
         ),
         child: Padding(
           padding: const EdgeInsets.all(14),

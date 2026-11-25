@@ -52,8 +52,10 @@ class _UtamaScreenState extends State<UtamaScreen>
     LayananNotifikasi.jadwalkanUlang();
     _muatNama();
     // Sinkronisasi latar saat aplikasi dibuka; kegagalan (offline)
-    // diabaikan diam-diam, data lokal tetap yang utama.
+    // diabaikan diam-diam, data lokal tetap yang utama. Sesudah itu
+    // sinkron berjalan otomatis (resume + berkala) tanpa klik.
     LayananSinkron.sinkronkan();
+    SinkronOtomatis().mulai();
     // Cek pembaruan otomatis (maksimal sekali per 12 jam).
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) LayananUpdate.cekOtomatis(context);
@@ -492,6 +494,7 @@ class PengaturanHub extends StatelessWidget {
       teksTidak: 'Batal',
     );
     if (!yakin || !context.mounted) return;
+    SinkronOtomatis().berhenti();
     await GrowTrackDB.hapusSesiLogin();
     SesiUser.logout();
     Navigator.of(context).pushAndRemoveUntil(

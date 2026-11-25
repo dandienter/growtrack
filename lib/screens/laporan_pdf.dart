@@ -7,6 +7,7 @@ import 'package:pdf/widgets.dart' as pw;
 
 import '../db/database.dart';
 import '../format.dart';
+import '../logic/gizi.dart';
 import '../models.dart';
 import '../session.dart';
 
@@ -463,6 +464,23 @@ class LaporanPdf {
         return fallback;
       }
 
+      // LK/U tidak disimpan sebagai kolom; dihitung on-the-fly dari
+      // lingkar kepala baris + umur anak pada tanggal periksa itu.
+      final lahirPdf = parseTanggalDb(balita.tglLahir);
+      final lakiPdf = isLaki(balita.jenisKelamin);
+      String lkuStrPdf(Map<String, Object?> r, String? rawCatatan) {
+        final lk = (r['lingkar_kepala'] as num?)?.toDouble() ?? 0;
+        final tglP = parseTanggalDb(r['tanggal']?.toString());
+        if (lahirPdf != null && tglP != null && lk > 0) {
+          final umur = hitungUmurBulan(lahirPdf, tglP);
+          if (umur <= 60) {
+            final z = zLKU(lk, umur.toDouble(), lakiPdf);
+            if (!z.isNaN) return '(Z-Score: ${z.toStringAsFixed(2)})';
+          }
+        }
+        return extractValue(rawCatatan, '- LK/U', '\n');
+      }
+
       final baris = <List<pw.Widget>>[];
       for (final r in rows) {
         final rawCatatan = r['catatan_bidan']?.toString();
@@ -473,6 +491,7 @@ class LaporanPdf {
             r, 'z_tbu', extractValue(rawCatatan, '- TB/U', '\n'));
         final bbtbStr = fmtZKolo(
             r, 'z_bbtb', extractValue(rawCatatan, '- BB/TB', '\n'));
+        final lkuStr = lkuStrPdf(r, rawCatatan);
 
         var posisiStr = r['posisi_ukur']?.toString() ?? '';
         if (posisiStr.isEmpty) {
@@ -500,7 +519,8 @@ class LaporanPdf {
         final col3 = 'VONIS: ${sg != null ? sg.toUpperCase() : '-'}\n\n'
             '  BB/U $bbuStr\n'
             '  TB/U $tbuStr\n'
-            '  BB/TB $bbtbStr';
+            '  BB/TB $bbtbStr\n'
+            '  LK/U $lkuStr';
         final col4 = 'Vit A: $vitAStr\n'
             'Cacing: $cacingStr\n'
             'Imun: $imunStr\n'
