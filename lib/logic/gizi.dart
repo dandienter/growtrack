@@ -54,10 +54,42 @@ List<double> _interp(List<List<double>> t, double x) {
   ];
 }
 
-/// Rumus Z-Score LMS WHO; hasil dijepit ke rentang -6..6.
+/// Invers LMS: nilai pengukuran pada Z-Score tertentu (dipakai penyesuaian ekor).
+double _nilaiPadaZ(double z, double l, double m, double s) {
+  if (m <= 0 || s <= 0) return double.nan;
+  if (l.abs() < 1e-9) return m * math.exp(s * z);
+  final dasar = 1 + l * s * z;
+  if (dasar <= 0) return double.nan;
+  return m * math.pow(dasar, 1 / l).toDouble();
+}
+
+/// Rumus Z-Score LMS WHO, lengkap dengan:
+/// - cabang L = 0: z = ln(y/M) / S (menghindari pembagian dengan nol)
+/// - penyesuaian ekor WHO untuk |z| > 3 SD: z dihitung linear dari jarak
+///   nilai SD2 dan SD3 (restricted z-score ala WHO Anthro) agar nilai
+///   ekstrem tidak terkompresi oleh kurva LMS.
+/// Hasil akhir dijepit ke rentang -6..6.
 double zLMS(double y, double l, double m, double s) {
   if (m <= 0 || s <= 0 || y <= 0) return double.nan;
-  final z = (math.pow(y / m, l).toDouble() - 1.0) / (l * s);
+  double z;
+  if (l.abs() < 1e-9) {
+    z = math.log(y / m) / s;
+  } else {
+    z = (math.pow(y / m, l).toDouble() - 1.0) / (l * s);
+  }
+  if (z > 3.0) {
+    final sd3 = _nilaiPadaZ(3.0, l, m, s);
+    final sd2 = _nilaiPadaZ(2.0, l, m, s);
+    if (!sd3.isNaN && !sd2.isNaN && sd3 > sd2) {
+      z = 3.0 + (y - sd3) / (sd3 - sd2);
+    }
+  } else if (z < -3.0) {
+    final sd3 = _nilaiPadaZ(-3.0, l, m, s);
+    final sd2 = _nilaiPadaZ(-2.0, l, m, s);
+    if (!sd3.isNaN && !sd2.isNaN && sd2 > sd3) {
+      z = -3.0 + (y - sd3) / (sd2 - sd3);
+    }
+  }
   if (z > 6.0) return 6.0;
   if (z < -6.0) return -6.0;
   return z;
