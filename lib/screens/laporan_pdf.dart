@@ -43,30 +43,62 @@ class ParameterLaporan {
 /// Pembangun dokumen PDF laporan dengan kop surat posyandu,
 /// port dari btnCetakActionPerformed pada DialogLaporan.java.
 class LaporanPdf {
-  static final _fontBiasa = pw.Font.helvetica();
-  static final _fontTebal = pw.Font.helveticaBold();
-  static final _fontMiring = pw.Font.helveticaOblique();
+  static final _fontBiasa = pw.Font.times();
+  static final _fontTebal = pw.Font.timesBold();
+  static final _fontMiring = pw.Font.timesItalic();
 
   static pw.TextStyle _gaya(double ukuran, {bool tebal = false}) =>
       pw.TextStyle(font: tebal ? _fontTebal : _fontBiasa, fontSize: ukuran);
 
+  /// Satu desimal koma Indonesia: 8.5 -> "8,5".
+  static String _des1(num? v) =>
+      v == null ? '-' : v.toStringAsFixed(1).replaceAll('.', ',');
+
+  /// Z-score bertanda koma Indonesia: -2.31 -> "-2,31", 1.69 -> "+1,69".
+  static String _zKoma(double? z) {
+    if (z == null || z.isNaN) return '-';
+    final s = z.toStringAsFixed(2).replaceAll('.', ',');
+    return z > 0 ? '+$s' : s;
+  }
+
   static pw.Widget _selHeader(String teks) {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(8),
-      decoration: const pw.BoxDecoration(color: PdfColors.grey300),
+      padding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 4.5),
+      decoration: pw.BoxDecoration(color: PdfColor.fromHex('E8E8E8')),
       alignment: pw.Alignment.center,
       child: pw.Text(teks,
-          style: _gaya(11, tebal: true), textAlign: pw.TextAlign.center),
+          style: _gaya(10, tebal: true), textAlign: pw.TextAlign.center),
     );
   }
 
-  static pw.Widget _selIsi(String? teks, {bool kanan = false}) {
+  /// Nama penanda tangan di dalam kurung, nama saja yang bergaris bawah.
+  static pw.Widget _teksNama(String nama) {
+    return pw.RichText(
+      textAlign: pw.TextAlign.center,
+      text: pw.TextSpan(
+        style: _gaya(11),
+        children: [
+          const pw.TextSpan(text: '( '),
+          pw.TextSpan(
+            text: nama,
+            style: pw.TextStyle(
+              font: _fontBiasa,
+              fontSize: 11,
+              decoration: pw.TextDecoration.underline,
+            ),
+          ),
+          const pw.TextSpan(text: ' )'),
+        ],
+      ),
+    );
+  }
+
+  static pw.Widget _selIsi(String? teks) {
     return pw.Container(
-      padding: const pw.EdgeInsets.all(6),
-      alignment: kanan ? pw.Alignment.centerRight : pw.Alignment.centerLeft,
+      padding: const pw.EdgeInsets.symmetric(horizontal: 6, vertical: 4.5),
+      alignment: pw.Alignment.center,
       child: pw.Text(teksDb(teks),
-          style: _gaya(11),
-          textAlign: kanan ? pw.TextAlign.right : pw.TextAlign.left),
+          style: _gaya(10.5), textAlign: pw.TextAlign.center),
     );
   }
 
@@ -104,7 +136,7 @@ class LaporanPdf {
     }
 
     final ukuranKop =
-        namaPosyandu.length > 30 ? 18.0 : (namaPosyandu.length > 20 ? 20.0 : 22.0);
+        namaPosyandu.length > 30 ? 13.0 : (namaPosyandu.length > 20 ? 15.0 : 17.0);
 
     final widgets = <pw.Widget>[];
 
@@ -115,9 +147,10 @@ class LaporanPdf {
         pw.Text(namaPosyandu,
             style: _gaya(ukuranKop, tebal: true),
             textAlign: pw.TextAlign.center),
-        pw.SizedBox(height: 4),
-        pw.Text('$alamat\nTelp: $telp',
-            style: _gaya(10), textAlign: pw.TextAlign.center),
+        pw.SizedBox(height: 2),
+        pw.Text(alamat, style: _gaya(10.5), textAlign: pw.TextAlign.center),
+        pw.Text('Telp: $telp',
+            style: _gaya(10.5), textAlign: pw.TextAlign.center),
       ],
     );
     if (logo != null) {
@@ -125,21 +158,24 @@ class LaporanPdf {
         crossAxisAlignment: pw.CrossAxisAlignment.center,
         children: [
           pw.SizedBox(
-            width: 70,
-            height: 70,
+            width: 64,
+            height: 64,
             child: pw.Image(logo, fit: pw.BoxFit.contain),
           ),
           pw.Expanded(child: teksKop),
-          pw.SizedBox(width: 70),
+          pw.SizedBox(width: 64),
         ],
       ));
     } else {
       widgets.add(teksKop);
     }
-    widgets.add(pw.SizedBox(height: 8));
+    widgets.add(pw.SizedBox(height: 6));
     widgets.add(pw.Container(
-        height: 2, decoration: const pw.BoxDecoration(color: PdfColors.black)));
-    widgets.add(pw.SizedBox(height: 14));
+        height: 1.4, decoration: const pw.BoxDecoration(color: PdfColors.black)));
+    widgets.add(pw.SizedBox(height: 1.5));
+    widgets.add(pw.Container(
+        height: 0.5, decoration: const pw.BoxDecoration(color: PdfColors.black)));
+    widgets.add(pw.SizedBox(height: 12));
 
     String? rentangTeks;
     String? dariDb;
@@ -148,20 +184,24 @@ class LaporanPdf {
       dariDb = keTeksDb(par.dari);
       sampaiDb = keTeksDb(par.sampai);
       rentangTeks =
-          'Periode: ${keTeksTampil(par.dari)} s/d ${keTeksTampil(par.sampai)}';
+          'Periode: ${tanggalPanjangId(par.dari!)} s/d ${tanggalPanjangId(par.sampai!)}';
     }
 
-    void tambahJudul(String judul, {String? subTambahan}) {
+    void tambahJudul(String judul, {String? subTambahan, bool gabung = false}) {
       widgets.add(pw.Text(judul,
-          style: _gaya(14, tebal: true), textAlign: pw.TextAlign.center));
-      widgets.add(pw.SizedBox(height: 4));
+          style: _gaya(13, tebal: true), textAlign: pw.TextAlign.center));
+      widgets.add(pw.SizedBox(height: 3));
       final sub = <String>[
-        if (rentangTeks != null) rentangTeks,
-        if (subTambahan != null) subTambahan,
+        if (gabung && rentangTeks != null && subTambahan != null)
+          '$rentangTeks - $subTambahan'
+        else ...[
+          if (rentangTeks != null) rentangTeks,
+          if (subTambahan != null) subTambahan,
+        ],
       ];
       if (sub.isNotEmpty) {
         widgets.add(pw.Text(sub.join('\n'),
-            style: _gaya(10), textAlign: pw.TextAlign.center));
+            style: _gaya(10.5), textAlign: pw.TextAlign.center));
       }
       widgets.add(pw.SizedBox(height: 12));
     }
@@ -169,11 +209,11 @@ class LaporanPdf {
     pw.Table tabelDari(List<pw.Widget> headers, List<List<pw.Widget>> baris,
         Map<int, pw.TableColumnWidth> lebar) {
       return pw.Table(
-        border: pw.TableBorder.all(color: PdfColors.grey, width: 0.5),
+        border: pw.TableBorder.all(color: PdfColors.black, width: 0.6),
         columnWidths: lebar,
         children: [
           pw.TableRow(
-            decoration: const pw.BoxDecoration(color: PdfColors.grey300),
+            decoration: pw.BoxDecoration(color: PdfColor.fromHex('E8E8E8')),
             children: headers,
           ),
           for (final b in baris) pw.TableRow(children: b),
@@ -218,9 +258,15 @@ class LaporanPdf {
           4: pw.FlexColumnWidth(3),
         },
       ));
+      final jmlL = rows.where((r) => r['jenis_kelamin'] == 'L').length;
+      widgets.add(pw.SizedBox(height: 8));
+      widgets.add(pw.Text(
+          'Total balita terdaftar: ${rows.length} anak '
+          '($jmlL laki-laki, ${rows.length - jmlL} perempuan).',
+          style: _gaya(10.5)));
     } else if (par.jenis == kJenisLaporan[1]) {
       tambahJudul('LAPORAN RIWAYAT PEMERIKSAAN KESELURUHAN');
-      var sql = 'SELECT p.id_periksa, b.nama_balita, p.tanggal, p.berat_badan, '
+      var sql = 'SELECT p.id_balita, b.nama_balita, p.tanggal, p.berat_badan, '
           'p.tinggi_badan, p.status_gizi FROM pemeriksaan p '
           'JOIN balita b ON p.id_balita = b.id_balita';
       final args = <Object?>[];
@@ -232,33 +278,37 @@ class LaporanPdf {
       final rows = await db.rawQuery(sql, args);
       widgets.add(tabelDari(
         [
-          _selHeader('ID Periksa'),
           _selHeader('Nama Balita'),
           _selHeader('Tanggal'),
-          _selHeader('Berat(Kg)'),
-          _selHeader('Tinggi(Cm)'),
+          _selHeader('Berat (kg)'),
+          _selHeader('Tinggi (cm)'),
           _selHeader('Status Gizi'),
         ],
         [
           for (final r in rows)
             [
-              _selIsi(r['id_periksa']?.toString()),
               _selIsi(r['nama_balita']?.toString()),
               _selIsi(formatTanggalID(r['tanggal']?.toString())),
-              _selIsi(r['berat_badan']?.toString()),
-              _selIsi(r['tinggi_badan']?.toString()),
+              _selIsi(_des1(r['berat_badan'] as num?)),
+              _selIsi(_des1(r['tinggi_badan'] as num?)),
               _selIsi(r['status_gizi']?.toString()),
             ],
         ],
         const {
-          0: pw.FlexColumnWidth(1.8),
-          1: pw.FlexColumnWidth(3.5),
-          2: pw.FlexColumnWidth(2),
-          3: pw.FlexColumnWidth(2),
-          4: pw.FlexColumnWidth(2.3),
-          5: pw.FlexColumnWidth(3.5),
+          0: pw.FlexColumnWidth(3.5),
+          1: pw.FlexColumnWidth(2),
+          2: pw.FlexColumnWidth(1.6),
+          3: pw.FlexColumnWidth(1.6),
+          4: pw.FlexColumnWidth(3.3),
         },
       ));
+      final jmlBalita =
+          rows.map((r) => r['id_balita']).toSet().length;
+      widgets.add(pw.SizedBox(height: 8));
+      widgets.add(pw.Text(
+          'Total pemeriksaan pada periode ini: ${rows.length} kali '
+          'untuk $jmlBalita balita.',
+          style: _gaya(10.5)));
     } else if (par.jenis == kJenisLaporan[2]) {
       tambahJudul('LAPORAN JADWAL & PELAKSANAAN IMUNISASI');
       var sql = 'SELECT j.id_jadwal, b.nama_balita, i.nama_imunisasi, '
@@ -303,14 +353,28 @@ class LaporanPdf {
           5: pw.FlexColumnWidth(2),
         },
       ));
+      final hitungStatus = <String, int>{};
+      for (final r in rows) {
+        final s = r['status']?.toString() ?? '-';
+        hitungStatus[s] = (hitungStatus[s] ?? 0) + 1;
+      }
+      widgets.add(pw.SizedBox(height: 8));
+      widgets.add(pw.Text(
+          'Ringkasan: ${hitungStatus.entries.map((e) => '${e.value} ${e.key}').join(', ')} '
+          'pada periode ini.',
+          style: _gaya(10.5)));
     } else if (par.jenis == kJenisLaporan[3]) {
       final rtDipilih = par.rt;
-      tambahJudul(
-        'LAPORAN KONSUMSI PMT WARGA',
-        subTambahan: rtDipilih != null
-            ? 'Filter Wilayah: RT ${rtDipilih['rt']}'
-            : null,
-      );
+      final labelRt = rtDipilih != null
+          ? 'Wilayah RT ${rtDipilih['rt']}'
+          : 'Semua Wilayah RT';
+      if (rentangTeks != null) {
+        tambahJudul('LAPORAN KONSUMSI PMT WARGA',
+            subTambahan: labelRt, gabung: true);
+      } else {
+        tambahJudul('LAPORAN KONSUMSI PMT WARGA',
+            subTambahan: 'Semua periode - $labelRt');
+      }
       var sql = 'SELECT id_konsumsi, tanggal, nama_kegiatan, pemberian_mt, '
           'jumlah_balita, total_biaya FROM konsumsi WHERE 1=1';
       final args = <Object?>[];
@@ -334,8 +398,8 @@ class LaporanPdf {
           _selIsi(formatTanggalID(r['tanggal']?.toString())),
           _selIsi(r['nama_kegiatan']?.toString()),
           _selIsi(r['pemberian_mt']?.toString()),
-          _selIsi('${(r['jumlah_balita'] as num?)?.toInt() ?? 0} Anak'),
-          _selIsi(formatRupiah(total), kanan: true),
+          _selIsi('${(r['jumlah_balita'] as num?)?.toInt() ?? 0}'),
+          _selIsi(formatRupiah(total)),
         ]);
       }
       widgets.add(tabelDari(
@@ -344,45 +408,25 @@ class LaporanPdf {
           _selHeader('Tanggal'),
           _selHeader('Nama Kegiatan'),
           _selHeader('Pemberian MT'),
-          _selHeader('Jumlah Balita'),
+          _selHeader('Jml Balita'),
           _selHeader('Total Biaya'),
         ],
         baris,
         const {
-          0: pw.FlexColumnWidth(1.8),
-          1: pw.FlexColumnWidth(3.2),
-          2: pw.FlexColumnWidth(3.5),
-          3: pw.FlexColumnWidth(3.5),
+          0: pw.FlexColumnWidth(2.5),
+          1: pw.FlexColumnWidth(2.3),
+          2: pw.FlexColumnWidth(3.2),
+          3: pw.FlexColumnWidth(3.6),
           4: pw.FlexColumnWidth(2.2),
-          5: pw.FlexColumnWidth(3),
+          5: pw.FlexColumnWidth(3.2),
         },
       ));
-      // Baris total: sel pertama colspan 5 (1.8+3.2+3.5+3.5+2.2 = 14.2) + nilai.
-      widgets.add(pw.Table(
-        border: pw.TableBorder.all(color: PdfColors.grey, width: 0.5),
-        columnWidths: const {
-          0: pw.FlexColumnWidth(14.2),
-          1: pw.FlexColumnWidth(3),
-        },
-        children: [
-          pw.TableRow(
-            decoration: const pw.BoxDecoration(color: PdfColors.grey300),
-            children: [
-              pw.Container(
-                padding: const pw.EdgeInsets.all(8),
-                alignment: pw.Alignment.centerRight,
-                child: pw.Text('TOTAL PENGELUARAN BIAYA KONSUMSI PMT',
-                    style: _gaya(11, tebal: true)),
-              ),
-              pw.Container(
-                padding: const pw.EdgeInsets.all(8),
-                alignment: pw.Alignment.centerRight,
-                child: pw.Text(formatRupiah(grandTotal),
-                    style: _gaya(11, tebal: true)),
-              ),
-            ],
-          ),
-        ],
+      widgets.add(pw.SizedBox(height: 6));
+      widgets.add(pw.Align(
+        alignment: pw.Alignment.centerRight,
+        child: pw.Text(
+            'Total biaya PMT periode ini: ${formatRupiah(grandTotal)}',
+            style: _gaya(10.5, tebal: true)),
       ));
     } else if (par.jenis == kJenisLaporan[4]) {
       final balita = par.balita!;
@@ -418,14 +462,14 @@ class LaporanPdf {
         tglPeriksaDisplay = formatTanggalID(rTgl.first['last_tgl']?.toString());
       }
 
-      widgets.add(pw.Text('BIODATA ANAK & ORANG TUA', style: _gaya(11, tebal: true)));
+      widgets.add(pw.Text('Biodata Anak & Orang Tua', style: _gaya(11.5, tebal: true)));
       widgets.add(pw.SizedBox(height: 5));
       pw.Widget bioBaris(String label, String nilai) {
         return pw.Row(
           crossAxisAlignment: pw.CrossAxisAlignment.start,
           children: [
-            pw.SizedBox(width: 130, child: pw.Text(label, style: _gaya(12))),
-            pw.Expanded(child: pw.Text(': $nilai', style: _gaya(12))),
+            pw.SizedBox(width: 130, child: pw.Text(label, style: _gaya(11))),
+            pw.Expanded(child: pw.Text(': $nilai', style: _gaya(11))),
           ],
         );
       }
@@ -442,9 +486,9 @@ class LaporanPdf {
           bioBaris('Tanggal Pemeriksaan', tglPeriksaDisplay),
         ],
       ));
-      widgets.add(pw.SizedBox(height: 15));
+      widgets.add(pw.SizedBox(height: 14));
       widgets.add(
-          pw.Text('GRAFIK / RIWAYAT PEMERIKSAAN', style: _gaya(11, tebal: true)));
+          pw.Text('Riwayat Pemeriksaan', style: _gaya(11.5, tebal: true)));
       widgets.add(pw.SizedBox(height: 5));
 
       var sql = 'SELECT tanggal, berat_badan, tinggi_badan, lingkar_kepala, '
@@ -458,103 +502,224 @@ class LaporanPdf {
       sql += ' ORDER BY tanggal ASC';
       final rows = await db.rawQuery(sql, args);
 
-      String fmtZKolo(Map<String, Object?> r, String kolom, String fallback) {
-        final v = r[kolom];
-        if (v is num) return '(Z-Score: ${v.toStringAsFixed(2)})';
-        return fallback;
-      }
-
-      // LK/U tidak disimpan sebagai kolom; dihitung on-the-fly dari
-      // lingkar kepala baris + umur anak pada tanggal periksa itu.
       final lahirPdf = parseTanggalDb(balita.tglLahir);
       final lakiPdf = isLaki(balita.jenisKelamin);
-      String lkuStrPdf(Map<String, Object?> r, String? rawCatatan) {
-        final lk = (r['lingkar_kepala'] as num?)?.toDouble() ?? 0;
+
+      String umurBaris(Map<String, Object?> r) {
         final tglP = parseTanggalDb(r['tanggal']?.toString());
-        if (lahirPdf != null && tglP != null && lk > 0) {
-          final umur = hitungUmurBulan(lahirPdf, tglP);
-          if (umur <= 60) {
-            final z = zLKU(lk, umur.toDouble(), lakiPdf);
-            if (!z.isNaN) return '(Z-Score: ${z.toStringAsFixed(2)})';
-          }
+        if (lahirPdf != null && tglP != null) {
+          return '${hitungUmurBulan(lahirPdf, tglP)} Bulan';
         }
-        return extractValue(rawCatatan, '- LK/U', '\n');
+        return extractValue(r['catatan_bidan']?.toString(), '- Usia Anak:', '\n');
       }
 
       final baris = <List<pw.Widget>>[];
       for (final r in rows) {
-        final rawCatatan = r['catatan_bidan']?.toString();
-        final usiaStr = extractValue(rawCatatan, '- Usia Anak:', '\n');
-        final bbuStr = fmtZKolo(
-            r, 'z_bbu', extractValue(rawCatatan, '- BB/U', '\n'));
-        final tbuStr = fmtZKolo(
-            r, 'z_tbu', extractValue(rawCatatan, '- TB/U', '\n'));
-        final bbtbStr = fmtZKolo(
-            r, 'z_bbtb', extractValue(rawCatatan, '- BB/TB', '\n'));
-        final lkuStr = lkuStrPdf(r, rawCatatan);
-
         var posisiStr = r['posisi_ukur']?.toString() ?? '';
         if (posisiStr.isEmpty) {
-          posisiStr = extractValue(rawCatatan, '- Posisi Ukur:', '\n');
+          posisiStr =
+              extractValue(r['catatan_bidan']?.toString(), '- Posisi Ukur:', '\n');
         }
-        final asiStr = extractValue(rawCatatan, '- ASI Eksklusif:', '\n');
-        final vitAStr = extractValue(rawCatatan, '- Kapsul Vit A:', '\n');
-        final cacingStr = extractValue(rawCatatan, '- Obat Cacing:', '\n');
-        final imunStr =
-            extractValue(rawCatatan, '- Imunisasi Diberikan:', '\n');
-
-        var catatanManual = '-';
-        if (rawCatatan != null && rawCatatan.contains('--- Catatan Manual ---')) {
-          catatanManual = rawCatatan
-              .substring(rawCatatan.indexOf('--- Catatan Manual ---') + 22)
-              .trim();
-        }
-        if (catatanManual.isEmpty) catatanManual = '-';
-
-        final col2 = 'BB: ${r['berat_badan']} Kg\n'
-            'TB: ${r['tinggi_badan']} Cm\n'
-            'LK: ${r['lingkar_kepala']} Cm\n'
-            'Pos: ${posisiStr.replaceAll(RegExp(r'\(.*?\)'), '').trim()}';
-        final sg = r['status_gizi']?.toString();
-        final col3 = 'VONIS: ${sg != null ? sg.toUpperCase() : '-'}\n\n'
-            '  BB/U $bbuStr\n'
-            '  TB/U $tbuStr\n'
-            '  BB/TB $bbtbStr\n'
-            '  LK/U $lkuStr';
-        final col4 = 'Vit A: $vitAStr\n'
-            'Cacing: $cacingStr\n'
-            'Imun: $imunStr\n'
-            'ASI: $asiStr';
-
+        posisiStr =
+            posisiStr.replaceAll(RegExp(r'\(.*?\)'), '').trim();
         baris.add([
-          _selIsi(usiaStr),
-          _selIsi(col2),
-          _selIsi(col3),
-          _selIsi(col4),
-          _selIsi(catatanManual),
+          _selIsi(umurBaris(r)),
+          _selIsi(_des1(r['berat_badan'] as num?)),
+          _selIsi(_des1(r['tinggi_badan'] as num?)),
+          _selIsi(_des1(r['lingkar_kepala'] as num?)),
+          _selIsi(posisiStr.isEmpty ? '-' : posisiStr),
+          _selIsi(r['status_gizi']?.toString()),
         ]);
       }
 
       widgets.add(tabelDari(
         [
           _selHeader('Usia'),
-          _selHeader('Hasil Ukur'),
-          _selHeader('Z-Score & Status'),
-          _selHeader('Intervensi'),
-          _selHeader('Catatan Khusus'),
+          _selHeader('BB (kg)'),
+          _selHeader('TB (cm)'),
+          _selHeader('LK (cm)'),
+          _selHeader('Posisi'),
+          _selHeader('Status Gizi'),
         ],
         baris,
         const {
-          0: pw.FlexColumnWidth(1.5),
-          1: pw.FlexColumnWidth(2.2),
-          2: pw.FlexColumnWidth(3.8),
-          3: pw.FlexColumnWidth(2.5),
-          4: pw.FlexColumnWidth(2.5),
+          0: pw.FlexColumnWidth(1.6),
+          1: pw.FlexColumnWidth(1.5),
+          2: pw.FlexColumnWidth(1.5),
+          3: pw.FlexColumnWidth(1.5),
+          4: pw.FlexColumnWidth(2),
+          5: pw.FlexColumnWidth(3.4),
         },
       ));
+
+      if (rows.isNotEmpty && lahirPdf != null) {
+        final terakhir = rows.last;
+        final tglT = parseTanggalDb(terakhir['tanggal']?.toString());
+        final umurT =
+            tglT != null ? hitungUmurBulan(lahirPdf, tglT) : 0;
+        final rawT = terakhir['catatan_bidan']?.toString();
+        var catatanManualT = '-';
+        if (rawT != null && rawT.contains('--- Catatan Manual ---')) {
+          catatanManualT =
+              rawT.substring(rawT.indexOf('--- Catatan Manual ---') + 22).trim();
+        }
+        if (catatanManualT.isEmpty) catatanManualT = '-';
+        widgets.add(pw.SizedBox(height: 8));
+        widgets.add(pw.Text(
+            'Intervensi pemeriksaan terakhir ($umurT bulan): '
+            'Vitamin A: ${extractValue(rawT, '- Kapsul Vit A:', '\n')}, '
+            'obat cacing: ${extractValue(rawT, '- Obat Cacing:', '\n')}, '
+            'imunisasi: ${extractValue(rawT, '- Imunisasi Diberikan:', '\n')}, '
+            'ASI: ${extractValue(rawT, '- ASI Eksklusif:', '\n')}. '
+            'Catatan khusus: $catatanManualT.',
+            style: _gaya(10.5)));
+
+        // === DETAIL ANTROPOMETRI PEMERIKSAAN TERAKHIR ===
+        final bbT = (terakhir['berat_badan'] as num?)?.toDouble() ?? 0;
+        final tbT = (terakhir['tinggi_badan'] as num?)?.toDouble() ?? 0;
+        final lkT = (terakhir['lingkar_kepala'] as num?)?.toDouble() ?? 0;
+        final korT = koreksiTinggi(
+            tbT, umurT, terakhir['posisi_ukur']?.toString() ?? 'Berdiri');
+        final det = hitungStatusGiziDetail(bbT, korT.tinggiKoreksi, umurT,
+            balita.jenisKelamin,
+            lingkarKepala: lkT);
+        widgets.add(pw.SizedBox(height: 14));
+        widgets.add(pw.Text(
+            'Detail Antropometri - Pemeriksaan Terakhir '
+            '(${formatTanggalID(terakhir['tanggal']?.toString())}, usia $umurT bulan)',
+            style: _gaya(11.5, tebal: true)));
+        widgets.add(pw.SizedBox(height: 5));
+        final barisDetail = <List<pw.Widget>>[];
+        if (umurT <= 60) {
+          barisDetail.addAll([
+            [
+              _selIsi('BB/U - Berat Badan menurut Umur'),
+              _selIsi('${_des1(bbT)} kg'),
+              _selIsi('${_des1(medianBBU(umurT.toDouble(), lakiPdf))} kg'),
+              _selIsi(_zKoma(det.zBBU)),
+              _selIsi(det.statusBBU),
+            ],
+            [
+              _selIsi('TB/U - Tinggi Badan menurut Umur'),
+              _selIsi('${_des1(korT.tinggiKoreksi)} cm'),
+              _selIsi('${_des1(medianTBU(umurT.toDouble(), lakiPdf))} cm'),
+              _selIsi(_zKoma(det.zTBU)),
+              _selIsi(det.statusTBU),
+            ],
+            [
+              _selIsi('BB/TB - Berat Badan menurut Tinggi Badan'),
+              _selIsi('${_des1(bbT)} kg'),
+              _selIsi(
+                  '${_des1(medianBBTB(korT.tinggiKoreksi, umurT.toDouble(), lakiPdf))} kg'),
+              _selIsi(_zKoma(det.zBBTB)),
+              _selIsi(det.statusBBTB),
+            ],
+            [
+              _selIsi('LK/U - Lingkar Kepala menurut Umur'),
+              _selIsi(lkT > 0 ? '${_des1(lkT)} cm' : '-'),
+              _selIsi(medianLKU(umurT.toDouble(), lakiPdf).isNaN
+                  ? '-'
+                  : '${_des1(medianLKU(umurT.toDouble(), lakiPdf))} cm'),
+              _selIsi(_zKoma(det.zLKU)),
+              _selIsi(det.statusLKU),
+            ],
+          ]);
+        } else {
+          final nilaiImt = imt(bbT, tbT);
+          barisDetail.addAll([
+            [
+              _selIsi('TB/U - Tinggi Badan menurut Umur'),
+              _selIsi('${_des1(tbT)} cm'),
+              _selIsi('-'),
+              _selIsi(_zKoma(det.zTBU)),
+              _selIsi(det.statusTBU),
+            ],
+            [
+              _selIsi('IMT/U - IMT menurut Umur'),
+              _selIsi(nilaiImt.isNaN ? '-' : _des1(nilaiImt)),
+              _selIsi('-'),
+              _selIsi(_zKoma(det.zIMTU)),
+              _selIsi(det.statusIMTU),
+            ],
+            [
+              _selIsi('LK/U - Lingkar Kepala menurut Umur'),
+              _selIsi('-'),
+              _selIsi('-'),
+              _selIsi('-'),
+              _selIsi('-'),
+            ],
+          ]);
+        }
+        widgets.add(tabelDari(
+          [
+            _selHeader('Indikator'),
+            _selHeader('Nilai Aktual'),
+            _selHeader('Median WHO'),
+            _selHeader('Z-Score'),
+            _selHeader('Kategori'),
+          ],
+          barisDetail,
+          const {
+            0: pw.FlexColumnWidth(3.05),
+            1: pw.FlexColumnWidth(1.2),
+            2: pw.FlexColumnWidth(1.4),
+            3: pw.FlexColumnWidth(0.9),
+            4: pw.FlexColumnWidth(1.95),
+          },
+        ));
+
+        final statusT = terakhir['status_gizi']?.toString() ?? '';
+        String isiInterpretasi;
+        if (statusT.contains('Buruk')) {
+          isiInterpretasi =
+              'Status gizi terakhir $statusT. Anak memerlukan penanganan '
+              'segera: rujuk ke Puskesmas untuk tata laksana gizi buruk dan '
+              'pemberian PMT pemulihan sesuai petunjuk petugas kesehatan.';
+        } else if (statusT.contains('Kurang')) {
+          isiInterpretasi =
+              'Status gizi terakhir $statusT. Tingkatkan asupan gizi '
+              'seimbang dan protein hewani, manfaatkan PMT Posyandu, pantau '
+              'pertumbuhan setiap bulan, dan konsultasikan ke Puskesmas '
+              'bila tidak membaik dalam 2 bulan.';
+        } else if (statusT.contains('Stunting') ||
+            statusT.contains('Pendek')) {
+          isiInterpretasi =
+              'Status gizi terakhir $statusT. Perlu pemantauan tinggi '
+              'badan berkala, asupan protein hewani yang cukup, dan '
+              'stimulasi tumbuh kembang; konsultasikan ke Puskesmas '
+              'untuk evaluasi lebih lanjut.';
+        } else if (statusT.contains('Lebih') ||
+            statusT.contains('Obesitas')) {
+          isiInterpretasi =
+              'Status gizi terakhir $statusT. Batasi makanan dan minuman '
+              'manis serta makanan olahan, tingkatkan aktivitas fisik '
+              'anak, dan pantau berat badan setiap bulan.';
+        } else {
+          isiInterpretasi =
+              'Status gizi terakhir $statusT. Pertahankan pola makan gizi '
+              'seimbang dan lakukan penimbangan rutin setiap bulan di '
+              'Posyandu.';
+        }
+        final zLk = det.zLKU;
+        if (umurT <= 60 && !zLk.isNaN && (zLk > 2 || zLk < -2)) {
+          isiInterpretasi +=
+              ' Nilai LK/U berada di ${zLk < -2 ? 'bawah' : 'atas'} rentang '
+              'normal, mohon dipastikan kembali ketepatan pengukuran '
+              'lingkar kepala pada kunjungan berikutnya.';
+        }
+        widgets.add(pw.SizedBox(height: 8));
+        widgets.add(pw.Text('Interpretasi & Rekomendasi: $isiInterpretasi',
+            style: _gaya(10.5)));
+        widgets.add(pw.SizedBox(height: 4));
+        widgets.add(pw.Text(
+            'Metode: Z-score LMS WHO ${umurT <= 60 ? '2006' : 'Reference 2007'}, '
+            'klasifikasi Permenkes No. 2 Tahun 2020. Laporan ini adalah '
+            'hasil pemantauan pertumbuhan, bukan diagnosis medis.',
+            style: _gaya(10)));
+      }
     } else if (par.jenis == kJenisLaporan[5]) {
-      // Laporan bulanan ringkas untuk Puskesmas: indikator utama,
-      // distribusi status gizi, dan daftar anak yang perlu perhatian.
+      // Laporan bulanan untuk Puskesmas: ringkasan layanan, sebaran
+      // status gizi pemeriksaan terakhir tiap balita, dan catatan.
       final kini = DateTime.now();
       final awal = dariDb ??
           '${kini.year}-${kini.month.toString().padLeft(2, '0')}-01';
@@ -562,9 +727,16 @@ class LaporanPdf {
       final akhir = sampaiDb ??
           '${kini.year}-${kini.month.toString().padLeft(2, '0')}-'
               '${hariAkhir.toString().padLeft(2, '0')}';
-      tambahJudul('LAPORAN BULANAN POSYANDU UNTUK PUSKESMAS',
-          subTambahan:
-              'Periode: ${formatTanggalID(awal)} s/d ${formatTanggalID(akhir)}');
+      if (rentangTeks != null) {
+        tambahJudul('LAPORAN BULANAN PUSKESMAS');
+      } else {
+        final dAwal = parseTanggalDb(awal);
+        final dAkhir = parseTanggalDb(akhir);
+        tambahJudul('LAPORAN BULANAN PUSKESMAS',
+            subTambahan: 'Periode: '
+                '${dAwal != null ? tanggalPanjangId(dAwal) : awal} s/d '
+                '${dAkhir != null ? tanggalPanjangId(dAkhir) : akhir}');
+      }
 
       Future<int> hitungSatu(String sql, List<Object?> args) async {
         final r = await db.rawQuery(sql, args);
@@ -580,11 +752,6 @@ class LaporanPdf {
           "SELECT COUNT(*) FROM jadwal_imunisasi WHERE status = 'Selesai' "
           'AND tgl_diberikan BETWEEN ? AND ?',
           [awal, akhir]);
-      final anakBerisiko = await hitungSatu(
-          'SELECT COUNT(DISTINCT id_balita) FROM pemeriksaan '
-          'WHERE tanggal BETWEEN ? AND ? AND (status_gizi LIKE ? '
-          'OR status_gizi LIKE ? OR status_gizi LIKE ?)',
-          [awal, akhir, '%Buruk%', '%Stunting%', '%Kurang%']);
       final cakupan = await GrowTrackDB.ambilCakupanImunisasi();
       final rataCakupan = cakupan.isEmpty
           ? 0.0
@@ -595,85 +762,91 @@ class LaporanPdf {
               }) /
               cakupan.length;
 
+      widgets.add(pw.Text('Ringkasan Layanan', style: _gaya(11.5, tebal: true)));
+      widgets.add(pw.SizedBox(height: 5));
       widgets.add(tabelDari(
         [_selHeader('Indikator'), _selHeader('Jumlah')],
         [
-          [_selIsi('Balita terdaftar'), _selIsi('$totalBalita anak', kanan: true)],
+          [_selIsi('Balita terdaftar'), _selIsi('$totalBalita')],
+          [_selIsi('Pemeriksaan pada periode ini'), _selIsi('$periksaBulan')],
           [
-            _selIsi('Pemeriksaan bulan ini'),
-            _selIsi('$periksaBulan kali', kanan: true)
+            _selIsi('Imunisasi selesai pada periode ini'),
+            _selIsi('$imunisasiBulan')
           ],
           [
-            _selIsi('Imunisasi diberikan bulan ini'),
-            _selIsi('$imunisasiBulan kali', kanan: true)
-          ],
-          [
-            _selIsi('Anak berisiko (gizi buruk, kurang, stunting)'),
-            _selIsi('$anakBerisiko anak', kanan: true)
-          ],
-          [
-            _selIsi('Rata-rata cakupan imunisasi'),
-            _selIsi('${rataCakupan.toStringAsFixed(1)}%', kanan: true)
+            _selIsi('Cakupan imunisasi wajib'),
+            _selIsi('${rataCakupan.toStringAsFixed(1).replaceAll('.', ',')}%')
           ],
         ],
         const {0: pw.FlexColumnWidth(3.4), 1: pw.FlexColumnWidth(1.4)},
       ));
-      widgets.add(pw.SizedBox(height: 16));
-      widgets.add(pw.Text('Distribusi Status Gizi Bulan Ini',
-          style: _gaya(12, tebal: true)));
-      widgets.add(pw.SizedBox(height: 8));
-      final distribusi = await db.rawQuery(
-          'SELECT status_gizi, COUNT(*) AS c FROM pemeriksaan '
-          'WHERE tanggal BETWEEN ? AND ? GROUP BY status_gizi '
-          'ORDER BY c DESC',
-          [awal, akhir]);
+      widgets.add(pw.SizedBox(height: 14));
+      widgets.add(pw.Text('Sebaran Status Gizi (Pemeriksaan Terakhir Tiap Balita)',
+          style: _gaya(11.5, tebal: true)));
+      widgets.add(pw.SizedBox(height: 5));
+      final sebaranMentah = await db.rawQuery(
+          'SELECT p.status_gizi AS status, COUNT(*) AS c FROM pemeriksaan p '
+          'JOIN (SELECT id_balita, MAX(tanggal) AS mx FROM pemeriksaan '
+          'GROUP BY id_balita) t '
+          'ON t.id_balita = p.id_balita AND t.mx = p.tanggal '
+          'GROUP BY p.status_gizi ORDER BY c DESC');
+      final sebaran = <String, int>{};
+      for (final r in sebaranMentah) {
+        var label = r['status']?.toString() ?? '-';
+        if (label == 'Normal' || label == 'Gizi Baik') {
+          label = 'Normal / Gizi Baik';
+        }
+        sebaran[label] = (sebaran[label] ?? 0) + ((r['c'] as num?)?.toInt() ?? 0);
+      }
+      final totalSebaran =
+          sebaran.values.fold<int>(0, (a, b) => a + b);
       widgets.add(tabelDari(
-        [_selHeader('Status Gizi'), _selHeader('Jumlah Pemeriksaan')],
+        [_selHeader('Status Gizi'), _selHeader('Jumlah'), _selHeader('Persentase')],
         [
-          for (final r in distribusi)
+          for (final e in sebaran.entries)
             [
-              _selIsi(r['status_gizi']?.toString()),
-              _selIsi('${r['c']}', kanan: true),
+              _selIsi(e.key),
+              _selIsi('${e.value}'),
+              _selIsi(totalSebaran == 0
+                  ? '0,0%'
+                  : '${(e.value / totalSebaran * 100).toStringAsFixed(1).replaceAll('.', ',')}%'),
             ],
-          if (distribusi.isEmpty)
-            [_selIsi('Belum ada pemeriksaan pada periode ini'), _selIsi('0')],
-        ],
-        const {0: pw.FlexColumnWidth(3.4), 1: pw.FlexColumnWidth(1.4)},
-      ));
-      widgets.add(pw.SizedBox(height: 16));
-      widgets.add(pw.Text('Anak yang Perlu Perhatian',
-          style: _gaya(12, tebal: true)));
-      widgets.add(pw.SizedBox(height: 8));
-      final risiko = await db.rawQuery(
-          'SELECT b.nama_balita AS nama, p.tanggal AS tgl, '
-          'p.status_gizi AS status FROM pemeriksaan p '
-          'JOIN balita b ON b.id_balita = p.id_balita '
-          'WHERE p.tanggal BETWEEN ? AND ? AND (p.status_gizi LIKE ? '
-          'OR p.status_gizi LIKE ? OR p.status_gizi LIKE ?) '
-          'ORDER BY p.tanggal DESC LIMIT 60',
-          [awal, akhir, '%Buruk%', '%Stunting%', '%Kurang%']);
-      widgets.add(tabelDari(
-        [_selHeader('Nama Anak'), _selHeader('Tanggal'), _selHeader('Status Gizi')],
-        [
-          for (final r in risiko)
-            [
-              _selIsi(r['nama']?.toString()),
-              _selIsi(formatTanggalID(r['tgl']?.toString())),
-              _selIsi(r['status']?.toString()),
-            ],
-          if (risiko.isEmpty)
-            [
-              _selIsi('Tidak ada anak berisiko pada periode ini'),
-              _selIsi('-'),
-              _selIsi('-'),
-            ],
+          if (sebaran.isEmpty)
+            [_selIsi('Belum ada data pemeriksaan'), _selIsi('0'), _selIsi('0,0%')],
         ],
         const {
-          0: pw.FlexColumnWidth(1.8),
+          0: pw.FlexColumnWidth(3.4),
           1: pw.FlexColumnWidth(1.1),
-          2: pw.FlexColumnWidth(2.2),
+          2: pw.FlexColumnWidth(1.3),
         },
       ));
+
+      int hitungLabel(bool Function(String) uji) => sebaran.entries
+          .where((e) => uji(e.key))
+          .fold<int>(0, (a, e) => a + e.value);
+      final nStunting = hitungLabel(
+          (s) => s.contains('Stunting') || s.contains('Pendek'));
+      final nKurang = hitungLabel((s) => s.contains('Kurang'));
+      final nBuruk = hitungLabel((s) => s.contains('Buruk'));
+      final bagian = <String>[
+        if (nStunting > 0) '$nStunting balita terdeteksi pendek (stunting)',
+        if (nKurang > 0) '$nKurang balita gizi kurang',
+        if (nBuruk > 0) '$nBuruk balita gizi buruk',
+      ];
+      widgets.add(pw.SizedBox(height: 10));
+      if (bagian.isEmpty) {
+        widgets.add(pw.Text(
+            'Catatan: Tidak ada balita terdeteksi stunting, gizi kurang, '
+            'atau gizi buruk berdasarkan pemeriksaan terakhir tiap balita.',
+            style: _gaya(10.5)));
+      } else {
+        widgets.add(pw.Text(
+            'Catatan: Sebanyak ${bagian.join(' dan ')} berdasarkan '
+            'pemeriksaan terakhir tiap balita. Balita tersebut masuk '
+            'daftar pantauan risiko dan dijadwalkan menerima PMT '
+            'pemulihan serta kunjungan ulang bulan depan.',
+            style: _gaya(10.5)));
+      }
     }
 
     // === BLOK TANDA TANGAN ===
@@ -699,16 +872,14 @@ class LaporanPdf {
             child: pw.Column(children: [
               pw.Text(teksKiri, style: _gaya(11), textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
-              pw.Text('( ................................... )',
-                  style: _gaya(11), textAlign: pw.TextAlign.center),
+              _teksNama('...........................'),
             ]),
           ),
           pw.Expanded(
             child: pw.Column(children: [
               pw.Text(teksKanan, style: _gaya(11), textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
-              pw.Text('( $namaPj )',
-                  style: _gaya(11), textAlign: pw.TextAlign.center),
+              _teksNama(namaPj),
             ]),
           ),
         ],
@@ -723,16 +894,14 @@ class LaporanPdf {
             child: pw.Column(children: [
               pw.Text(teksKiri, style: _gaya(11), textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
-              pw.Text('( $namaKetua )',
-                  style: _gaya(11), textAlign: pw.TextAlign.center),
+              _teksNama(namaKetua),
             ]),
           ),
           pw.Expanded(
             child: pw.Column(children: [
               pw.Text(teksKanan, style: _gaya(11), textAlign: pw.TextAlign.center),
               pw.SizedBox(height: 60),
-              pw.Text('( ${SesiUser.namaLengkap ?? ''} )',
-                  style: _gaya(11), textAlign: pw.TextAlign.center),
+              _teksNama(SesiUser.namaLengkap ?? ''),
             ]),
           ),
         ],
@@ -749,17 +918,19 @@ class LaporanPdf {
     doc.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: const pw.EdgeInsets.fromLTRB(40, 40, 40, 50),
-        footer: (pw.Context context) => pw.Align(
-          alignment: pw.Alignment.center,
-          child: pw.Text(
-            'Dicetak dari Sistem GrowTrack | Halaman ${context.pageNumber}',
-            style: pw.TextStyle(
-              font: _fontMiring,
-              fontSize: 9,
-              color: PdfColors.grey700,
+        margin: const pw.EdgeInsets.fromLTRB(57, 51, 57, 54),
+        footer: (pw.Context context) => pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(
+              'Dicetak dari Sistem GrowTrack',
+              style: pw.TextStyle(font: _fontMiring, fontSize: 8.5),
             ),
-          ),
+            pw.Text(
+              'Halaman ${context.pageNumber} dari ${context.pagesCount}',
+              style: pw.TextStyle(font: _fontMiring, fontSize: 8.5),
+            ),
+          ],
         ),
         build: (pw.Context context) => widgets,
       ),
